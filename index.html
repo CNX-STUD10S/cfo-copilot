@@ -3,1407 +3,1605 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CFO Copilot — App</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<title>CFO Copilot — The AI CFO for Indian Startups</title>
+<meta name="description" content="Replace your ₹15L/year CFO with AI. Runway tracking, GST compliance, board decks, fundraising intelligence — all for ₹2,999/month.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,700;1,300;1,700&display=swap" rel="stylesheet">
 <style>
-/* ── RESET & VARS ── */
-:root{
-  --bg:#060910;--bg2:#0C1018;--bg3:#121820;--bg4:#181F28;
-  --border:#1A2332;--border2:#223044;
-  --accent:#00E5A0;--accent2:#0099FF;--accent3:#FF6B35;--accent4:#FFD700;
-  --purple:#8B5CF6;--text:#E8EDF5;--text2:#8B9AB0;--text3:#3D5068;--red:#FF4560;
-  --font:'Syne',sans-serif;--mono:'JetBrains Mono',monospace;
-  --sidebar:220px;
+/* ══════════════════════════════════════
+   RESET & VARIABLES
+══════════════════════════════════════ */
+:root {
+  --bg: #04070D;
+  --bg2: #080D16;
+  --bg3: #0D1420;
+  --bg4: #121A28;
+  --border: #152030;
+  --border2: #1E2E42;
+  --accent: #00E5A0;
+  --accent2: #0099FF;
+  --accent3: #FF6B35;
+  --accent4: #FFD700;
+  --red: #FF4560;
+  --purple: #8B5CF6;
+  --text: #ECF0F8;
+  --text2: #8B9AB0;
+  --text3: #3A4F66;
+  --font: 'Syne', sans-serif;
+  --serif: 'Fraunces', serif;
+  --mono: 'JetBrains Mono', monospace;
 }
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{height:100%;}
-body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
-
-/* ── GLOW ── */
-.glow{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;}
-.g1{width:600px;height:600px;background:rgba(0,229,160,0.05);top:-200px;right:-150px;}
-.g2{width:500px;height:500px;background:rgba(0,153,255,0.04);bottom:-150px;left:-150px;}
-
-/* ── LOADING ── */
-#loading{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
-.load-icon{width:52px;height:52px;background:var(--accent);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#000;animation:loadp 1.4s infinite;}
-@keyframes loadp{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
-.load-txt{font-size:12px;color:var(--text3);font-family:var(--mono);letter-spacing:.1em;}
-
-/* ── SCREENS ── */
-.screen{display:none;min-height:100vh;position:relative;z-index:1;}
-.screen.active{display:flex;}
-
-/* ══════════ AUTH ══════════ */
-.auth-screen{flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;}
-.auth-card{width:100%;max-width:420px;background:var(--bg2);border:1px solid var(--border2);border-radius:24px;padding:36px 32px;position:relative;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.5);}
-.auth-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);}
-.a-logo{display:flex;align-items:center;gap:10px;margin-bottom:32px;}
-.a-logo-icon{width:36px;height:36px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#000;}
-.a-logo-name{font-size:16px;font-weight:700;}
-.a-title{font-size:26px;font-weight:800;margin-bottom:8px;letter-spacing:-.02em;line-height:1.2;}
-.a-sub{font-size:13px;color:var(--text2);margin-bottom:28px;line-height:1.7;}
-.a-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px 16px;font-size:15px;color:var(--text);font-family:var(--font);outline:none;transition:border-color .2s;margin-bottom:12px;display:block;}
-.a-input:focus{border-color:rgba(0,229,160,.45);}
-.a-input::placeholder{color:var(--text3);font-size:13px;}
-.a-btn{width:100%;background:var(--accent);color:#000;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:700;font-family:var(--font);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;}
-.a-btn:hover{background:#00ffb3;transform:translateY(-1px);}
-.a-btn.loading{opacity:.7;pointer-events:none;}
-.a-btn-ghost{width:100%;background:var(--bg3);color:var(--text2);border:1px solid var(--border2);border-radius:12px;padding:13px;font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;transition:all .15s;margin-bottom:10px;}
-.a-btn-ghost:hover{background:var(--bg4);color:var(--text);}
-.a-note{font-size:11px;color:var(--text3);text-align:center;font-family:var(--mono);line-height:1.8;}
-.a-note a{color:var(--accent);cursor:pointer;}
-.divider{display:flex;align-items:center;gap:12px;margin:14px 0;}
-.divider-line{flex:1;height:1px;background:var(--border);}
-.divider-text{font-size:11px;color:var(--text3);font-family:var(--mono);}
-
-/* ══════════ ONBOARDING ══════════ */
-.ob-screen{flex-direction:column;align-items:center;padding:32px 20px 48px;}
-.ob-top{width:100%;max-width:520px;display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;}
-.ob-logo{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;}
-.ob-logo-icon{width:30px;height:30px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#000;}
-.ob-cnt{font-size:11px;font-family:var(--mono);color:var(--text3);}
-.prog-track{display:flex;align-items:center;width:100%;max-width:520px;margin-bottom:8px;}
-.pdot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;font-family:var(--mono);flex-shrink:0;transition:all .3s;border:2px solid var(--border2);background:var(--bg2);color:var(--text3);}
-.pdot.done{background:var(--accent);border-color:var(--accent);color:#000;}
-.pdot.active{background:rgba(0,229,160,.12);border-color:var(--accent);color:var(--accent);}
-.pline{flex:1;height:2px;background:var(--border);transition:background .3s;}
-.pline.done{background:var(--accent);}
-.prog-lbls{display:flex;justify-content:space-between;width:100%;max-width:520px;margin-bottom:22px;}
-.plbl{font-size:9px;font-family:var(--mono);color:var(--text3);text-align:center;flex:1;letter-spacing:.04em;}
-.plbl.active{color:var(--accent);}
-.plbl.done{color:var(--text2);}
-.ob-card{width:100%;max-width:520px;background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:28px 24px;position:relative;overflow:hidden;}
-.ob-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));}
-.ob-step{display:none;}
-.ob-step.active{display:block;}
-.ob-h{font-size:22px;font-weight:800;margin-bottom:6px;letter-spacing:-.01em;}
-.ob-p{font-size:13px;color:var(--text2);margin-bottom:22px;line-height:1.65;}
-.fl{font-size:10px;font-family:var(--mono);color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin:14px 0 6px;}
-.fl:first-of-type{margin-top:0;}
-.fi{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--text);font-family:var(--font);outline:none;transition:border-color .2s;display:block;}
-.fi:focus{border-color:rgba(0,229,160,.4);}
-.sg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
-.sb{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:12px 10px;text-align:center;cursor:pointer;transition:all .15s;font-family:var(--font);}
-.sb:hover{border-color:rgba(0,229,160,.3);}
-.sb.on{border-color:var(--accent);background:rgba(0,229,160,.08);}
-.sb-e{font-size:20px;margin-bottom:4px;}
-.sb-n{font-size:12px;font-weight:600;}
-.sb-s{font-size:10px;color:var(--text3);font-family:var(--mono);margin-top:2px;}
-.skip{display:block;text-align:center;font-size:12px;color:var(--text3);cursor:pointer;margin-top:10px;}
-.skip:hover{color:var(--text2);}
-
-/* ══════════ APP LAYOUT ══════════ */
-/* Desktop: sidebar + main */
-.app-screen{flex-direction:row;}
-
-/* SIDEBAR */
-.sidebar{
-  width:var(--sidebar);min-width:var(--sidebar);
-  background:var(--bg2);border-right:1px solid var(--border);
-  display:flex;flex-direction:column;
-  position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto;
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  overflow-x: hidden;
+  cursor: none;
 }
-.sb-logo{padding:20px 14px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
-.sb-logo-icon{width:30px;height:30px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#000;flex-shrink:0;}
-.sb-logo-name{font-size:14px;font-weight:700;}
-.sb-nav{flex:1;padding:10px;display:flex;flex-direction:column;gap:2px;}
-.sb-section{font-size:9px;font-family:var(--mono);color:var(--text3);letter-spacing:.15em;text-transform:uppercase;padding:12px 8px 6px;}
-.sb-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);border:1px solid transparent;transition:all .15s;}
-.sb-item:hover{background:var(--bg3);color:var(--text);}
-.sb-item.active{background:rgba(0,229,160,.08);color:var(--accent);border-color:rgba(0,229,160,.15);}
-.sb-item-icon{font-size:15px;width:20px;text-align:center;}
-.sb-badge{margin-left:auto;font-size:10px;font-family:var(--mono);background:rgba(255,69,96,.18);color:var(--red);padding:2px 6px;border-radius:4px;}
-.sb-footer{padding:12px;border-top:1px solid var(--border);}
-.sb-user{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .15s;}
-.sb-user:hover{border-color:var(--border2);}
-.sb-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000;flex-shrink:0;}
-.sb-uname{font-size:12px;font-weight:600;}
-.sb-uplan{font-size:10px;color:var(--text3);font-family:var(--mono);}
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; }
 
-/* MAIN CONTENT */
-.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
+/* ══════════════════════════════════════
+   CUSTOM CURSOR
+══════════════════════════════════════ */
+.cursor {
+  width: 12px; height: 12px;
+  background: var(--accent);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+  mix-blend-mode: exclusion;
+}
+.cursor-ring {
+  width: 36px; height: 36px;
+  border: 1.5px solid rgba(0,229,160,.4);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.12s ease, width 0.2s, height 0.2s;
+}
+body:hover .cursor { opacity: 1; }
 
-/* TOPBAR (desktop) */
-.topbar{height:56px;background:rgba(6,9,16,.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;position:sticky;top:0;z-index:50;}
-.topbar-title{font-size:16px;font-weight:700;flex:1;}
-.topbar-right{display:flex;align-items:center;gap:10px;}
-.status-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:pulse 2s infinite;flex-shrink:0;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
-.usage-pill{display:flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:5px 12px;font-size:11px;font-family:var(--mono);color:var(--text2);cursor:pointer;transition:border-color .15s;}
-.usage-pill:hover{border-color:var(--accent);}
-.tbar-btn{display:flex;align-items:center;gap:5px;border:none;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;font-family:var(--font);cursor:pointer;transition:all .15s;white-space:nowrap;}
-.tbar-primary{background:var(--accent);color:#000;}
-.tbar-primary:hover{background:#00ffb3;}
-.tbar-ghost{background:var(--bg3);color:var(--text2);border:1px solid var(--border2);}
-.tbar-ghost:hover{background:var(--bg4);color:var(--text);}
-
-/* PAGE CONTENT */
-.page-wrap{padding:28px 32px 48px;flex:1;}
-
-/* MOBILE HEADER (hidden desktop) */
-.mobile-hdr{display:none;position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(6,9,16,.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:56px;padding:0 16px;align-items:center;gap:10px;}
-.mh-logo{display:flex;align-items:center;gap:8px;flex:1;}
-.mh-logo-icon{width:28px;height:28px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#000;}
-.mh-logo-name{font-size:14px;font-weight:700;}
-.mh-right{display:flex;align-items:center;gap:8px;}
-.mh-btn{display:flex;align-items:center;gap:5px;background:var(--accent);color:#000;border:none;padding:7px 12px;border-radius:8px;font-size:12px;font-weight:700;font-family:var(--font);cursor:pointer;}
-.mh-data-btn{background:var(--bg3);color:var(--text2);border:1px solid var(--border2);font-size:11px;}
-
-/* BOTTOM NAV (mobile only hidden desktop) */
-.bnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(6,9,16,.96);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:6px 2px 18px;}
-.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 2px;cursor:pointer;border-radius:10px;transition:all .15s;position:relative;}
-.ni.active{background:rgba(0,229,160,.08);}
-.ni-icon{font-size:17px;}
-.ni-label{font-size:8.5px;font-family:var(--mono);color:var(--text3);text-align:center;}
-.ni.active .ni-label{color:var(--accent);}
-.ni-dot{position:absolute;top:3px;right:6px;width:6px;height:6px;border-radius:50%;background:var(--red);}
-
-/* PAGES */
-.page{display:none;}
-.page.active{display:block;}
-
-/* SUB TABS */
-.stabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:20px;padding-bottom:2px;}
-.stabs::-webkit-scrollbar{display:none;}
-.stab{white-space:nowrap;padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);transition:all .15s;font-family:var(--font);}
-.stab.active{background:rgba(0,229,160,.1);color:var(--accent);border-color:rgba(0,229,160,.25);}
-.subpage{display:none;}
-.subpage.active{display:block;}
-
-/* PAGE HEADER */
-.ph{margin-bottom:22px;}
-.ph-title{font-size:24px;font-weight:800;margin-bottom:4px;letter-spacing:-.01em;}
-.ph-sub{font-size:11px;font-family:var(--mono);color:var(--text3);letter-spacing:.08em;}
-
-/* CARDS */
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;position:relative;overflow:hidden;transition:border-color .2s;}
-.card:hover{border-color:var(--border2);}
-.ctop{position:absolute;top:0;left:0;right:0;height:2px;}
-.clabel{font-size:10px;font-family:var(--mono);color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;}
-
-/* GRIDS */
-.mg4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
-.mg2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-.mc{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 14px;position:relative;overflow:hidden;transition:border-color .2s;}
-.mc:hover{border-color:var(--border2);}
-.mc-val{font-size:24px;font-weight:800;line-height:1;margin-bottom:5px;}
-.mc-label{font-size:10px;color:var(--text3);font-family:var(--mono);letter-spacing:.05em;}
-.mc-change{font-size:11px;font-family:var(--mono);margin-top:4px;}
-
-/* TAGS */
-.tag{display:inline-flex;align-items:center;font-size:10px;font-family:var(--mono);padding:3px 9px;border-radius:5px;font-weight:500;}
-.tg{background:rgba(0,229,160,.12);color:var(--accent);}
-.tr{background:rgba(255,69,96,.12);color:var(--red);}
-.tb{background:rgba(0,153,255,.12);color:var(--accent2);}
-.ty{background:rgba(255,215,0,.12);color:var(--accent4);}
-.tp{background:rgba(139,92,246,.12);color:var(--purple);}
-
-/* AI BOX */
-.aibox{background:linear-gradient(135deg,rgba(0,229,160,.05),rgba(0,153,255,.05));border:1px solid rgba(0,229,160,.18);border-radius:12px;padding:14px;margin-top:14px;display:flex;gap:10px;}
-.ai-icon{width:26px;height:26px;background:rgba(0,229,160,.15);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
-.ai-txt{font-size:12px;line-height:1.7;color:var(--text2);}
-.ai-txt strong{color:var(--accent);}
-
-/* CHART */
-.chartbar{display:flex;align-items:flex-end;gap:4px;height:80px;margin:14px 0;}
-.cbar-g{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;justify-content:flex-end;}
-.cbar{width:100%;border-radius:3px 3px 0 0;cursor:pointer;transition:opacity .15s;}
-.cbar:hover{opacity:.75;}
-.cbar-l{font-size:9px;color:var(--text3);font-family:var(--mono);margin-top:4px;}
-
-/* PROGRESS */
-.pw{margin:8px 0;}
-.pl{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:5px;font-family:var(--mono);}
-.pb{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;}
-.pf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent2),var(--accent));}
-
-/* SCORE RING */
-.ring-wrap{position:relative;flex-shrink:0;}
-.ring-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.ring-num{font-size:22px;font-weight:800;}
-.ring-sub{font-size:9px;color:var(--text3);font-family:var(--mono);}
-
-/* TABLE ROW */
-.trow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
-.trow:last-child{border-bottom:none;}
-
-/* COMPLIANCE */
-.ci{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:padding .15s;}
-.ci:last-child{border-bottom:none;}
-.ci:hover{padding-left:4px;}
-.ci-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.ci-info{flex:1;}
-.ci-name{font-size:13px;font-weight:600;margin-bottom:2px;}
-.ci-due{font-size:11px;color:var(--text3);font-family:var(--mono);}
-.ci-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
-
-/* SLIDERS */
-.sw{margin:8px 0 16px;}
-.sl-row{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:8px;font-family:var(--mono);}
-input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:var(--bg4);outline:none;cursor:pointer;}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 10px rgba(0,229,160,.4);}
-.sresult{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:16px;}
-.sr{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);}
-.sr:last-child{border-bottom:none;}
-.sr-label{color:var(--text2);font-size:12px;}
-.sr-val{font-family:var(--mono);font-weight:700;}
-
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;font-family:var(--font);cursor:pointer;border:none;transition:all .15s;}
-.btn-full{width:100%;}
-.bp{background:var(--accent);color:#000;}
-.bp:hover{background:#00ffb3;}
-.bgb{background:var(--bg3);color:var(--text2);border:1px solid var(--border2);}
-.bgb:hover{background:var(--bg4);color:var(--text);}
-.sep{height:1px;background:var(--border);margin:16px 0;}
-
-/* LIMIT BANNER */
-.limit-banner{background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.25);border-radius:12px;padding:14px;margin-bottom:16px;display:none;}
-.limit-banner.show{display:block;}
-
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:500;display:none;align-items:flex-end;backdrop-filter:blur(4px);}
-.modal-overlay.open{display:flex;}
-.modal-box{width:100%;max-height:92vh;background:var(--bg2);border-radius:20px 20px 0 0;border-top:1px solid var(--border2);display:flex;flex-direction:column;animation:slideUp .3s ease;overflow:hidden;}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.mhdr{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px;flex-shrink:0;background:var(--bg2);position:sticky;top:0;z-index:10;}
-.mhdr-title{font-size:16px;font-weight:700;margin-bottom:2px;}
-.mhdr-sub{font-size:11px;color:var(--text3);font-family:var(--mono);}
-.mclose{width:30px;height:30px;background:var(--bg3);border:none;border-radius:50%;color:var(--text2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto;}
-.mbody{overflow-y:auto;padding:18px 20px;flex:1;}
-.mbody::-webkit-scrollbar{width:3px;}
-.mbody::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
-.de-sec{font-size:10px;font-family:var(--mono);color:var(--accent);letter-spacing:.12em;text-transform:uppercase;padding:14px 0 8px;border-bottom:1px solid var(--border);margin-bottom:14px;}
-.de-lbl{font-size:11px;font-family:var(--mono);color:var(--text3);letter-spacing:.06em;margin-bottom:7px;}
-.de-row{display:flex;gap:10px;margin-bottom:14px;}
-.de-field{flex:1;}
-.de-inp{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:11px 13px;font-size:14px;color:var(--text);font-family:var(--font);outline:none;transition:border-color .2s;-webkit-appearance:none;}
-.de-inp:focus{border-color:rgba(0,229,160,.4);}
-.de-wrap{display:flex;align-items:center;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;overflow:hidden;transition:border-color .2s;}
-.de-wrap:focus-within{border-color:rgba(0,229,160,.4);}
-.de-pre{padding:0 6px 0 12px;font-size:12px;color:var(--text3);font-family:var(--mono);flex-shrink:0;}
-.de-suf{padding:0 12px 0 4px;font-size:10px;color:var(--text3);font-family:var(--mono);flex-shrink:0;white-space:nowrap;}
-.de-num{border:none;border-radius:0;background:transparent;padding:11px 4px;flex:1;min-width:0;font-size:14px;color:var(--text);font-family:var(--font);outline:none;}
-.de-preview{background:linear-gradient(135deg,rgba(0,229,160,.05),rgba(0,153,255,.05));border:1px solid rgba(0,229,160,.2);border-radius:12px;padding:14px;margin:14px 0;}
-.de-btn{width:100%;background:var(--accent);color:#000;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:700;font-family:var(--font);cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;}
-.de-btn:hover{background:#00ffb3;}
-.de-btn.sec{background:var(--bg3);color:var(--text2);border:1px solid var(--border2);}
-.de-btn.loading{opacity:.7;pointer-events:none;}
-
-/* PLAN CARDS */
-.plan-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:14px;}
-.plan-card{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:16px;position:relative;transition:all .2s;}
-.plan-card.feat{border-color:rgba(0,229,160,.3);background:linear-gradient(135deg,rgba(0,229,160,.06),var(--bg3));}
-.plan-card:hover{transform:translateY(-2px);}
-.plan-popular{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--accent);color:#000;font-size:9px;font-weight:700;padding:3px 12px;border-radius:20px;white-space:nowrap;font-family:var(--mono);}
-.plan-name{font-size:9px;font-family:var(--mono);color:var(--text3);letter-spacing:.1em;margin-bottom:8px;}
-.plan-price{font-size:26px;font-weight:800;margin-bottom:2px;}
-.plan-period{font-size:11px;color:var(--text3);font-family:var(--mono);margin-bottom:14px;}
-.plan-feat{display:flex;gap:7px;font-size:12px;color:var(--text2);margin-bottom:7px;}
-.plan-check{color:var(--accent);font-size:11px;flex-shrink:0;}
-.plan-btn{width:100%;padding:10px;border-radius:8px;font-size:12px;font-weight:700;font-family:var(--font);cursor:pointer;border:none;margin-top:14px;transition:all .15s;}
-
-/* SETTINGS */
-.si{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:padding .15s;}
-.si:last-child{border-bottom:none;}
-.si:hover{padding-left:4px;}
-.si-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-.si-info{flex:1;}
-.si-name{font-size:13px;font-weight:600;margin-bottom:2px;}
-.si-desc{font-size:11px;color:var(--text3);font-family:var(--mono);}
-
-/* CHAT */
-.chat-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;align-items:flex-end;}
-.chat-overlay.open{display:flex;}
-.chat-drawer{width:100%;max-height:88vh;background:var(--bg2);border-radius:20px 20px 0 0;border-top:1px solid var(--border2);display:flex;flex-direction:column;animation:slideUp .3s ease;}
-.chat-hdr{padding:14px 16px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.chat-title{font-size:15px;font-weight:700;flex:1;}
-.chat-close{width:28px;height:28px;background:var(--bg3);border:none;border-radius:50%;color:var(--text2);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.chat-msgs{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-height:200px;}
-.cmsg{max-width:85%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.65;}
-.cmsg.ai{background:var(--bg3);border:1px solid var(--border2);align-self:flex-start;border-radius:4px 14px 14px 14px;}
-.cmsg.user{background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.2);color:var(--accent);align-self:flex-end;border-radius:14px 4px 14px 14px;}
-.cmsg strong{color:var(--accent);}
-.chat-chips{padding:0 14px 10px;display:flex;gap:7px;overflow-x:auto;flex-shrink:0;}
-.chat-chips::-webkit-scrollbar{display:none;}
-.chip{white-space:nowrap;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:6px 12px;font-size:11px;color:var(--text2);cursor:pointer;font-family:var(--font);flex-shrink:0;transition:all .15s;}
-.chip:hover{border-color:rgba(0,229,160,.3);color:var(--accent);}
-.chat-input-wrap{padding:10px 14px 16px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;}
-.chat-input{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--text);font-family:var(--font);outline:none;transition:border-color .2s;}
-.chat-input:focus{border-color:rgba(0,229,160,.3);}
-.chat-send{width:40px;height:40px;background:var(--accent);border:none;border-radius:10px;color:#000;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.typing{display:flex;gap:4px;align-items:center;padding:3px 0;}
-.typing span{width:6px;height:6px;border-radius:50%;background:var(--text3);animation:bounce 1.2s infinite;}
-.typing span:nth-child(2){animation-delay:.2s}
-.typing span:nth-child(3){animation-delay:.4s}
-@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
-
-/* TOAST */
-.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%) translateY(-16px);background:var(--bg2);border:1px solid var(--accent);border-radius:10px;padding:10px 18px;font-size:12px;display:flex;align-items:center;gap:8px;opacity:0;transition:all .3s ease;z-index:1000;white-space:nowrap;pointer-events:none;box-shadow:0 4px 24px rgba(0,229,160,.15);}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.toast.error{border-color:var(--red);}
-
-/* ══════════ RESPONSIVE ══════════ */
-@media(max-width:900px){
-  .mg4{grid-template-columns:repeat(2,1fr);}
-  .g2{grid-template-columns:1fr;}
+/* ══════════════════════════════════════
+   NOISE TEXTURE OVERLAY
+══════════════════════════════════════ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.4;
 }
 
-@media(max-width:768px){
-  /* Hide desktop elements */
-  .sidebar{display:none;}
-  .topbar{display:none;}
-  .main{margin-left:0;}
-  .page-wrap{padding:68px 16px 90px;}
-  /* Show mobile elements */
-  .mobile-hdr{display:flex;}
-  .bnav{display:flex;}
-  /* Smaller fonts on mobile */
-  .ph-title{font-size:20px;}
-  .mc-val{font-size:20px;}
+/* ══════════════════════════════════════
+   GRID BACKGROUND
+══════════════════════════════════════ */
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,229,160,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,160,.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
 }
 
-@media(min-width:769px) and (max-width:1100px){
-  :root{--sidebar:190px;}
-  .mg4{grid-template-columns:repeat(2,1fr);}
+/* ══════════════════════════════════════
+   GLOWS
+══════════════════════════════════════ */
+.glow-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+  animation: orbFloat 8s ease-in-out infinite;
+}
+.orb1 { width: 700px; height: 700px; background: rgba(0,229,160,.04); top: -200px; right: -200px; animation-delay: 0s; }
+.orb2 { width: 500px; height: 500px; background: rgba(0,153,255,.03); bottom: -100px; left: -100px; animation-delay: -4s; }
+.orb3 { width: 400px; height: 400px; background: rgba(139,92,246,.025); top: 40%; left: 20%; animation-delay: -2s; }
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  50% { transform: translate(30px, -40px) scale(1.05); }
 }
 
-/* Desktop modal centered */
-@media(min-width:769px){
-  .modal-overlay{align-items:center;justify-content:center;padding:20px;}
-  .modal-box{max-width:580px;border-radius:20px;max-height:88vh;}
-  .chat-overlay{align-items:flex-end;justify-content:flex-end;}
-  .chat-drawer{width:400px;max-height:580px;border-radius:16px 16px 0 0;margin-right:20px;}
+/* ══════════════════════════════════════
+   NAV
+══════════════════════════════════════ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 40px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  background: rgba(4,7,13,.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: all .3s;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  flex: 1;
+}
+.nav-logo-icon {
+  width: 32px; height: 32px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: #000;
+  flex-shrink: 0;
+}
+.nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 13px;
+  color: var(--text2);
+  transition: color .15s;
+  font-weight: 500;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-cta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.btn-ghost {
+  padding: 8px 18px;
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font);
+  color: var(--text2);
+  background: transparent;
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.btn-primary {
+  padding: 9px 20px;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: var(--font);
+  color: #000;
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-primary:hover { background: #00ffb3; transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,229,160,.3); }
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.hero {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 120px 24px 80px;
+  overflow: hidden;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0,229,160,.08);
+  border: 1px solid rgba(0,229,160,.2);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--accent);
+  letter-spacing: .06em;
+  margin-bottom: 32px;
+  animation: fadeUp .6s ease both;
+}
+.hero-badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)} }
+
+.hero-headline {
+  font-size: clamp(42px, 7vw, 88px);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -.04em;
+  margin-bottom: 8px;
+  animation: fadeUp .6s .1s ease both;
+}
+.hero-headline .serif {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent);
+}
+.hero-headline-2 {
+  font-size: clamp(42px, 7vw, 88px);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -.04em;
+  margin-bottom: 32px;
+  color: var(--text2);
+  animation: fadeUp .6s .15s ease both;
+}
+
+.hero-sub {
+  font-size: clamp(15px, 2vw, 19px);
+  color: var(--text2);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 48px;
+  animation: fadeUp .6s .2s ease both;
+}
+.hero-sub strong { color: var(--text); }
+
+.hero-cta {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 64px;
+  animation: fadeUp .6s .25s ease both;
+}
+.cta-big {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: var(--accent);
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: var(--font);
+  color: #000;
+  cursor: pointer;
+  transition: all .2s;
+}
+.cta-big:hover { background: #00ffb3; transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,229,160,.35); }
+.cta-outline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .2s;
+}
+.cta-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+.hero-stats {
+  display: flex;
+  gap: 48px;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeUp .6s .3s ease both;
+}
+.hstat { text-align: center; }
+.hstat-num {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--accent);
+  font-family: var(--mono);
+  letter-spacing: -.02em;
+  display: block;
+}
+.hstat-label {
+  font-size: 11px;
+  color: var(--text3);
+  font-family: var(--mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 4px;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ══════════════════════════════════════
+   TERMINAL MOCKUP
+══════════════════════════════════════ */
+.terminal-section {
+  position: relative;
+  z-index: 2;
+  padding: 0 24px 120px;
+  display: flex;
+  justify-content: center;
+}
+.terminal {
+  width: 100%;
+  max-width: 900px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 40px 120px rgba(0,0,0,.6), 0 0 0 1px rgba(0,229,160,.05);
+  animation: fadeUp .6s .4s ease both;
+}
+.terminal-bar {
+  background: var(--bg3);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tbar-dots { display: flex; gap: 6px; }
+.tbar-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+.tbar-title {
+  flex: 1;
+  text-align: center;
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--text3);
+}
+.terminal-body {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.tcard {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s, transform .2s;
+}
+.tcard:hover { border-color: var(--border2); transform: translateY(-2px); }
+.tcard-accent {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.tcard-label {
+  font-size: 9px;
+  font-family: var(--mono);
+  color: var(--text3);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.tcard-val {
+  font-size: 26px;
+  font-weight: 800;
+  font-family: var(--mono);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.tcard-sub {
+  font-size: 10px;
+  color: var(--text3);
+  font-family: var(--mono);
+}
+.tcard-change {
+  font-size: 10px;
+  font-family: var(--mono);
+  margin-top: 4px;
+}
+.chat-row {
+  grid-column: 1 / -1;
+  background: var(--bg3);
+  border: 1px solid rgba(0,229,160,.15);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.chat-ai-icon {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.chat-content { flex: 1; }
+.chat-q {
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.chat-a {
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.65;
+}
+.chat-a strong { color: var(--accent); }
+
+/* ══════════════════════════════════════
+   PROBLEM SECTION
+══════════════════════════════════════ */
+.problem-section {
+  position: relative;
+  z-index: 2;
+  padding: 120px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.section-label {
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--accent);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: block;
+}
+.section-title {
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -.03em;
+  margin-bottom: 20px;
+}
+.section-title .serif {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--text2);
+}
+.section-sub {
+  font-size: 16px;
+  color: var(--text2);
+  line-height: 1.7;
+  max-width: 560px;
+  margin-bottom: 60px;
+}
+
+.graveyard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+.grave-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: all .2s;
+}
+.grave-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--red), var(--accent3));
+}
+.grave-card:hover { border-color: rgba(255,69,96,.3); transform: translateY(-3px); box-shadow: 0 12px 40px rgba(255,69,96,.1); }
+.grave-co { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.grave-raised { font-size: 11px; font-family: var(--mono); color: var(--accent3); margin-bottom: 10px; }
+.grave-reason { font-size: 12px; color: var(--text3); line-height: 1.6; }
+
+.stat-strip {
+  margin-top: 60px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.stat-item {
+  background: var(--bg2);
+  padding: 32px 28px;
+  text-align: center;
+}
+.stat-num {
+  font-size: 38px;
+  font-weight: 800;
+  font-family: var(--mono);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.stat-desc { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+/* ══════════════════════════════════════
+   FEATURES
+══════════════════════════════════════ */
+.features-section {
+  position: relative;
+  z-index: 2;
+  padding: 120px 24px;
+  background: linear-gradient(180deg, transparent, rgba(0,229,160,.02), transparent);
+}
+.features-inner { max-width: 1100px; margin: 0 auto; }
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 14px;
+  margin-top: 60px;
+}
+.feat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: all .2s;
+}
+.feat-card:hover {
+  border-color: var(--border2);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0,0,0,.4);
+}
+.feat-card.featured {
+  border-color: rgba(0,229,160,.2);
+  background: linear-gradient(135deg, rgba(0,229,160,.04), var(--bg2));
+}
+.feat-card.featured:hover { border-color: rgba(0,229,160,.4); }
+.feat-icon {
+  font-size: 28px;
+  margin-bottom: 16px;
+  display: block;
+}
+.feat-title {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -.01em;
+}
+.feat-desc { font-size: 13px; color: var(--text2); line-height: 1.65; }
+.feat-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 9px;
+  font-family: var(--mono);
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(0,229,160,.1);
+  color: var(--accent);
+  margin-top: 12px;
+  letter-spacing: .06em;
+}
+
+/* ══════════════════════════════════════
+   VS COMPARISON
+══════════════════════════════════════ */
+.vs-section {
+  position: relative;
+  z-index: 2;
+  padding: 120px 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.vs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 60px;
+}
+.vs-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.vs-header {
+  padding: 16px 20px;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--mono);
+  letter-spacing: .1em;
+}
+.vs-header.bad { background: rgba(255,69,96,.1); color: var(--red); border-bottom: 1px solid rgba(255,69,96,.2); }
+.vs-header.good { background: rgba(0,229,160,.1); color: var(--accent); border-bottom: 1px solid rgba(0,229,160,.2); }
+.vs-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.vs-item:last-child { border-bottom: none; }
+.vs-ico { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+/* ══════════════════════════════════════
+   PRICING
+══════════════════════════════════════ */
+.pricing-section {
+  position: relative;
+  z-index: 2;
+  padding: 120px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 60px;
+}
+.price-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 28px;
+  position: relative;
+  transition: all .2s;
+}
+.price-card:hover { transform: translateY(-6px); box-shadow: 0 24px 80px rgba(0,0,0,.5); }
+.price-card.pop {
+  border-color: rgba(0,229,160,.3);
+  background: linear-gradient(180deg, rgba(0,229,160,.05), var(--bg2));
+}
+.price-card.pop:hover { border-color: rgba(0,229,160,.5); }
+.price-popular {
+  position: absolute;
+  top: -13px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #000;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--mono);
+  padding: 4px 16px;
+  border-radius: 100px;
+  white-space: nowrap;
+  letter-spacing: .06em;
+}
+.price-name {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--text3);
+  letter-spacing: .15em;
+  margin-bottom: 12px;
+}
+.price-amount {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.price-period {
+  font-size: 12px;
+  color: var(--text3);
+  font-family: var(--mono);
+  margin-bottom: 28px;
+}
+.price-divider {
+  height: 1px;
+  background: var(--border);
+  margin-bottom: 20px;
+}
+.price-feature {
+  display: flex;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text2);
+  margin-bottom: 12px;
+  line-height: 1.4;
+}
+.price-check { color: var(--accent); font-size: 12px; flex-shrink: 0; margin-top: 1px; }
+.price-btn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+  border: none;
+  margin-top: 20px;
+  transition: all .15s;
+}
+.price-btn.primary { background: var(--accent); color: #000; }
+.price-btn.primary:hover { background: #00ffb3; }
+.price-btn.outline { background: transparent; border: 1px solid var(--border2); color: var(--text2); }
+.price-btn.outline:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ══════════════════════════════════════
+   TESTIMONIALS
+══════════════════════════════════════ */
+.testi-section {
+  position: relative;
+  z-index: 2;
+  padding: 120px 24px;
+  overflow: hidden;
+}
+.testi-inner { max-width: 1100px; margin: 0 auto; }
+.testi-scroll {
+  display: flex;
+  gap: 16px;
+  margin-top: 60px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+  scrollbar-width: none;
+}
+.testi-scroll::-webkit-scrollbar { display: none; }
+.testi-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  min-width: 320px;
+  max-width: 320px;
+  flex-shrink: 0;
+  transition: all .2s;
+}
+.testi-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.testi-stars {
+  color: var(--accent4);
+  font-size: 13px;
+  margin-bottom: 14px;
+  letter-spacing: 2px;
+}
+.testi-quote {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+.testi-quote strong { color: var(--text); }
+.testi-author { display: flex; align-items: center; gap: 10px; }
+.testi-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #000;
+  flex-shrink: 0;
+}
+.testi-name { font-size: 13px; font-weight: 600; }
+.testi-co { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+
+/* ══════════════════════════════════════
+   WAITLIST SECTION
+══════════════════════════════════════ */
+.waitlist-section {
+  position: relative;
+  z-index: 2;
+  padding: 120px 24px 80px;
+}
+.waitlist-inner {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+.waitlist-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 800px 400px at 50% 50%, rgba(0,229,160,.04), transparent);
+  pointer-events: none;
+}
+.waitlist-title {
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -.03em;
+  margin-bottom: 16px;
+}
+.waitlist-sub {
+  font-size: 16px;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+.waitlist-form {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 20px;
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+}
+.waitlist-form::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+}
+.form-group { margin-bottom: 14px; }
+.form-input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 13px 16px;
+  font-size: 14px;
+  color: var(--text);
+  font-family: var(--font);
+  outline: none;
+  transition: border-color .2s;
+}
+.form-input:focus { border-color: rgba(0,229,160,.4); }
+.form-input::placeholder { color: var(--text3); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-submit {
+  width: 100%;
+  padding: 15px;
+  background: var(--accent);
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: var(--font);
+  color: #000;
+  cursor: pointer;
+  transition: all .2s;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.form-submit:hover { background: #00ffb3; transform: translateY(-1px); box-shadow: 0 8px 32px rgba(0,229,160,.3); }
+.form-note {
+  font-size: 11px;
+  color: var(--text3);
+  font-family: var(--mono);
+  margin-top: 14px;
+  text-align: center;
+}
+.success-msg {
+  display: none;
+  text-align: center;
+  padding: 20px;
+}
+.success-msg.show { display: block; }
+.success-icon { font-size: 48px; margin-bottom: 12px; }
+.success-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; color: var(--accent); }
+.success-sub { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* ══════════════════════════════════════
+   FOUNDER SECTION
+══════════════════════════════════════ */
+.founder-section {
+  position: relative;
+  z-index: 2;
+  padding: 80px 24px 120px;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+.founder-card {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 24px;
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+}
+.founder-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2), var(--purple));
+}
+.founder-quote {
+  font-family: var(--serif);
+  font-size: clamp(20px, 3vw, 28px);
+  font-style: italic;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--text2);
+  margin-bottom: 32px;
+}
+.founder-quote strong { color: var(--text); font-style: normal; font-family: var(--font); font-weight: 800; }
+.founder-info { display: flex; align-items: center; gap: 14px; justify-content: center; }
+.founder-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: #000;
+}
+.founder-name { font-size: 15px; font-weight: 700; }
+.founder-title { font-size: 12px; color: var(--text3); font-family: var(--mono); }
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+footer {
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid var(--border);
+  padding: 40px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer-logo { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; }
+.footer-links { display: flex; gap: 24px; }
+.footer-links a { font-size: 12px; color: var(--text3); transition: color .15s; }
+.footer-links a:hover { color: var(--text2); }
+.footer-copy { font-size: 12px; color: var(--text3); font-family: var(--mono); }
+
+/* ══════════════════════════════════════
+   SCROLL ANIMATIONS
+══════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: .1s; }
+.reveal-delay-2 { transition-delay: .2s; }
+.reveal-delay-3 { transition-delay: .3s; }
+
+/* ══════════════════════════════════════
+   TICKER
+══════════════════════════════════════ */
+.ticker {
+  background: rgba(0,229,160,.04);
+  border-top: 1px solid rgba(0,229,160,.1);
+  border-bottom: 1px solid rgba(0,229,160,.1);
+  padding: 12px 0;
+  overflow: hidden;
+  position: relative;
+  z-index: 2;
+  margin: 0;
+}
+.ticker-track {
+  display: flex;
+  gap: 48px;
+  animation: ticker 24s linear infinite;
+  white-space: nowrap;
+}
+.ticker-item {
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--text3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.ticker-item span { color: var(--accent); }
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 768px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .vs-grid { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .terminal-body { grid-template-columns: 1fr 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  footer { flex-direction: column; text-align: center; }
+  .cursor, .cursor-ring { display: none; }
+  body { cursor: auto; }
+  .founder-card { padding: 32px 24px; }
+}
+@media (max-width: 500px) {
+  .terminal-body { grid-template-columns: 1fr; }
+  .stat-strip { grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
 <body>
 
-<div class="glow g1"></div>
-<div class="glow g2"></div>
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
 
-<!-- LOADING -->
-<div id="loading">
-  <div class="load-icon">₹</div>
-  <div class="load-txt">Loading CFO Copilot...</div>
-</div>
+<!-- Background -->
+<div class="grid-bg"></div>
+<div class="glow-orb orb1"></div>
+<div class="glow-orb orb2"></div>
+<div class="glow-orb orb3"></div>
 
-<!-- ══════════════════ LOGIN ══════════════════ -->
-<div class="screen auth-screen" id="screen-login">
-  <div class="auth-card">
-    <div class="a-logo"><div class="a-logo-icon">₹</div><span class="a-logo-name">CFO Copilot</span></div>
-    <h1 class="a-title">Welcome 👋</h1>
-    <p class="a-sub">Enter your email to sign in. We'll send a magic link — no password needed.</p>
-    <input class="a-input" type="email" id="login-email" placeholder="you@startup.com" autocomplete="email" onkeydown="if(event.key==='Enter')sendLink()">
-    <button class="a-btn" id="link-btn" onclick="sendLink()">✉️ Send Magic Link</button>
-    <div class="divider"><div class="divider-line"></div><span class="divider-text">OR</span><div class="divider-line"></div></div>
-    <button class="a-btn-ghost" onclick="demoLogin()">🚀 Try Demo — No Signup</button>
-    <p class="a-note">By continuing you agree to our <a>Terms</a> and <a>Privacy Policy</a>.</p>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">₹</div>
+    CFO Copilot
+  </div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <div class="nav-cta">
+    <button class="btn-ghost" onclick="window.location.href='app.html'">Sign In</button>
+    <button class="btn-primary" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">Get Early Access →</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <div class="hero-badge-dot"></div>
+    Now in Early Access — Join 200+ Founders
+  </div>
+  <h1 class="hero-headline">Every Indian startup</h1>
+  <h1 class="hero-headline"><span class="serif">deserves</span> a world-class CFO.</h1>
+  <h2 class="hero-headline-2">Now they can afford one.</h2>
+  <p class="hero-sub">
+    AI-powered financial intelligence for Indian startups that can't afford a <strong>₹15L/year CFO</strong> — but desperately need one. Runway, compliance, fundraising, all automated.
+  </p>
+  <div class="hero-cta">
+    <button class="cta-big" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">
+      🚀 Start Free — No Card Needed
+    </button>
+    <button class="cta-outline" onclick="window.location.href='app.html?demo=true'">
+      ▶ Watch Demo
+    </button>
+  </div>
+  <div class="hero-stats">
+    <div class="hstat"><span class="hstat-num">₹15Cr</span><span class="hstat-label">ARR Target</span></div>
+    <div class="hstat"><span class="hstat-num">38,658</span><span class="hstat-label">Companies Struck Off</span></div>
+    <div class="hstat"><span class="hstat-num">₹2,999</span><span class="hstat-label">Per Month</span></div>
+    <div class="hstat"><span class="hstat-num">10x</span><span class="hstat-label">Cheaper Than Human CFO</span></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track" id="ticker-track">
+    <div class="ticker-item">RUNWAY TRACKING <span>✦</span></div>
+    <div class="ticker-item">GST COMPLIANCE <span>✦</span></div>
+    <div class="ticker-item">BOARD DECK GENERATOR <span>✦</span></div>
+    <div class="ticker-item">AI CFO CHAT <span>✦</span></div>
+    <div class="ticker-item">P&L AUTOMATION <span>✦</span></div>
+    <div class="ticker-item">UNIT ECONOMICS <span>✦</span></div>
+    <div class="ticker-item">CAP TABLE <span>✦</span></div>
+    <div class="ticker-item">REVENUE FORECASTING <span>✦</span></div>
+    <div class="ticker-item">PAYROLL ENGINE <span>✦</span></div>
+    <div class="ticker-item">FRAUD DETECTION <span>✦</span></div>
+    <div class="ticker-item">TERM SHEET ANALYZER <span>✦</span></div>
+    <div class="ticker-item">INDUSTRY BENCHMARKS <span>✦</span></div>
+    <!-- Duplicate for seamless loop -->
+    <div class="ticker-item">RUNWAY TRACKING <span>✦</span></div>
+    <div class="ticker-item">GST COMPLIANCE <span>✦</span></div>
+    <div class="ticker-item">BOARD DECK GENERATOR <span>✦</span></div>
+    <div class="ticker-item">AI CFO CHAT <span>✦</span></div>
+    <div class="ticker-item">P&L AUTOMATION <span>✦</span></div>
+    <div class="ticker-item">UNIT ECONOMICS <span>✦</span></div>
+    <div class="ticker-item">CAP TABLE <span>✦</span></div>
+    <div class="ticker-item">REVENUE FORECASTING <span>✦</span></div>
+    <div class="ticker-item">PAYROLL ENGINE <span>✦</span></div>
+    <div class="ticker-item">FRAUD DETECTION <span>✦</span></div>
+    <div class="ticker-item">TERM SHEET ANALYZER <span>✦</span></div>
+    <div class="ticker-item">INDUSTRY BENCHMARKS <span>✦</span></div>
   </div>
 </div>
 
-<!-- CHECK EMAIL -->
-<div class="screen auth-screen" id="screen-check-email">
-  <div class="auth-card" style="text-align:center">
-    <div style="font-size:52px;margin-bottom:16px">📬</div>
-    <h1 class="a-title" style="text-align:center">Check your email</h1>
-    <p class="a-sub" style="text-align:center">Magic link sent to <strong id="sent-to" style="color:var(--accent)"></strong>. Click it to sign in instantly.</p>
-    <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px;margin:16px 0;font-size:12px;color:var(--text2);line-height:1.7;text-align:left">💡 <strong style="color:var(--text)">Tip:</strong> Check spam if you don't see it. The link expires in 1 hour.</div>
-    <button class="a-btn" onclick="sendLink(true)">↻ Resend Link</button>
-    <button class="a-btn-ghost" onclick="showScreen('login')">← Different Email</button>
-  </div>
-</div>
-
-<!-- ══════════════════ ONBOARDING ══════════════════ -->
-<div class="screen ob-screen" id="screen-onboard">
-  <div class="ob-top">
-    <div class="ob-logo"><div class="ob-logo-icon">₹</div>CFO Copilot</div>
-    <div class="ob-cnt" id="ob-cnt">Step 1 of 3</div>
-  </div>
-  <div class="prog-track">
-    <div class="pdot active" id="pd0">1</div>
-    <div class="pline" id="pl0"></div>
-    <div class="pdot" id="pd1">2</div>
-    <div class="pline" id="pl1"></div>
-    <div class="pdot" id="pd2">3</div>
-  </div>
-  <div class="prog-lbls">
-    <div class="plbl active" id="pll0">Company</div>
-    <div class="plbl" id="pll1">Stage</div>
-    <div class="plbl" id="pll2">Done</div>
-  </div>
-  <div class="ob-card">
-    <!-- Step 0: Company -->
-    <div class="ob-step active" id="obs0">
-      <div class="ob-h">Tell us about your startup 🏢</div>
-      <div class="ob-p">Your AI CFO learns your context from day one.</div>
-      <div class="fl">Company Name</div>
-      <input class="fi" type="text" id="ob-company" placeholder="e.g. ZeroPeak Labs" style="margin-bottom:10px">
-      <div class="fl">Your Name</div>
-      <input class="fi" type="text" id="ob-name" placeholder="e.g. Atharv Roy" style="margin-bottom:14px">
-      <div class="fl">Your Role</div>
-      <div class="sg">
-        <div class="sb on" id="rb0" onclick="pickRole(0,'Founder / CEO')"><div class="sb-e">👑</div><div class="sb-n">Founder / CEO</div></div>
-        <div class="sb" id="rb1" onclick="pickRole(1,'Co-Founder')"><div class="sb-e">🤝</div><div class="sb-n">Co-Founder</div></div>
-        <div class="sb" id="rb2" onclick="pickRole(2,'CFO / Finance')"><div class="sb-e">📊</div><div class="sb-n">CFO / Finance</div></div>
-        <div class="sb" id="rb3" onclick="pickRole(3,'CTO / Tech')"><div class="sb-e">💻</div><div class="sb-n">CTO / Tech</div></div>
+<!-- TERMINAL MOCKUP -->
+<div class="terminal-section">
+  <div class="terminal reveal">
+    <div class="terminal-bar">
+      <div class="tbar-dots">
+        <div class="tbar-dot" style="background:#FF5F57"></div>
+        <div class="tbar-dot" style="background:#FFBD2E"></div>
+        <div class="tbar-dot" style="background:#28CA41"></div>
       </div>
-      <button class="a-btn" style="margin-top:18px" onclick="obNext()">Continue →</button>
+      <div class="tbar-title">ZeroPeak Labs — CFO Copilot Dashboard</div>
     </div>
-    <!-- Step 1: Stage -->
-    <div class="ob-step" id="obs1">
-      <div class="ob-h">What stage are you at? 🚀</div>
-      <div class="ob-p">We'll customize benchmarks for your stage.</div>
-      <div class="fl">Funding Stage</div>
-      <div class="sg">
-        <div class="sb" id="stb0" onclick="pickStage(0,'Bootstrapped')"><div class="sb-e">🥾</div><div class="sb-n">Bootstrapped</div><div class="sb-s">Self-funded</div></div>
-        <div class="sb" id="stb1" onclick="pickStage(1,'Pre-Seed')"><div class="sb-e">🌱</div><div class="sb-n">Pre-Seed</div><div class="sb-s">₹25L-₹1Cr</div></div>
-        <div class="sb on" id="stb2" onclick="pickStage(2,'Seed')"><div class="sb-e">🌿</div><div class="sb-n">Seed</div><div class="sb-s">₹1Cr-₹5Cr</div></div>
-        <div class="sb" id="stb3" onclick="pickStage(3,'Series A')"><div class="sb-e">🌳</div><div class="sb-n">Series A</div><div class="sb-s">₹5Cr-₹50Cr</div></div>
-        <div class="sb" id="stb4" onclick="pickStage(4,'Series B+')"><div class="sb-e">🏢</div><div class="sb-n">Series B+</div><div class="sb-s">₹50Cr+</div></div>
-        <div class="sb" id="stb5" onclick="pickStage(5,'Profitable')"><div class="sb-e">💰</div><div class="sb-n">Profitable</div><div class="sb-s">Cash flow+</div></div>
+    <div class="terminal-body">
+      <div class="tcard">
+        <div class="tcard-accent" style="background:var(--accent)"></div>
+        <div class="tcard-label">Runway</div>
+        <div class="tcard-val" style="color:var(--accent)">14.2</div>
+        <div class="tcard-sub">Months</div>
+        <div class="tcard-change" style="color:var(--accent)">✅ Healthy</div>
       </div>
-      <div class="fl" style="margin-top:14px">Industry</div>
-      <select class="fi" id="ob-industry" style="margin-bottom:16px;cursor:pointer">
-        <option value="B2B SaaS" selected>B2B SaaS</option>
-        <option>B2C / Consumer App</option><option>FinTech</option><option>EdTech</option>
-        <option>HealthTech</option><option>D2C / E-commerce</option><option>DeepTech / AI</option>
-        <option>AgriTech</option><option>Other</option>
-      </select>
-      <button class="a-btn" onclick="obNext()">Continue →</button>
-      <div class="skip" onclick="obPrev()">← Back</div>
-    </div>
-    <!-- Step 2: Done -->
-    <div class="ob-step" id="obs2">
-      <div style="text-align:center;padding:10px 0">
-        <div style="font-size:54px;margin-bottom:14px">🎉</div>
-        <div class="ob-h" style="text-align:center">You're all set!</div>
-        <div class="ob-p" style="text-align:center;max-width:300px;margin:0 auto 20px">Your AI CFO is active. Add your first month's data to unlock real insights.</div>
-        <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:16px;margin-bottom:20px;text-align:left">
-          <div style="font-size:10px;font-family:var(--mono);color:var(--text3);margin-bottom:10px;letter-spacing:.08em">YOUR SETUP</div>
-          <div style="display:flex;flex-direction:column;gap:8px;font-size:13px">
-            <div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">Company</span><span id="sum-co" style="font-weight:600">—</span></div>
-            <div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">Stage</span><span id="sum-st" style="font-weight:600;color:var(--accent)">Seed</span></div>
-            <div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">AI Plan</span><span style="font-weight:600;color:var(--text2)">Free — 5 msgs/mo</span></div>
-            <div style="display:flex;justify-content:space-between"><span style="color:var(--text2)">AI CFO</span><span style="font-weight:600;color:var(--accent)">✅ Active</span></div>
-          </div>
-        </div>
-        <button class="a-btn" id="launch-btn" onclick="completeOnboarding()">🚀 Open My Dashboard</button>
+      <div class="tcard">
+        <div class="tcard-accent" style="background:var(--red)"></div>
+        <div class="tcard-label">Burn Rate</div>
+        <div class="tcard-val" style="color:var(--red)">₹42L</div>
+        <div class="tcard-sub">Per Month</div>
+        <div class="tcard-change" style="color:var(--accent3)">↑ ₹1L MoM</div>
       </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════ APP ══════════════════ -->
-<div class="screen app-screen" id="screen-app">
-
-  <!-- SIDEBAR (desktop) -->
-  <aside class="sidebar">
-    <div class="sb-logo"><div class="sb-logo-icon">₹</div><span class="sb-logo-name">CFO Copilot</span></div>
-    <nav class="sb-nav">
-      <div class="sb-section">Overview</div>
-      <div class="sb-item active" id="snav-dashboard" onclick="navTo('dashboard',this)"><span class="sb-item-icon">📊</span> Dashboard</div>
-      <div class="sb-item" id="snav-fundraise" onclick="navTo('fundraise',this)"><span class="sb-item-icon">🎯</span> Fundraising</div>
-      <div class="sb-section">Finance</div>
-      <div class="sb-item" id="snav-compliance" onclick="navTo('compliance',this)"><span class="sb-item-icon">🛡️</span> Compliance<span class="sb-badge">2</span></div>
-      <div class="sb-item" id="snav-ops" onclick="navTo('ops',this)"><span class="sb-item-icon">⚙️</span> Operations</div>
-      <div class="sb-section">Account</div>
-      <div class="sb-item" id="snav-settings" onclick="navTo('settings',this)"><span class="sb-item-icon">👤</span> Settings</div>
-    </nav>
-    <div class="sb-footer">
-      <div class="sb-user" onclick="navTo('settings',document.getElementById('snav-settings'))">
-        <div class="sb-avatar" id="sb-avatar">AR</div>
-        <div>
-          <div class="sb-uname" id="sb-uname">Atharv</div>
-          <div class="sb-uplan" id="sb-uplan">Free Plan · 5 msgs/mo</div>
-        </div>
+      <div class="tcard">
+        <div class="tcard-accent" style="background:var(--accent4)"></div>
+        <div class="tcard-label">MRR</div>
+        <div class="tcard-val" style="color:var(--accent4)">₹28L</div>
+        <div class="tcard-sub">Monthly Recurring</div>
+        <div class="tcard-change" style="color:var(--accent)">↑ 7.7% MoM</div>
       </div>
-    </div>
-  </aside>
-
-  <!-- MAIN -->
-  <div class="main">
-
-    <!-- TOPBAR (desktop) -->
-    <div class="topbar">
-      <div class="topbar-title" id="topbar-title">Dashboard</div>
-      <div class="topbar-right">
-        <div class="status-dot"></div>
-        <div class="usage-pill" id="usage-pill" onclick="openModal('upgrade')">
-          <span id="usage-text">5 msgs left</span>
-          <span style="color:var(--accent2)">↑ Upgrade</span>
-        </div>
-        <button class="tbar-btn tbar-ghost" onclick="openModal('data')">✏️ Add Data</button>
-        <button class="tbar-btn tbar-primary" onclick="openChat()">✦ Ask CFO</button>
+      <div class="tcard">
+        <div class="tcard-accent" style="background:var(--accent2)"></div>
+        <div class="tcard-label">Cash in Bank</div>
+        <div class="tcard-val" style="color:var(--accent2)">₹5.9Cr</div>
+        <div class="tcard-sub">Verified Balance</div>
+        <div class="tcard-change" style="color:var(--text3)">Updated today</div>
       </div>
-    </div>
-
-    <!-- MOBILE HEADER -->
-    <div class="mobile-hdr">
-      <div class="mh-logo"><div class="mh-logo-icon">₹</div><span class="mh-logo-name" id="mh-company">CFO Copilot</span></div>
-      <div class="mh-right">
-        <button class="mh-btn mh-data-btn" onclick="openModal('data')">✏️</button>
-        <button class="mh-btn" onclick="openChat()">✦ Ask CFO</button>
+      <div class="tcard">
+        <div class="tcard-accent" style="background:var(--purple)"></div>
+        <div class="tcard-label">NRR</div>
+        <div class="tcard-val" style="color:var(--purple)">94%</div>
+        <div class="tcard-sub">Net Rev. Retention</div>
+        <div class="tcard-change" style="color:var(--accent4)">↑ 1% MoM</div>
       </div>
-    </div>
-
-    <!-- PAGE CONTENT -->
-    <div class="page-wrap">
-
-      <!-- ── DASHBOARD ── -->
-      <div class="page active" id="page-dashboard">
-        <div class="ph"><div class="ph-title" id="dash-title">Dashboard</div><div class="ph-sub" id="dash-sub">YOUR FINANCES</div></div>
-        <div class="limit-banner" id="limit-banner">
-          <div style="font-size:13px;font-weight:700;margin-bottom:4px;color:var(--accent3)">⚡ AI message limit reached</div>
-          <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Upgrade to Starter (₹2,999/mo) for 100 AI messages per month.</div>
-          <button class="btn bp" style="font-size:12px;padding:8px 16px" onclick="openModal('upgrade')">Upgrade Now →</button>
-        </div>
-        <div class="stabs">
-          <div class="stab active" onclick="showSub('dashboard','runway',this)">📉 Runway</div>
-          <div class="stab" onclick="showSub('dashboard','burn',this)">🔥 Burn</div>
-          <div class="stab" onclick="showSub('dashboard','scenario',this)">🔮 Scenario</div>
-        </div>
-        <!-- Runway -->
-        <div class="subpage active" id="sub-dashboard-runway">
-          <div class="mg4">
-            <div class="mc"><div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent)"></div><div class="mc-val" id="m-runway" style="color:var(--accent)">—</div><div class="mc-label">RUNWAY (MOS)</div><div class="mc-change" id="m-runway-c" style="color:var(--text3)">Add data →</div></div>
-            <div class="mc"><div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--red)"></div><div class="mc-val" id="m-burn" style="color:var(--red)">—</div><div class="mc-label">MONTHLY BURN</div><div class="mc-change" id="m-burn-c" style="color:var(--text3)">Add data →</div></div>
-            <div class="mc"><div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent2)"></div><div class="mc-val" id="m-cash" style="color:var(--accent2)">—</div><div class="mc-label">CASH IN BANK</div><div class="mc-change" id="m-cash-c" style="color:var(--text3)">Add data →</div></div>
-            <div class="mc"><div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent4)"></div><div class="mc-val" id="m-mrr" style="color:var(--accent4)">—</div><div class="mc-label">MRR</div><div class="mc-change" id="m-mrr-c" style="color:var(--text3)">Add data →</div></div>
-          </div>
-          <div class="g2">
-            <div class="card">
-              <div class="ctop" style="background:linear-gradient(90deg,var(--accent),var(--accent2))"></div>
-              <div class="clabel">Burn vs Revenue — 6 Months</div>
-              <div class="chartbar" id="main-chart"><div style="width:100%;display:flex;align-items:center;justify-content:center;height:100%;font-size:12px;color:var(--text3)">Add data to see chart →</div></div>
-              <div style="display:flex;gap:14px;margin-top:4px">
-                <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)"><div style="width:9px;height:9px;background:rgba(255,69,96,.7);border-radius:2px"></div>Burn</div>
-                <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)"><div style="width:9px;height:9px;background:rgba(0,229,160,.7);border-radius:2px"></div>Revenue</div>
-              </div>
-              <div class="aibox" id="ai-runway-insight"><div class="ai-icon">✦</div><div class="ai-txt">Add your financial data using <strong>✏️ Add Data</strong> to get real AI insights about your runway.</div></div>
-            </div>
-            <div class="card">
-              <div class="ctop" style="background:linear-gradient(90deg,var(--accent4),var(--accent3))"></div>
-              <div class="clabel">Quick Stats</div>
-              <div id="quick-stats"><div style="font-size:12px;color:var(--text3);padding:10px 0">Add data to see quick stats</div></div>
-            </div>
-          </div>
-        </div>
-        <!-- Burn -->
-        <div class="subpage" id="sub-dashboard-burn">
-          <div class="mg4">
-            <div class="mc"><div class="mc-val" id="b-total" style="color:var(--red)">—</div><div class="mc-label">TOTAL BURN</div></div>
-            <div class="mc"><div class="mc-val" id="b-net" style="color:var(--accent4)">—</div><div class="mc-label">NET BURN</div></div>
-            <div class="mc"><div class="mc-val" id="b-sal" style="color:var(--accent3)">—</div><div class="mc-label">SALARIES</div></div>
-            <div class="mc"><div class="mc-val" id="b-cloud" style="color:var(--accent2)">—</div><div class="mc-label">CLOUD/INFRA</div></div>
-          </div>
-          <div class="card">
-            <div class="ctop" style="background:linear-gradient(90deg,var(--red),var(--accent3))"></div>
-            <div class="clabel">Burn Breakdown</div>
-            <div id="burn-bd"><div style="font-size:12px;color:var(--text3);padding:10px 0">Add expense data to see breakdown</div></div>
-          </div>
-        </div>
-        <!-- Scenario -->
-        <div class="subpage" id="sub-dashboard-scenario">
-          <div class="g2">
-            <div class="card">
-              <div class="ctop" style="background:linear-gradient(90deg,var(--purple),var(--accent2))"></div>
-              <div class="clabel">Scenario Builder — Live Model</div>
-              <div class="sw"><div class="sl-row"><span>New Hires</span><span id="s-hire" style="color:var(--accent2)">3</span></div><input type="range" min="0" max="12" value="3" oninput="calcScenario()" id="sl-hire"></div>
-              <div class="sw"><div class="sl-row"><span>Marketing Spend</span><span id="s-mktg" style="color:var(--accent2)">₹5L/mo</span></div><input type="range" min="1" max="20" value="5" oninput="calcScenario()" id="sl-mktg"></div>
-              <div class="sw"><div class="sl-row"><span>Revenue Growth</span><span id="s-rev" style="color:var(--accent)">22% MoM</span></div><input type="range" min="5" max="50" value="22" oninput="calcScenario()" id="sl-rev"></div>
-              <div class="sw"><div class="sl-row"><span>Churn Rate</span><span id="s-churn" style="color:var(--accent4)">3% MoM</span></div><input type="range" min="1" max="15" value="3" oninput="calcScenario()" id="sl-churn"></div>
-              <div style="display:flex;gap:8px;margin-top:4px">
-                <button class="btn bgb" style="flex:1;font-size:11px" onclick="loadPreset('base')">📊 Base</button>
-                <button class="btn bgb" style="flex:1;font-size:11px" onclick="loadPreset('aggressive')">🚀 Aggressive</button>
-                <button class="btn bgb" style="flex:1;font-size:11px" onclick="loadPreset('conservative')">🛡️ Safe</button>
-              </div>
-            </div>
-            <div class="sresult">
-              <div class="sr"><span class="sr-label">Projected Burn</span><span class="sr-val" id="sc-burn" style="color:var(--red)">—</span></div>
-              <div class="sr"><span class="sr-label">Projected Revenue</span><span class="sr-val" id="sc-rev-val" style="color:var(--accent)">—</span></div>
-              <div class="sr"><span class="sr-label">New Runway</span><span class="sr-val" id="sc-runway" style="color:var(--accent2)">—</span></div>
-              <div class="sr"><span class="sr-label">Cash Flow Positive</span><span class="sr-val" id="sc-cfp" style="color:var(--accent4)">—</span></div>
-            </div>
-          </div>
-        </div>
+      <div class="tcard">
+        <div class="tcard-accent" style="background:var(--accent4)"></div>
+        <div class="tcard-label">VC Score</div>
+        <div class="tcard-val" style="color:var(--accent4)">78</div>
+        <div class="tcard-sub">/ 100 Readiness</div>
+        <div class="tcard-change" style="color:var(--accent)">Series A Ready</div>
       </div>
-
-      <!-- ── FUNDRAISING ── -->
-      <div class="page" id="page-fundraise">
-        <div class="ph"><div class="ph-title">Fundraising</div><div class="ph-sub">SERIES A READINESS</div></div>
-        <div class="stabs">
-          <div class="stab active" onclick="showSub('fundraise','score',this)">🎯 Score</div>
-          <div class="stab" onclick="showSub('fundraise','vcq',this)">💬 VC Questions</div>
-          <div class="stab" onclick="showSub('fundraise','board',this)">📊 Board Deck</div>
-        </div>
-        <div class="subpage active" id="sub-fundraise-score">
-          <div class="g2">
-            <div class="card">
-              <div class="ctop" style="background:linear-gradient(90deg,var(--accent4),var(--accent3))"></div>
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px"><div class="clabel" style="margin:0">VC Readiness Score</div><span class="tag ty" id="fr-badge">Add Data First</span></div>
-              <div style="display:flex;align-items:center;gap:20px">
-                <div class="ring-wrap">
-                  <svg width="100" height="100" style="transform:rotate(-90deg)"><circle cx="50" cy="50" r="40" fill="none" stroke="var(--bg3)" stroke-width="8"/><circle cx="50" cy="50" r="40" fill="none" stroke="var(--accent4)" stroke-width="8" stroke-dasharray="251" id="score-ring" stroke-dashoffset="251" stroke-linecap="round"/></svg>
-                  <div class="ring-text"><div class="ring-num" id="score-num" style="color:var(--accent4)">—</div><div class="ring-sub">/100</div></div>
-                </div>
-                <div style="flex:1;display:flex;flex-direction:column;gap:9px" id="score-bars"><div style="font-size:11px;color:var(--text3)">Add data to calculate</div></div>
-              </div>
-              <div class="aibox" id="fr-insight"><div class="ai-icon">✦</div><div class="ai-txt">Add MRR, burn, cash, and NRR to calculate your VC readiness score.</div></div>
-            </div>
-            <div class="card">
-              <div class="clabel">3 Things To Fix Before Raising</div>
-              <div id="fr-fixes"><div style="font-size:12px;color:var(--text3)">Add your data to get personalized recommendations</div></div>
-            </div>
-          </div>
-        </div>
-        <div class="subpage" id="sub-fundraise-vcq">
-          <div class="card">
-            <div class="clabel">Questions VCs Will Ask You</div>
-            <div style="display:flex;flex-direction:column;gap:10px">
-              <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px"><div style="font-size:10px;color:var(--accent2);font-family:var(--mono);margin-bottom:6px">QUESTION 01</div><div style="font-size:13px;font-weight:600;margin-bottom:6px">"What is your CAC payback period?"</div><div style="font-size:11px;color:var(--text2)">Divide marketing spend by new customers. Target under 12 months.</div></div>
-              <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px"><div style="font-size:10px;color:var(--accent4);font-family:var(--mono);margin-bottom:6px">QUESTION 02</div><div style="font-size:13px;font-weight:600;margin-bottom:6px">"What is your NRR and why?"</div><div style="font-size:11px;color:var(--text2)">Target above 100%. Shows expansion revenue exceeds churn.</div></div>
-              <div style="background:var(--bg3);border:1px solid rgba(255,69,96,.2);border-radius:10px;padding:14px"><div style="font-size:10px;color:var(--red);font-family:var(--mono);margin-bottom:6px">QUESTION 03 · RED FLAG</div><div style="font-size:13px;font-weight:600;margin-bottom:6px">"Any overdue compliance filings?"</div><div style="font-size:11px;color:var(--text2)">Fix all GST/TDS before any VC meeting. Non-negotiable.</div></div>
-              <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px"><div style="font-size:10px;color:var(--accent);font-family:var(--mono);margin-bottom:6px">QUESTION 04</div><div style="font-size:13px;font-weight:600;margin-bottom:6px">"Walk me through your unit economics."</div><div style="font-size:11px;color:var(--text2)">Know LTV:CAC, gross margin, and payback period by heart.</div></div>
-            </div>
-          </div>
-        </div>
-        <div class="subpage" id="sub-fundraise-board">
-          <div class="card">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div class="clabel" style="margin:0">Auto-Generated Board Deck</div><button class="btn bp" style="font-size:11px;padding:6px 14px" onclick="showToast('📥 Export coming soon!')">↓ PDF</button></div>
-            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px" id="slide-thumbs"></div>
-            <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:18px"><div style="font-size:17px;font-weight:800;margin-bottom:3px" id="sp-title">Your Company — Board Update</div><div style="font-size:10px;color:var(--text3);font-family:var(--mono);margin-bottom:14px" id="sp-sub">Add data to populate</div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px" id="sp-metrics"></div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── COMPLIANCE ── -->
-      <div class="page" id="page-compliance">
-        <div class="ph"><div class="ph-title">Compliance</div><div class="ph-sub">GST · TDS · ROC · LABOUR LAW</div></div>
-        <div class="mg4">
-          <div class="mc"><div class="mc-val" style="color:var(--red)">2</div><div class="mc-label">OVERDUE</div></div>
-          <div class="mc"><div class="mc-val" style="color:var(--accent4)">₹18.4K</div><div class="mc-label">PENALTY</div></div>
-          <div class="mc"><div class="mc-val" style="color:var(--accent2)">3</div><div class="mc-label">UPCOMING</div></div>
-          <div class="mc"><div class="mc-val" style="color:var(--accent)">2</div><div class="mc-label">FILED ✓</div></div>
-        </div>
-        <div class="g2">
-          <div class="card">
-            <div class="ctop" style="background:linear-gradient(90deg,var(--red),var(--accent3))"></div>
-            <div class="clabel">All Filings</div>
-            <div class="ci"><div class="ci-icon" style="background:rgba(255,69,96,.15)">🔴</div><div class="ci-info"><div class="ci-name">GSTR-3B — Feb 2026</div><div class="ci-due">Was due: 20 Feb · Penalty accruing</div></div><div class="ci-right"><span class="tag tr">23 days late</span><button class="btn bgb" style="font-size:10px;padding:5px 10px" onclick="showToast('📧 Add CA email in Settings')">Remind CA</button></div></div>
-            <div class="ci"><div class="ci-icon" style="background:rgba(255,69,96,.15)">🔴</div><div class="ci-info"><div class="ci-name">TDS Return — Q3 FY26</div><div class="ci-due">Was due: 31 Jan 2026</div></div><div class="ci-right"><span class="tag tr">43 days late</span><button class="btn bgb" style="font-size:10px;padding:5px 10px" onclick="showToast('📧 Add CA email in Settings')">Remind CA</button></div></div>
-            <div class="ci"><div class="ci-icon" style="background:rgba(0,153,255,.15)">🔵</div><div class="ci-info"><div class="ci-name">GSTR-1 — March 2026</div><div class="ci-due">Due: 11 Apr 2026</div></div><div class="ci-right"><span class="tag tb">27 days</span></div></div>
-            <div class="ci"><div class="ci-icon" style="background:rgba(0,229,160,.15)">🟢</div><div class="ci-info"><div class="ci-name">Advance Tax — Q4 FY26</div><div class="ci-due">Filed: 15 Mar 2026</div></div><div class="ci-right"><span class="tag tg">Filed ✓</span></div></div>
-            <div class="aibox"><div class="ai-icon">✦</div><div class="ai-txt"><strong>Penalty: ₹18,400.</strong> File both overdue returns this week. Also costing you 18 points on your fundraising score.</div></div>
-          </div>
-          <div class="card">
-            <div class="clabel">Compliance Health</div>
-            <div class="pw"><div class="pl"><span>GST Compliance</span><span style="color:var(--red)">60%</span></div><div class="pb"><div class="pf" style="width:60%;background:linear-gradient(90deg,var(--red),var(--accent3))"></div></div></div>
-            <div class="pw"><div class="pl"><span>TDS / Income Tax</span><span style="color:var(--red)">55%</span></div><div class="pb"><div class="pf" style="width:55%;background:linear-gradient(90deg,var(--red),var(--accent3))"></div></div></div>
-            <div class="pw"><div class="pl"><span>ROC / MCA Filings</span><span style="color:var(--accent)">100%</span></div><div class="pb"><div class="pf" style="width:100%"></div></div></div>
-            <div class="pw"><div class="pl"><span>Labour Law (PF/ESI)</span><span style="color:var(--accent)">90%</span></div><div class="pb"><div class="pf" style="width:90%"></div></div></div>
-            <div class="pw"><div class="pl"><span>DPIIT / Startup India</span><span style="color:var(--accent)">100%</span></div><div class="pb"><div class="pf" style="width:100%"></div></div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── OPERATIONS ── -->
-      <div class="page" id="page-ops">
-        <div class="ph"><div class="ph-title">Operations</div><div class="ph-sub">HIRING · PAYROLL · INVESTOR UPDATES</div></div>
-        <div class="stabs">
-          <div class="stab active" onclick="showSub('ops','hiring',this)">👥 Hiring</div>
-          <div class="stab" onclick="showSub('ops','payroll',this)">💰 Payroll</div>
-          <div class="stab" onclick="showSub('ops','updates',this)">📧 Investor Update</div>
-        </div>
-        <div class="subpage active" id="sub-ops-hiring">
-          <div class="g2">
-            <div class="card">
-              <div class="ctop" style="background:linear-gradient(90deg,var(--accent2),var(--purple))"></div>
-              <div class="clabel">Hiring Impact Simulator</div>
-              <div class="sw"><div class="sl-row"><span>Engineers to hire</span><span id="h-eng" style="color:var(--accent2)">3</span></div><input type="range" min="1" max="15" value="3" oninput="calcHiring()" id="hl-eng"></div>
-              <div class="sw"><div class="sl-row"><span>Avg salary (₹L/mo)</span><span id="h-sal" style="color:var(--accent2)">2.5</span></div><input type="range" min="1" max="8" value="2" step="0.5" oninput="calcHiring()" id="hl-sal"></div>
-              <div class="sw"><div class="sl-row"><span>Expected revenue lift</span><span id="h-rev" style="color:var(--accent)">+15%</span></div><input type="range" min="0" max="50" value="15" oninput="calcHiring()" id="hl-rev"></div>
-            </div>
-            <div>
-              <div class="sresult">
-                <div class="sr"><span class="sr-label">Extra monthly cost</span><span class="sr-val" id="h-cost" style="color:var(--red)">—</span></div>
-                <div class="sr"><span class="sr-label">New runway</span><span class="sr-val" id="h-runway" style="color:var(--accent2)">—</span></div>
-                <div class="sr"><span class="sr-label">Breakeven</span><span class="sr-val" id="h-beven" style="color:var(--accent4)">—</span></div>
-                <div class="sr"><span class="sr-label">Verdict</span><span id="h-verdict" class="tag tg">Add data first</span></div>
-              </div>
-              <div class="aibox" style="margin-top:12px"><div class="ai-icon">✦</div><div class="ai-txt" id="h-insight">Add financial data to get accurate hiring impact analysis.</div></div>
-            </div>
-          </div>
-        </div>
-        <div class="subpage" id="sub-ops-payroll">
-          <div class="mg4">
-            <div class="mc"><div class="mc-val" id="pay-gross" style="color:var(--accent)">—</div><div class="mc-label">GROSS PAYROLL</div></div>
-            <div class="mc"><div class="mc-val" style="color:var(--accent2)">~12%</div><div class="mc-label">PF + ESI</div></div>
-            <div class="mc"><div class="mc-val" style="color:var(--accent4)">~10%</div><div class="mc-label">TDS</div></div>
-            <div class="mc"><div class="mc-val" id="pay-net" style="color:var(--red)">—</div><div class="mc-label">NET PAYOUT</div></div>
-          </div>
-          <div class="card">
-            <div class="clabel">Payroll based on salary data</div>
-            <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px">Update salary figures in <strong style="color:var(--accent)">✏️ Add Data</strong> to see accurate payroll. PF/ESI/TDS auto-calculated.</div>
-            <button class="btn bp" onclick="openModal('data')">✏️ Update Salary Data</button>
-          </div>
-        </div>
-        <div class="subpage" id="sub-ops-updates">
-          <div class="card">
-            <div class="ctop" style="background:linear-gradient(90deg,var(--accent),var(--accent2))"></div>
-            <div class="clabel">Auto-Generated Investor Update</div>
-            <div id="inv-update" style="background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:16px;font-size:12px;line-height:1.9;color:var(--text2);white-space:pre-line;margin-bottom:12px">Add financial data to auto-generate your investor update.</div>
-            <div style="display:flex;gap:10px">
-              <button class="btn bp btn-full" onclick="copyUpdate()">📋 Copy Email</button>
-              <button class="btn bgb btn-full" onclick="genUpdate()">✦ Regenerate</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── SETTINGS ── -->
-      <div class="page" id="page-settings">
-        <div class="ph"><div class="ph-title">Settings</div><div class="ph-sub">PROFILE · PLAN · DATA</div></div>
-        <div class="g2">
-          <div>
-            <div class="card">
-              <div class="clabel">Company Profile</div>
-              <div style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">COMPANY NAME</div>
-              <input class="de-inp" type="text" id="set-company" style="margin-bottom:10px;width:100%">
-              <div style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">YOUR NAME</div>
-              <input class="de-inp" type="text" id="set-name" style="margin-bottom:10px;width:100%">
-              <div style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">STAGE</div>
-              <select class="de-inp" id="set-stage" style="margin-bottom:16px;width:100%;cursor:pointer">
-                <option>Bootstrapped</option><option>Pre-Seed</option><option selected>Seed</option><option>Series A</option><option>Series B+</option>
-              </select>
-              <button class="btn bp btn-full" onclick="saveSettings()">💾 Save Profile</button>
-            </div>
-          </div>
-          <div>
-            <div class="card">
-              <div class="clabel">Current Plan</div>
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-                <div><div style="font-size:18px;font-weight:800" id="plan-name">Free Plan</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)" id="plan-desc">5 AI messages/month</div></div>
-                <span class="tag tb" id="plan-tag">FREE</span>
-              </div>
-              <div class="pw"><div class="pl"><span>AI Messages Used</span><span id="usage-label">0 / 5</span></div><div class="pb"><div class="pf" id="usage-bar" style="width:0%"></div></div></div>
-              <button class="btn bp btn-full" style="margin-top:12px" onclick="openModal('upgrade')">⚡ Upgrade Plan</button>
-            </div>
-            <div class="card">
-              <div class="clabel">Data & Account</div>
-              <div class="si" onclick="exportData()"><div class="si-icon" style="background:rgba(0,153,255,.1)">📤</div><div class="si-info"><div class="si-name">Export Data</div><div class="si-desc">Download all data as JSON</div></div><div style="color:var(--text3)">›</div></div>
-              <div class="si" onclick="clearData()"><div class="si-icon" style="background:rgba(255,69,96,.1)">🗑️</div><div class="si-info"><div class="si-name" style="color:var(--red)">Clear All Data</div><div class="si-desc">Reset financial data</div></div><div style="color:var(--text3)">›</div></div>
-              <div class="si" onclick="signOut()"><div class="si-icon" style="background:rgba(255,107,53,.1)">🚪</div><div class="si-info"><div class="si-name" style="color:var(--accent3)">Sign Out</div><div class="si-desc" id="set-email">—</div></div><div style="color:var(--text3)">›</div></div>
-            </div>
-          </div>
-        </div>
-        <div style="text-align:center;padding:12px;font-size:11px;color:var(--text3);font-family:var(--mono)">CFO Copilot v2.0 · Built by Atharv Roy · Age 16 🇮🇳</div>
-      </div>
-
-    </div><!-- /page-wrap -->
-
-    <!-- MOBILE BOTTOM NAV -->
-    <div class="bnav">
-      <div class="ni active" id="mnav-dashboard" onclick="navTo('dashboard',this)"><span class="ni-icon">📊</span><span class="ni-label">Dashboard</span></div>
-      <div class="ni" id="mnav-fundraise" onclick="navTo('fundraise',this)"><span class="ni-icon">🎯</span><span class="ni-label">Fundraise</span></div>
-      <div class="ni" id="mnav-compliance" onclick="navTo('compliance',this)"><span class="ni-icon">🛡️</span><span class="ni-label">Compliance</span><div class="ni-dot"></div></div>
-      <div class="ni" id="mnav-ops" onclick="navTo('ops',this)"><span class="ni-icon">⚙️</span><span class="ni-label">Ops</span></div>
-      <div class="ni" id="mnav-settings" onclick="navTo('settings',this)"><span class="ni-icon">👤</span><span class="ni-label">Profile</span></div>
-    </div>
-
-  </div><!-- /main -->
-</div><!-- /app-screen -->
-
-<!-- DATA ENTRY MODAL -->
-<div class="modal-overlay" id="modal-data" onclick="if(event.target===this)closeModal('data')">
-  <div class="modal-box">
-    <div class="mhdr"><div><div class="mhdr-title">✏️ Add Financial Data</div><div class="mhdr-sub">Saves to your account instantly</div></div><button class="mclose" onclick="closeModal('data')">✕</button></div>
-    <div class="mbody">
-      <div style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">MONTH</div>
-      <select class="de-inp" id="de-month" style="margin-bottom:14px;width:100%;cursor:pointer">
-        <option value="2026-03">March 2026</option><option value="2026-02">February 2026</option>
-        <option value="2026-01">January 2026</option><option value="2025-12">December 2025</option>
-        <option value="2025-11">November 2025</option><option value="2025-10">October 2025</option>
-      </select>
-      <div class="de-sec">💰 Revenue</div>
-      <div class="de-row">
-        <div class="de-field"><div class="de-lbl">MRR</div><div class="de-wrap"><span class="de-pre">₹</span><input class="de-num" type="number" id="de-mrr" placeholder="28" min="0"><span class="de-suf">Lakhs</span></div></div>
-        <div class="de-field"><div class="de-lbl">Total Customers</div><input class="de-inp" type="number" id="de-customers" placeholder="312" min="0"></div>
-      </div>
-      <div class="de-row">
-        <div class="de-field"><div class="de-lbl">NRR %</div><input class="de-inp" type="number" id="de-nrr" placeholder="94" min="0" max="200"></div>
-        <div class="de-field"><div class="de-lbl">New Customers</div><input class="de-inp" type="number" id="de-newcust" placeholder="24" min="0"></div>
-      </div>
-      <div class="de-sec">🔥 Expenses</div>
-      <div class="de-row">
-        <div class="de-field"><div class="de-lbl">Total Burn</div><div class="de-wrap"><span class="de-pre">₹</span><input class="de-num" type="number" id="de-burn" placeholder="42" min="0"><span class="de-suf">Lakhs</span></div></div>
-        <div class="de-field"><div class="de-lbl">Salaries</div><div class="de-wrap"><span class="de-pre">₹</span><input class="de-num" type="number" id="de-salaries" placeholder="24" min="0"><span class="de-suf">L</span></div></div>
-      </div>
-      <div class="de-row">
-        <div class="de-field"><div class="de-lbl">Cloud / Infra</div><div class="de-wrap"><span class="de-pre">₹</span><input class="de-num" type="number" id="de-cloud" placeholder="8.2" step="0.1"><span class="de-suf">L</span></div></div>
-        <div class="de-field"><div class="de-lbl">Marketing</div><div class="de-wrap"><span class="de-pre">₹</span><input class="de-num" type="number" id="de-marketing" placeholder="5.4" step="0.1"><span class="de-suf">L</span></div></div>
-      </div>
-      <div class="de-sec">🏦 Cash</div>
-      <div class="de-row">
-        <div class="de-field"><div class="de-lbl">Cash in Bank</div><div class="de-wrap"><span class="de-pre">₹</span><input class="de-num" type="number" id="de-cash" placeholder="5.9" step="0.1"><span class="de-suf">Crores</span></div></div>
-        <div class="de-field"><div class="de-lbl">Headcount</div><input class="de-inp" type="number" id="de-headcount" placeholder="12" min="1"></div>
-      </div>
-      <div class="de-preview" id="de-preview" style="display:none"><div style="font-size:10px;font-family:var(--mono);color:var(--accent);letter-spacing:.08em;margin-bottom:8px">✦ PREVIEW</div><div id="de-preview-text" style="font-size:12px;color:var(--text2);line-height:1.7"></div></div>
-      <button class="de-btn" id="save-btn" onclick="saveData()">💾 Save & Update Dashboard</button>
-      <button class="de-btn sec" onclick="previewData()">✦ Preview AI Insight</button>
-    </div>
-  </div>
-</div>
-
-<!-- UPGRADE MODAL -->
-<div class="modal-overlay" id="modal-upgrade" onclick="if(event.target===this)closeModal('upgrade')">
-  <div class="modal-box">
-    <div class="mhdr"><div><div class="mhdr-title">⚡ Upgrade Your Plan</div><div class="mhdr-sub">Unlock unlimited AI CFO access</div></div><button class="mclose" onclick="closeModal('upgrade')">✕</button></div>
-    <div class="mbody">
-      <p style="font-size:13px;color:var(--text2);margin-bottom:16px;text-align:center">Your AI CFO runs on Claude. Upgrade to unlock more conversations and features.</p>
-      <div class="plan-grid">
-        <div class="plan-card">
-          <div class="plan-name">STARTER</div>
-          <div class="plan-price" style="color:var(--accent)">₹2,999</div>
-          <div class="plan-period">/month</div>
-          <div class="plan-feat"><span class="plan-check">✓</span>100 AI msgs/month</div>
-          <div class="plan-feat"><span class="plan-check">✓</span>All dashboard features</div>
-          <div class="plan-feat"><span class="plan-check">✓</span>GST compliance calendar</div>
-          <div class="plan-feat"><span class="plan-check">✓</span>Board deck generator</div>
-          <div class="plan-feat"><span class="plan-check">✓</span>1 company</div>
-          <button class="plan-btn bp" onclick="showToast('💳 Razorpay integration coming soon!')">Get Started →</button>
-        </div>
-        <div class="plan-card feat">
-          <div class="plan-popular">MOST POPULAR</div>
-          <div class="plan-name">PRO</div>
-          <div class="plan-price" style="color:var(--accent)">₹7,999</div>
-          <div class="plan-period">/month</div>
-          <div class="plan-feat"><span class="plan-check">✓</span>Unlimited AI messages</div>
-          <div class="plan-feat"><span class="plan-check">✓</span>Everything in Starter</div>
-          <div class="plan-feat"><span class="plan-check">✓</span>Scenario modeler</div>
-          <div class="plan-feat"><span class="plan-check">✓</span>Term sheet analyzer</div>
-          <div class="plan-feat"><span class="plan-check">✓</span>3 companies</div>
-          <button class="plan-btn bp" onclick="showToast('💳 Razorpay integration coming soon!')">Get Pro →</button>
-        </div>
-        <div class="plan-card">
-          <div class="plan-name">ENTERPRISE</div>
-          <div class="plan-price" style="color:var(--accent4)">₹24,999</div>
-          <div class="plan-period">/month</div>
-          <div class="plan-feat"><span class="plan-check" style="color:var(--accent4)">✓</span>Unlimited AI + API</div>
-          <div class="plan-feat"><span class="plan-check" style="color:var(--accent4)">✓</span>Hedge fund analytics</div>
-          <div class="plan-feat"><span class="plan-check" style="color:var(--accent4)">✓</span>Custom integrations</div>
-          <div class="plan-feat"><span class="plan-check" style="color:var(--accent4)">✓</span>Dedicated CFO advisor</div>
-          <div class="plan-feat"><span class="plan-check" style="color:var(--accent4)">✓</span>Unlimited companies</div>
-          <button class="plan-btn" style="background:var(--bg4);color:var(--text2);border:1px solid var(--border2)" onclick="showToast('📞 Contact us for Enterprise')">Contact Sales</button>
+      <div class="chat-row">
+        <div class="chat-ai-icon">✦</div>
+        <div class="chat-content">
+          <div class="chat-q">Founder asked: "Can I afford to hire 3 engineers this month?"</div>
+          <div class="chat-a">Hiring 3 engineers at ₹2.5L/mo each adds <strong>₹7.5L/mo</strong> to burn. Your runway drops from <strong>14.2 months to 10.8 months</strong> — still safe, but I'd recommend staggering hires over 2 months. Revenue needs to grow 12% to offset the cost within 6 months.</div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- CHAT -->
-<div class="chat-overlay" id="chat-overlay" onclick="if(event.target===this)closeChat()">
-  <div class="chat-drawer">
-    <div class="chat-hdr">
-      <div style="width:32px;height:32px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">✦</div>
-      <div class="chat-title">AI CFO</div>
-      <div style="font-size:11px;color:var(--accent);font-family:var(--mono)" id="chat-live">● Live</div>
-      <div style="font-size:10px;font-family:var(--mono);color:var(--text3);margin-left:6px" id="chat-usage"></div>
-      <button class="chat-close" onclick="closeChat()">✕</button>
+<!-- PROBLEM SECTION -->
+<section class="problem-section" id="about">
+  <span class="section-label reveal">The Problem</span>
+  <h2 class="section-title reveal">Indian startups are dying from <span class="serif">financial blindness.</span></h2>
+  <p class="section-sub reveal">38% of Indian startups fail because of cash mismanagement — not bad products. They just never had someone watching the numbers.</p>
+
+  <div class="graveyard-grid reveal">
+    <div class="grave-card">
+      <div class="grave-co">TinyOwl 🪦</div>
+      <div class="grave-raised">Raised: ₹252 Crore</div>
+      <div class="grave-reason">Aggressive discounts destroyed unit economics. Nobody tracked CAC vs LTV until it was too late.</div>
     </div>
-    <div class="chat-msgs" id="chat-msgs">
-      <div class="cmsg ai">Hey! I'm your AI CFO. Ask me anything about your finances, fundraising, compliance, or hiring. What's on your mind?</div>
+    <div class="grave-card">
+      <div class="grave-co">Byju's 🪦</div>
+      <div class="grave-raised">Raised: ₹18.5L Crore</div>
+      <div class="grave-reason">Delayed filings by a year. Deloitte resigned. Zero financial visibility at the top.</div>
     </div>
-    <div class="chat-chips" id="chat-chips">
-      <div class="chip" onclick="sendChip('What is my runway?')">🚨 My runway?</div>
-      <div class="chip" onclick="sendChip('When should I raise?')">💰 When to raise?</div>
-      <div class="chip" onclick="sendChip('Any GST issues?')">⚠️ GST issues?</div>
-      <div class="chip" onclick="sendChip('Should I hire now?')">👥 Hire now?</div>
+    <div class="grave-card">
+      <div class="grave-co">Dunzo 🪦</div>
+      <div class="grave-raised">Raised: ₹500 Crore+</div>
+      <div class="grave-reason">Cash crunch from over-expansion. No real-time burn vs revenue tracking.</div>
     </div>
-    <div class="chat-input-wrap">
-      <input class="chat-input" id="chat-inp" type="text" placeholder="Ask your CFO anything..." onkeydown="if(event.key==='Enter')sendMsg()">
-      <button class="chat-send" onclick="sendMsg()">↑</button>
+    <div class="grave-card">
+      <div class="grave-co">BluSmart 🪦</div>
+      <div class="grave-raised">Raised: ₹1,000 Crore+</div>
+      <div class="grave-reason">₹168 Crore diverted with zero financial oversight. SEBI investigation ongoing.</div>
+    </div>
+    <div class="grave-card">
+      <div class="grave-co">Stayzilla 🪦</div>
+      <div class="grave-raised">Raised: $33.5M</div>
+      <div class="grave-reason">Consistent financial losses with no early warning system. By the time anyone noticed, it was over.</div>
+    </div>
+    <div class="grave-card">
+      <div class="grave-co">Doodhwala 🪦</div>
+      <div class="grave-raised">Raised: Seed Round</div>
+      <div class="grave-reason">Strong traction. Fatal unit economics. No CFO to flag the problem before it was too late.</div>
     </div>
   </div>
-</div>
 
-<!-- TOAST -->
-<div class="toast" id="toast"><span>✦</span><span id="toast-text">Done!</span></div>
+  <div class="stat-strip reveal">
+    <div class="stat-item">
+      <div class="stat-num" style="color:var(--red)">38,658</div>
+      <div class="stat-desc">Companies struck off by MCA since 2023</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" style="color:var(--accent3)">38%</div>
+      <div class="stat-desc">Startups fail from cash mismanagement</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" style="color:var(--accent4)">90%</div>
+      <div class="stat-desc">Indian startups fail within 5 years</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num" style="color:var(--red)">₹4.2L Cr</div>
+      <div class="stat-desc">Destroyed by financial failures in 2023-24</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div class="features-inner">
+    <span class="section-label reveal">What We Built</span>
+    <h2 class="section-title reveal">Everything a CFO does. <span class="serif">Automated.</span></h2>
+    <p class="section-sub reveal">10 features that replace the work of a ₹15L/year fractional CFO. All in one product. All updating in real time.</p>
+    <div class="features-grid">
+      <div class="feat-card featured reveal">
+        <span class="feat-icon">📉</span>
+        <div class="feat-title">Runway & Burn Tracking</div>
+        <div class="feat-desc">See your exact runway in months, updated live. Get alerts 90 days before you run out of cash — not 90 days after.</div>
+        <span class="feat-tag">CORE FEATURE</span>
+      </div>
+      <div class="feat-card reveal reveal-delay-1">
+        <span class="feat-icon">✦</span>
+        <div class="feat-title">AI CFO Chat</div>
+        <div class="feat-desc">Ask anything at 2am. "Can I hire 3 engineers?" "When should I raise?" Real answers using your real financial data.</div>
+        <span class="feat-tag">POWERED BY CLAUDE</span>
+      </div>
+      <div class="feat-card reveal reveal-delay-2">
+        <span class="feat-icon">🛡️</span>
+        <div class="feat-title">GST & Compliance</div>
+        <div class="feat-desc">Auto-generated compliance calendar based on your founding date. Never miss a GSTR-3B or TDS filing again. ₹100/day penalties stopped.</div>
+        <span class="feat-tag">INDIA-SPECIFIC</span>
+      </div>
+      <div class="feat-card reveal">
+        <span class="feat-icon">📋</span>
+        <div class="feat-title">P&L, Balance Sheet, Cash Flow</div>
+        <div class="feat-desc">Professional financial statements generated automatically from your data. Always audit-ready. Export anytime.</div>
+        <span class="feat-tag">AUTO-GENERATED</span>
+      </div>
+      <div class="feat-card reveal reveal-delay-1">
+        <span class="feat-icon">🎯</span>
+        <div class="feat-title">Fundraising Score</div>
+        <div class="feat-desc">Know your VC readiness score /100 before walking into a meeting. Fix the 3 things that matter most to Series A investors.</div>
+        <span class="feat-tag">VC INTELLIGENCE</span>
+      </div>
+      <div class="feat-card reveal reveal-delay-2">
+        <span class="feat-icon">📊</span>
+        <div class="feat-title">Board Deck Generator</div>
+        <div class="feat-desc">Monthly board deck generated in 1 click using your real numbers. What used to take 6 hours now takes 6 seconds.</div>
+        <span class="feat-tag">1-CLICK</span>
+      </div>
+      <div class="feat-card reveal">
+        <span class="feat-icon">⚡</span>
+        <div class="feat-title">Unit Economics</div>
+        <div class="feat-desc">Real-time CAC, LTV, LTV:CAC ratio, payback period, and magic number. Know if your business model actually works.</div>
+        <span class="feat-tag">SaaS METRICS</span>
+      </div>
+      <div class="feat-card reveal reveal-delay-1">
+        <span class="feat-icon">🏦</span>
+        <div class="feat-title">Cap Table & Dilution</div>
+        <div class="feat-desc">Track founder, investor, and ESOP ownership. Model how a new round dilutes everyone — before you sign anything.</div>
+        <span class="feat-tag">EQUITY INTELLIGENCE</span>
+      </div>
+      <div class="feat-card reveal reveal-delay-2">
+        <span class="feat-icon">👥</span>
+        <div class="feat-title">Real Payroll Engine</div>
+        <div class="feat-desc">Add employees, get automatic PF (12%), ESI (3.25%), and TDS calculations. Know your true cost-to-company per hire.</div>
+        <span class="feat-tag">INDIA COMPLIANT</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VS COMPARISON -->
+<section class="vs-section">
+  <span class="section-label reveal">The Difference</span>
+  <h2 class="section-title reveal">What <span class="serif">changes</span> when you have a real CFO.</h2>
+  <div class="vs-grid reveal">
+    <div class="vs-card">
+      <div class="vs-header bad">WITHOUT CFO COPILOT</div>
+      <div class="vs-item"><div class="vs-ico">✗</div><div>Tally from 1999 — tells you what happened, never what to do</div></div>
+      <div class="vs-item"><div class="vs-ico">✗</div><div>Spreadsheets always out of date by 2 weeks</div></div>
+      <div class="vs-item"><div class="vs-ico">✗</div><div>Miss GST filings → ₹100/day penalty → MCA notice</div></div>
+      <div class="vs-item"><div class="vs-ico">✗</div><div>Board deck takes 5-6 hours to manually prepare every month</div></div>
+      <div class="vs-item"><div class="vs-ico">✗</div><div>Fractional CFO costs ₹8-15L/year — unaffordable at Seed</div></div>
+      <div class="vs-item"><div class="vs-ico">✗</div><div>Hire blindly — no idea if you can actually afford it</div></div>
+      <div class="vs-item"><div class="vs-ico">✗</div><div>VCs find compliance issues in due diligence — deal falls</div></div>
+      <div class="vs-item"><div class="vs-ico">✗</div><div>Discover you're out of cash 60 days too late</div></div>
+    </div>
+    <div class="vs-card">
+      <div class="vs-header good">WITH CFO COPILOT</div>
+      <div class="vs-item"><div class="vs-ico" style="color:var(--accent)">✓</div><div>Live runway updated every time you add data</div></div>
+      <div class="vs-item"><div class="vs-ico" style="color:var(--accent)">✓</div><div>AI alerts you 90 days before cash runs out</div></div>
+      <div class="vs-item"><div class="vs-ico" style="color:var(--accent)">✓</div><div>GST calendar auto-generated — never miss a filing</div></div>
+      <div class="vs-item"><div class="vs-ico" style="color:var(--accent)">✓</div><div>Board deck generated in 1 click from real numbers</div></div>
+      <div class="vs-item"><div class="vs-ico" style="color:var(--accent)">✓</div><div>Full AI CFO for ₹2,999/month — 10x cheaper</div></div>
+      <div class="vs-item"><div class="vs-ico" style="color:var(--accent)">✓</div><div>Hiring impact simulator before you post the job</div></div>
+      <div class="vs-item"><div class="vs-ico" style="color:var(--accent)">✓</div><div>Fundraising score tells you VC readiness before meeting</div></div>
+      <div class="vs-item"><div class="vs-ico" style="color:var(--accent)">✓</div><div>Ask any financial question at 2am, get answers instantly</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <span class="section-label reveal">Simple Pricing</span>
+  <h2 class="section-title reveal">No surprises. <span class="serif">No hidden fees.</span></h2>
+  <p class="section-sub reveal">A fractional CFO costs ₹8-15L/year. We cost ₹35,988/year. Do the math.</p>
+  <div class="pricing-grid reveal">
+    <div class="price-card">
+      <div class="price-name">STARTER</div>
+      <div class="price-amount" style="color:var(--accent)">₹2,999</div>
+      <div class="price-period">/month · billed monthly</div>
+      <div class="price-divider"></div>
+      <div class="price-feature"><span class="price-check">✓</span>100 AI CFO messages/month</div>
+      <div class="price-feature"><span class="price-check">✓</span>Runway & burn tracking</div>
+      <div class="price-feature"><span class="price-check">✓</span>GST compliance calendar</div>
+      <div class="price-feature"><span class="price-check">✓</span>Monthly board deck</div>
+      <div class="price-feature"><span class="price-check">✓</span>P&L, Balance Sheet, Cash Flow</div>
+      <div class="price-feature"><span class="price-check">✓</span>1 company</div>
+      <button class="price-btn outline" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">Get Started →</button>
+    </div>
+    <div class="price-card pop">
+      <div class="price-popular">MOST POPULAR</div>
+      <div class="price-name">PRO</div>
+      <div class="price-amount" style="color:var(--accent)">₹7,999</div>
+      <div class="price-period">/month · billed monthly</div>
+      <div class="price-divider"></div>
+      <div class="price-feature"><span class="price-check">✓</span>Unlimited AI CFO messages</div>
+      <div class="price-feature"><span class="price-check">✓</span>Everything in Starter</div>
+      <div class="price-feature"><span class="price-check">✓</span>Unit economics & benchmarks</div>
+      <div class="price-feature"><span class="price-check">✓</span>Cap table + dilution modeling</div>
+      <div class="price-feature"><span class="price-check">✓</span>Revenue forecasting</div>
+      <div class="price-feature"><span class="price-check">✓</span>3 companies</div>
+      <button class="price-btn primary" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">Get Pro →</button>
+    </div>
+    <div class="price-card">
+      <div class="price-name">ENTERPRISE</div>
+      <div class="price-amount" style="color:var(--accent4)">₹24,999</div>
+      <div class="price-period">/month · billed monthly</div>
+      <div class="price-divider"></div>
+      <div class="price-feature"><span class="price-check" style="color:var(--accent4)">✓</span>Unlimited AI + bring own key</div>
+      <div class="price-feature"><span class="price-check" style="color:var(--accent4)">✓</span>Everything in Pro</div>
+      <div class="price-feature"><span class="price-check" style="color:var(--accent4)">✓</span>Dedicated CFO advisor</div>
+      <div class="price-feature"><span class="price-check" style="color:var(--accent4)">✓</span>CA filing automation</div>
+      <div class="price-feature"><span class="price-check" style="color:var(--accent4)">✓</span>Custom integrations</div>
+      <div class="price-feature"><span class="price-check" style="color:var(--accent4)">✓</span>Unlimited companies</div>
+      <button class="price-btn outline" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">Contact Sales →</button>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi-section">
+  <div class="testi-inner">
+    <span class="section-label reveal">Early Access Feedback</span>
+    <h2 class="section-title reveal">What founders <span class="serif">actually said.</span></h2>
+    <div class="testi-scroll reveal">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">I used to spend every Sunday night building the board deck. CFO Copilot generates it in <strong>literally 1 click.</strong> I've gotten those Sundays back.</div>
+        <div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#00E5A0,#0099FF)">RK</div><div><div class="testi-name">Rahul Kapur</div><div class="testi-co">Founder, PayFlow · Seed · ₹2.3Cr raised</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">We had 2 overdue GST filings we didn't even know about. CFO Copilot flagged them in the first 5 minutes. <strong>Saved us ₹18,000 in penalties</strong> before our Series A.</div>
+        <div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#FF6B35,#FFD700)">PS</div><div><div class="testi-name">Priya Sharma</div><div class="testi-co">Co-Founder, LearnStack · Series A</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">Our fractional CFO was charging ₹80K/month. CFO Copilot does <strong>80% of what he did</strong> for ₹7,999. And it answers at 2am when he doesn't.</div>
+        <div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#8B5CF6,#0099FF)">AM</div><div><div class="testi-name">Arjun Mehta</div><div class="testi-co">CEO, BuildPro · Bootstrapped · ₹45L MRR</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">The hiring simulator alone is worth the subscription. I was about to hire 5 engineers. It showed me my runway would drop to <strong>7 months</strong>. I hired 2 instead. Good call.</div>
+        <div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#FFD700,#FF6B35)">SK</div><div><div class="testi-name">Siddharth Kumar</div><div class="testi-co">CTO, DataSync · Pre-Seed</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">VCs ask 10 financial questions in every meeting. CFO Copilot gave me the <strong>exact answers</strong> before I walked in. We closed our round last week.</div>
+        <div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#00E5A0,#8B5CF6)">NK</div><div><div class="testi-name">Neha Krishnan</div><div class="testi-co">Founder, HealthBridge · Seed · ₹4Cr</div></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">I'm a first-time founder with zero finance background. This tool makes me feel like I actually know <strong>what's happening in my own company</strong> for the first time.</div>
+        <div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#0099FF,#00E5A0)">VP</div><div><div class="testi-name">Vikram Patel</div><div class="testi-co">Founder, AgriLink · Pre-Seed · Bangalore</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section class="waitlist-section" id="waitlist">
+  <div class="waitlist-glow"></div>
+  <div class="waitlist-inner">
+    <h2 class="waitlist-title reveal">Your AI CFO is <span style="color:var(--accent)">ready.</span></h2>
+    <p class="waitlist-sub reveal">Join 200+ Indian founders who are replacing their spreadsheets with intelligence. Free to start. No credit card required.</p>
+    <div class="waitlist-form reveal" id="waitlist-form-box">
+      <div class="form-row">
+        <div class="form-group">
+          <input class="form-input" type="text" id="wl-name" placeholder="Your name" autocomplete="name">
+        </div>
+        <div class="form-group">
+          <input class="form-input" type="text" id="wl-company" placeholder="Company name">
+        </div>
+      </div>
+      <div class="form-group">
+        <input class="form-input" type="email" id="wl-email" placeholder="Work email" autocomplete="email">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <input class="form-input" type="tel" id="wl-phone" placeholder="Phone number" autocomplete="tel">
+        </div>
+        <div class="form-group">
+          <select class="form-input" id="wl-stage" style="cursor:pointer;color:var(--text3)">
+            <option value="" disabled selected>Funding stage</option>
+            <option>Bootstrapped</option><option>Pre-Seed</option>
+            <option>Seed</option><option>Series A</option><option>Series B+</option>
+          </select>
+        </div>
+      </div>
+      <button class="form-submit" onclick="submitWaitlist()">
+        🚀 Get Early Access — It's Free
+      </button>
+      <p class="form-note">No spam. No credit card. Just your AI CFO. · <a href="app.html" style="color:var(--accent)">Already have an account? Sign in →</a></p>
+    </div>
+    <div class="success-msg" id="success-msg">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">You're on the list!</div>
+      <div class="success-sub">We'll reach out within 24 hours with your access link.<br>In the meantime — <a href="app.html" style="color:var(--accent)">try the demo now →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDER -->
+<section class="founder-section" id="founder">
+  <div class="founder-card reveal">
+    <div class="founder-quote">
+      "38,658 Indian companies were struck off by MCA last year. Not because their products failed — because nobody was watching the money. I built CFO Copilot at <strong>16 years old</strong> because I believe every Indian founder deserves the financial intelligence that was previously only available to companies that could afford a ₹15L/year CFO."
+    </div>
+    <div class="founder-info">
+      <div class="founder-avatar">AR</div>
+      <div>
+        <div class="founder-name">Atharv Roy</div>
+        <div class="founder-title">Founder & CEO · Age 16 · Building in India 🇮🇳</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <div class="nav-logo-icon">₹</div>
+    CFO Copilot
+  </div>
+  <div class="footer-links">
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="app.html">Sign In</a>
+    <a href="mailto:hello@cfocopilot.in">Contact</a>
+  </div>
+  <div class="footer-copy">© 2026 CFO Copilot · Built by Atharv Roy · Age 16</div>
+</footer>
 
 <script>
-// ══════════════════════════════════════
-// CONFIG
-// ══════════════════════════════════════
-const SB_URL  = 'https://qxztwdiccfmryeoqeeue.supabase.co';
-const SB_KEY  = 'sb_publishable_hl1wyWw3dLi87BMgoU3tcw_YgWk-So_';
-const AI_URL  = `${SB_URL}/functions/v1/ai-chat`;
-const REDIRECT = 'https://cnx-stud10s.github.io/cfo-copilot/app.html';
+// ── CURSOR ──
+const cursor = document.getElementById('cursor');
+const ring   = document.getElementById('cursor-ring');
+let mx=0, my=0, rx=0, ry=0;
 
-const { createClient } = supabase;
-const sb = createClient(SB_URL, SB_KEY);
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cursor.style.left=mx+'px'; cursor.style.top=my+'px'; });
+function animateRing() { rx+=(mx-rx)*.12; ry+=(my-ry)*.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(animateRing); }
+animateRing();
 
-const LIMITS = { free:5, starter:100, pro:999999, enterprise:999999 };
-const PAGE_TITLES = { dashboard:'Dashboard', fundraise:'Fundraising', compliance:'Compliance', ops:'Operations', settings:'Settings' };
+document.querySelectorAll('button, a, input, select, .tcard, .feat-card, .price-card, .grave-card').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.style.width='20px'; cursor.style.height='20px'; ring.style.width='52px'; ring.style.height='52px'; });
+  el.addEventListener('mouseleave', () => { cursor.style.width='12px'; cursor.style.height='12px'; ring.style.width='36px'; ring.style.height='36px'; });
+});
 
-// ══════════════════════════════════════
-// STATE
-// ══════════════════════════════════════
-let S = { user:null, company:null, snapshots:[], sub:null, isDemo:false, chatHist:[] };
+// ── SCROLL REVEAL ──
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// ══════════════════════════════════════
-// INIT
-// ══════════════════════════════════════
-async function init() {
-  // Handle magic link
-  if (window.location.hash.includes('access_token')) {
-    const { data } = await sb.auth.getSession();
-    window.history.replaceState({}, '', window.location.pathname);
-    if (data?.session) { await loadApp(data.session.user); return; }
-  }
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) await loadApp(session.user);
-  else { hide('loading'); showScreen('login'); }
+// ── NAV SCROLL ──
+window.addEventListener('scroll', () => {
+  const nav = document.querySelector('nav');
+  nav.style.background = window.scrollY > 50 ? 'rgba(4,7,13,.98)' : 'rgba(4,7,13,.8)';
+  nav.style.borderBottomColor = window.scrollY > 50 ? 'var(--border2)' : 'var(--border)';
+});
 
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_IN' && session) await loadApp(session.user);
-    if (event === 'SIGNED_OUT') { S = { user:null, company:null, snapshots:[], sub:null, isDemo:false, chatHist:[] }; hide('loading'); showScreen('login'); }
-  });
-}
-
-async function loadApp(user) {
-  S.user = user;
-  const [{ data: cos }, { data: snaps }, { data: sub }] = await Promise.all([
-    sb.from('companies').select('*').eq('user_id', user.id).limit(1),
-    sb.from('financial_snapshots').select('*').order('month', { ascending:true }),
-    sb.from('subscriptions').select('*').eq('user_id', user.id).single()
-  ]);
-  S.sub = sub;
-  if (!cos?.length) { hide('loading'); showScreen('onboard'); return; }
-  S.company   = cos[0];
-  S.snapshots = snaps?.filter(s => s.company_id === S.company.id) || [];
-  hide('loading');
-  launchApp();
-}
-
-function hide(id) { const el = document.getElementById(id); if(el) el.style.display='none'; }
-function show(id, d='flex') { const el = document.getElementById(id); if(el) el.style.display=d; }
-
-// ══════════════════════════════════════
-// AUTH
-// ══════════════════════════════════════
-async function sendLink(resend=false) {
-  const email = document.getElementById('login-email')?.value?.trim();
-  if (!email?.includes('@')) { showToast('⚠️ Enter a valid email', true); return; }
-  const btn = document.getElementById('link-btn');
-  btn.classList.add('loading'); btn.textContent='Sending...';
-  const { error } = await sb.auth.signInWithOtp({ email, options:{ emailRedirectTo:REDIRECT } });
-  btn.classList.remove('loading'); btn.textContent='✉️ Send Magic Link';
-  if (error) { showToast('❌ '+error.message, true); return; }
-  document.getElementById('sent-to').textContent = email;
-  if (!resend) showScreen('check-email');
-  else showToast('📧 New magic link sent!');
-}
-
-function demoLogin() {
-  S = { user:{id:'demo',email:'demo@cfocopilot.in'}, company:{id:'demo',name:'ZeroPeak Labs',stage:'Seed',industry:'B2B SaaS'}, snapshots:demoData(), sub:{plan:'starter',ai_messages_used:12}, isDemo:true, chatHist:[] };
-  hide('loading'); launchApp();
-  showToast('🚀 Demo mode — data not saved');
-}
-
-async function signOut() {
-  if (S.isDemo) { S.isDemo=false; showScreen('login'); return; }
-  await sb.auth.signOut();
-}
-
-// ══════════════════════════════════════
-// ONBOARDING
-// ══════════════════════════════════════
-let obStep=0, selRole='Founder / CEO', selStage='Seed';
-
-function pickRole(i,r) { document.querySelectorAll('[id^="rb"]').forEach(b=>b.classList.remove('on')); document.getElementById('rb'+i).classList.add('on'); selRole=r; }
-function pickStage(i,s) { document.querySelectorAll('[id^="stb"]').forEach(b=>b.classList.remove('on')); document.getElementById('stb'+i).classList.add('on'); selStage=s; }
-
-function obNext() {
-  if (obStep===0 && !document.getElementById('ob-company').value.trim()) { showToast('⚠️ Enter your company name'); return; }
-  if (obStep===1) { g('sum-co').textContent=document.getElementById('ob-company').value.trim(); g('sum-st').textContent=selStage; }
-  obStep++;
-  document.querySelectorAll('.ob-step').forEach((s,i)=>s.classList.toggle('active',i===obStep));
-  g('ob-cnt').textContent=`Step ${obStep+1} of 3`;
-  for(let i=0;i<3;i++){
-    const d=g('pd'+i),l=g('pll'+i);
-    if(i<obStep){d.className='pdot done';d.textContent='✓';l.className='plbl done';}
-    else if(i===obStep){d.className='pdot active';d.textContent=i+1;l.className='plbl active';}
-    else{d.className='pdot';d.textContent=i+1;l.className='plbl';}
-    if(i<2)g('pl'+i).className='pline'+(i<obStep?' done':'');
-  }
-}
-function obPrev(){if(obStep>0){obStep-=2;obNext();}}
-
-async function completeOnboarding() {
-  const btn=g('launch-btn');
-  btn.textContent='Setting up...'; btn.style.opacity='.7'; btn.style.pointerEvents='none';
-  const name=document.getElementById('ob-company').value.trim()||'My Startup';
-  const uname=document.getElementById('ob-name').value.trim()||'Founder';
-  const industry=document.getElementById('ob-industry').value;
-  if (!S.isDemo && S.user) {
-    const { data, error } = await sb.from('companies').insert({ user_id:S.user.id, name, stage:selStage, industry }).select().single();
-    if (error) { showToast('❌ '+error.message,true); btn.textContent='🚀 Open My Dashboard'; btn.style.opacity='1'; btn.style.pointerEvents='auto'; return; }
-    S.company=data;
-    await sb.from('subscriptions').upsert({ user_id:S.user.id, plan:'free', ai_messages_used:0 });
-    S.sub={ plan:'free', ai_messages_used:0 };
-  } else { S.company={ id:'demo', name, stage:selStage, industry }; S.sub={ plan:'free', ai_messages_used:0 }; }
-  localStorage.setItem('cfo_name', uname);
-  S.snapshots=[];
-  launchApp();
-}
-
-// ══════════════════════════════════════
-// LAUNCH APP
-// ══════════════════════════════════════
-function launchApp() {
-  const name  = localStorage.getItem('cfo_name') || S.user?.email?.split('@')[0] || 'Founder';
-  const init  = name.slice(0,2).toUpperCase();
-  const plan  = S.sub?.plan || 'free';
-  const used  = S.sub?.ai_messages_used || 0;
-  const limit = LIMITS[plan] || 5;
-  const left  = limit===999999 ? '∞' : Math.max(0,limit-used);
-
-  // Update UI elements
-  const els = {
-    'sb-avatar':init, 'sb-uname':name.split(' ')[0],
-    'sb-uplan':(plan.charAt(0).toUpperCase()+plan.slice(1))+' · '+(limit===999999?'Unlimited':limit+' msgs/mo'),
-    'mh-company':S.company?.name||'CFO Copilot',
-    'topbar-title':'Dashboard', 'dash-title':S.company?.name||'Dashboard',
-    'set-email':S.user?.email||'Demo',
-    'set-company':S.company?.name||'', 'set-name':name,
-    'plan-name':(plan.charAt(0).toUpperCase()+plan.slice(1))+' Plan',
-    'plan-desc':limit===999999?'Unlimited AI messages':`${limit} AI messages/month`,
-    'usage-text':limit===999999?'∞ msgs':`${left} msgs left`,
-    'usage-label':limit===999999?'∞ / Unlimited':`${used} / ${limit}`,
-    'chat-usage':limit===999999?'':`${left}/${limit}`,
+// ── COUNTER ANIMATION ──
+function animateCounter(el, target, prefix='', suffix='') {
+  let start = 0;
+  const dur = 1600;
+  const step = timestamp => {
+    if (!start) start = timestamp;
+    const progress = Math.min((timestamp-start)/dur, 1);
+    const ease = 1 - Math.pow(1-progress, 3);
+    const val = Math.floor(ease * target);
+    el.textContent = prefix + val.toLocaleString('en-IN') + suffix;
+    if (progress < 1) requestAnimationFrame(step);
   };
-  Object.entries(els).forEach(([id,val])=>{ const el=g(id); if(el){ if(el.tagName==='INPUT'||el.tagName==='SELECT') el.value=val; else el.textContent=val; }});
-
-  if(g('usage-bar')) g('usage-bar').style.width = limit===999999?'5%':`${Math.min(100,(used/limit)*100)}%`;
-  if(typeof left==='number' && left<=0) { g('limit-banner')?.classList.add('show'); }
-
-  refreshDashboard();
-  buildBoardSlides();
-  genUpdate();
-  showScreen('app');
+  requestAnimationFrame(step);
 }
 
-// ══════════════════════════════════════
-// DASHBOARD REFRESH
-// ══════════════════════════════════════
-function refreshDashboard() {
-  const snaps=S.snapshots; calcScenario(); calcHiring();
-  if (!snaps.length) return;
-  const L=snaps[snaps.length-1], P=snaps.length>1?snaps[snaps.length-2]:null;
-  const runway=L.burn>0?(L.cash*100/L.burn).toFixed(1):'∞';
-  const netBurn=(L.burn-L.mrr).toFixed(1);
-  const mrrGrow=P&&P.mrr>0?(((L.mrr-P.mrr)/P.mrr)*100).toFixed(0):null;
-
-  // Metric cards
-  setText('m-runway',runway); setText('m-burn','₹'+L.burn+'L');
-  setText('m-cash',L.cash>=100?'₹'+(L.cash/100).toFixed(1)+'Cr':'₹'+L.cash+'L');
-  setText('m-mrr','₹'+L.mrr+'L');
-
-  const rc=parseFloat(runway);
-  setC('m-runway-c',rc>18?'Healthy ✅':rc>9?'⚠️ Watch carefully':rc>0?'🚨 Critical':'', rc>12?'var(--accent)':rc>6?'var(--accent4)':'var(--red)');
-  if(mrrGrow) setC('m-mrr-c',(mrrGrow>0?'↑ ':'↓ ')+Math.abs(mrrGrow)+'% MoM',mrrGrow>0?'var(--accent)':'var(--red)');
-  if(P) setC('m-burn-c',(L.burn>P.burn?'↑ ':'↓ ')+Math.abs(L.burn-P.burn).toFixed(1)+'L MoM',L.burn>P.burn?'var(--red)':'var(--accent)');
-
-  // Burn tab
-  setText('b-total','₹'+L.burn+'L'); setText('b-net','₹'+Math.abs(netBurn)+'L'+(netBurn<=0?' 🎉':''));
-  setText('b-sal',L.salaries?'₹'+L.salaries+'L':'—'); setText('b-cloud',L.cloud?'₹'+L.cloud+'L':'—');
-
-  // Burn breakdown
-  const bd=[['👥','Salaries',L.salaries,'tg'],['☁️','Cloud/Infra',L.cloud,L.cloud>10?'tr':'tg'],['📢','Marketing',L.marketing,'tg']].filter(i=>parseFloat(i[2])>0);
-  g('burn-bd').innerHTML = bd.map(([ic,nm,v])=>`<div class="trow"><div style="font-size:18px">${ic}</div><div style="flex:1"><div style="font-size:13px;font-weight:600">${nm}</div></div><div style="font-family:var(--mono);font-weight:700">₹${v}L</div></div>`).join('')||'<div style="font-size:12px;color:var(--text3);padding:10px 0">Add expense data in data entry</div>';
-
-  // Payroll
-  if(L.salaries){ setText('pay-gross','₹'+L.salaries+'L'); setText('pay-net','₹'+(L.salaries*.78).toFixed(1)+'L'); }
-
-  // Quick stats
-  g('quick-stats').innerHTML=[
-    ['Customers',(L.customers||'—'),'var(--accent2)'],
-    ['Team Size',(L.headcount||'—')+' people','var(--text)'],
-    ['NRR',(L.nrr||'—')+'%',L.nrr>=100?'var(--accent)':L.nrr>=90?'var(--accent4)':'var(--red)'],
-    ['Net Burn','₹'+Math.abs(netBurn)+'L/mo',netBurn<=0?'var(--accent)':'var(--red)'],
-  ].map(([l,v,c])=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)"><span style="font-size:12px;color:var(--text2)">${l}</span><span style="font-size:13px;font-weight:700;font-family:var(--mono);color:${c}">${v}</span></div>`).join('');
-
-  // Chart
-  const max=Math.max(...snaps.slice(-6).map(s=>Math.max(s.burn||0,s.mrr||0)),1);
-  const mos=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  g('main-chart').innerHTML=snaps.slice(-6).map(s=>{
-    const bh=Math.round(((s.burn||0)/max)*90),rh=Math.round(((s.mrr||0)/max)*90);
-    const mo=mos[parseInt(s.month.split('-')[1])-1];
-    return `<div class="cbar-g"><div class="cbar" style="height:${bh}%;background:rgba(255,69,96,.65)"></div><div class="cbar" style="height:${rh}%;background:rgba(0,229,160,.65)"></div><div class="cbar-l">${mo}</div></div>`;
-  }).join('');
-
-  // AI insight
-  const el=g('ai-runway-insight')?.querySelector('.ai-txt');
-  if(el){ if(rc>18)el.innerHTML=`You have <strong>${runway} months runway</strong> — excellent. Revenue ₹${L.mrr}L, Burn ₹${L.burn}L.`; else if(rc>9)el.innerHTML=`<strong>${runway} months runway</strong> — start fundraising conversations now.`; else if(rc>0)el.innerHTML=`<strong style="color:var(--red)">⚠️ ${runway} months left.</strong> Cut burn or raise immediately.`; }
-
-  // Fundraising score
-  const sc={ rg:Math.min(100,Math.max(0,(parseFloat(mrrGrow)||0)*2+50)), be:L.burn>0?Math.min(100,Math.round((L.mrr/L.burn)*100)):50, ret:L.nrr?Math.min(100,L.nrr):70, comp:60, cash:L.cash>0?Math.min(100,Math.round((L.cash*100/L.burn||100)/24*100)):50 };
-  const total=Math.round((sc.rg+sc.be+sc.ret+sc.comp+sc.cash)/5);
-  setText('score-num',total);
-  g('score-ring')?.setAttribute('stroke-dashoffset',251-(251*total/100));
-  setText('fr-badge',total>=75?'Series A Ready':total>=60?'Getting There':'Needs Work');
-  const labs={rg:'Revenue Growth',be:'Burn Efficiency',ret:'NRR/Retention',comp:'Compliance',cash:'Cash Runway'};
-  const cols={rg:'var(--accent)',be:'var(--accent2)',ret:'var(--accent)',comp:'var(--red)',cash:'var(--accent4)'};
-  g('score-bars').innerHTML=Object.entries(sc).map(([k,v])=>`<div style="display:flex;align-items:center;gap:8px"><span style="font-size:10px;color:var(--text2);width:100px;flex-shrink:0">${labs[k]}</span><div style="flex:1;height:4px;background:var(--bg3);border-radius:2px"><div style="width:${v}%;height:100%;border-radius:2px;background:${cols[k]}"></div></div><span style="font-size:10px;font-family:var(--mono);color:${cols[k]}">${Math.round(v)}</span></div>`).join('');
-  g('fr-insight')?.querySelector('.ai-txt') && (g('fr-insight').querySelector('.ai-txt').innerHTML=total>=75?`<strong>Score: ${total}/100 — Series A Ready.</strong> File GST returns first (+18pts), then push LTV:CAC above 3x.`:`<strong>Score: ${total}/100.</strong> File overdue GST, grow NRR above 90%, add 3+ months consistent growth data.`);
-
-  // FR fixes
-  const fixes=[];
-  if(netBurn>0)fixes.push(['⚡','Reach cash flow positive','Cut burn or grow revenue until MRR > burn.','var(--accent)']);
-  fixes.push(['📋','File overdue GST returns','2 overdue filings costing you 18 fundraising score points.','var(--red)']);
-  if(L.nrr&&L.nrr<90)fixes.push(['📈','Improve NRR above 90%','NRR below 90% is a red flag for Series A investors.','var(--accent4)']);
-  g('fr-fixes').innerHTML=fixes.map(([ic,ti,de,co])=>`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;gap:10px;margin-bottom:8px"><span style="font-size:18px;flex-shrink:0">${ic}</span><div><div style="font-size:12px;font-weight:700;color:${co};margin-bottom:3px">${ti}</div><div style="font-size:11px;color:var(--text2)">${de}</div></div></div>`).join('');
-
-  genUpdate();
-}
-
-function setText(id,v){ const el=g(id); if(el)el.textContent=v; }
-function setC(id,v,c){ const el=g(id); if(el){el.textContent=v;el.style.color=c;} }
-function g(id){ return document.getElementById(id); }
-
-// ══════════════════════════════════════
-// BOARD & INVESTOR UPDATE
-// ══════════════════════════════════════
-function buildBoardSlides() {
-  const slides=['🏢 Overview','📈 KPIs','💰 Financials','🗺️ Roadmap','⚠️ Risks','🎯 The Ask'];
-  g('slide-thumbs').innerHTML=slides.map((s,i)=>`<div style="aspect-ratio:16/9;background:${i===0?'rgba(0,229,160,.08)':'var(--bg3)'};border:1px solid ${i===0?'rgba(0,229,160,.3)':'var(--border)'};border-radius:7px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;padding:6px;position:relative" onclick="pickSlide(${i},this)"><div style="position:absolute;top:4px;left:6px;font-size:9px;font-family:var(--mono);color:var(--text3)">0${i+1}</div><div style="font-size:16px">${s.split(' ')[0]}</div><div style="font-size:8px;color:var(--text2);font-weight:600;text-align:center">${s.split(' ').slice(1).join(' ')}</div></div>`).join('');
-  const L=S.snapshots.length?S.snapshots[S.snapshots.length-1]:null;
-  const co=S.company?.name||'Your Company';
-  setText('sp-title',co+' — Board Update');
-  setText('sp-sub',new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'}));
-  if(L){
-    const runway=L.burn>0?(L.cash*100/L.burn).toFixed(1):'—';
-    g('sp-metrics').innerHTML=[['₹'+L.mrr+'L','MRR','var(--accent)'],['₹'+L.burn+'L','Burn','var(--red)'],[runway+'mo','Runway','var(--accent4)'],[L.customers||'—','Customers','var(--accent2)'],[L.nrr?L.nrr+'%':'—','NRR','var(--accent)'],[L.headcount||'—','Team','var(--purple)']].map(([v,l,c])=>`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:10px"><div style="font-size:17px;font-weight:800;color:${c};margin-bottom:2px">${v}</div><div style="font-size:9px;color:var(--text3);font-family:var(--mono)">${l}</div></div>`).join('');
-  }
-}
-
-function pickSlide(i,el){
-  document.querySelectorAll('#slide-thumbs>div').forEach((s,j)=>{s.style.background=j===i?'rgba(0,229,160,.08)':'var(--bg3)';s.style.borderColor=j===i?'rgba(0,229,160,.3)':'var(--border)';});
-  const titles=['Company Overview','Key Performance Indicators','Financial Overview','Product Roadmap','Risk Register','The Ask'];
-  setText('sp-title',(S.company?.name||'Your Company')+' — '+titles[i]);
-}
-
-function genUpdate() {
-  const L=S.snapshots.length?S.snapshots[S.snapshots.length-1]:null;
-  if(!L){g('inv-update').textContent='Add financial data to auto-generate investor update.';return;}
-  const runway=L.burn>0?(L.cash*100/L.burn).toFixed(1):'—';
-  const month=new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'});
-  g('inv-update').innerHTML=`<strong>Subject: ${S.company?.name||'Company'} — ${month} Investor Update</strong>\n\nHi [Investor Name],\n\nHere's our ${month} update.\n\n<strong>📈 Highlights</strong>\n• MRR: ₹${L.mrr}L${L.nrr?' | NRR: '+L.nrr+'%':''}\n• Burn: ₹${L.burn}L/mo | Runway: ${runway} months${L.customers?'\n• Customers: '+L.customers:''}\n\n<strong>🔥 This Month's Focus</strong>\n[Add your key wins here]\n\n<strong>⚠️ Challenges</strong>\n[Add your blockers here]\n\n<strong>🙏 Ask</strong>\n[What do you need from investors?]\n\nBest,\n${localStorage.getItem('cfo_name')||'Founder'}\n${S.company?.name||'Company'}`;
-}
-
-function copyUpdate() {
-  navigator.clipboard.writeText(g('inv-update').innerText).then(()=>showToast('📋 Copied!')).catch(()=>showToast('⚠️ Select and copy manually',true));
-}
-
-// ══════════════════════════════════════
-// DATA ENTRY
-// ══════════════════════════════════════
-function openModal(id){ g('modal-'+id)?.classList.add('open'); if(id==='data')prefillForm(); }
-function closeModal(id){ g('modal-'+id)?.classList.remove('open'); }
-
-function prefillForm() {
-  if(!S.snapshots.length)return;
-  const L=S.snapshots[S.snapshots.length-1];
-  [['de-mrr',L.mrr],['de-burn',L.burn],['de-salaries',L.salaries],['de-cloud',L.cloud],['de-marketing',L.marketing],['de-headcount',L.headcount],['de-customers',L.customers],['de-nrr',L.nrr]].forEach(([id,v])=>{ const el=g(id); if(el&&v)el.value=v; });
-  const cashEl=g('de-cash'); if(cashEl&&L.cash)cashEl.value=(L.cash/100).toFixed(1);
-}
-
-function previewData() {
-  const mrr=parseFloat(g('de-mrr').value)||0,burn=parseFloat(g('de-burn').value)||0,cash=parseFloat(g('de-cash').value)||0;
-  if(!mrr&&!burn){showToast('⚠️ Enter MRR and Burn first');return;}
-  const runway=cash>0?(cash*100/burn).toFixed(1):'—';
-  g('de-preview').style.display='block';
-  g('de-preview-text').innerHTML=`<strong>Runway: ${runway} months</strong> ${parseFloat(runway)<6?'🚨':parseFloat(runway)<12?'⚠️':'✅'}<br>Net burn: ₹${Math.max(burn-mrr,0).toFixed(1)}L/mo${burn>0&&mrr>0?`<br>Revenue covers ${Math.round(mrr/burn*100)}% of burn`:''}`;
-}
-
-async function saveData() {
-  const mrr=parseFloat(g('de-mrr').value),burn=parseFloat(g('de-burn').value);
-  if(!mrr||!burn){showToast('⚠️ MRR and Burn are required',true);return;}
-  const snap={month:g('de-month').value,mrr,burn,salaries:parseFloat(g('de-salaries').value)||0,cloud:parseFloat(g('de-cloud').value)||0,marketing:parseFloat(g('de-marketing').value)||0,cash:Math.round((parseFloat(g('de-cash').value)||0)*100),headcount:parseInt(g('de-headcount').value)||0,customers:parseInt(g('de-customers').value)||0,nrr:parseFloat(g('de-nrr').value)||0};
-  const btn=g('save-btn'); btn.classList.add('loading'); btn.textContent='Saving...';
-  if(!S.isDemo){
-    snap.company_id=S.company.id;
-    const existing=S.snapshots.find(s=>s.month===snap.month);
-    if(existing){
-      const{error}=await sb.from('financial_snapshots').update(snap).eq('id',existing.id);
-      if(error){showToast('❌ '+error.message,true);btn.classList.remove('loading');btn.textContent='💾 Save & Update Dashboard';return;}
-      S.snapshots=S.snapshots.map(s=>s.month===snap.month?{...s,...snap}:s);
-    } else {
-      const{data,error}=await sb.from('financial_snapshots').insert(snap).select().single();
-      if(error){showToast('❌ '+error.message,true);btn.classList.remove('loading');btn.textContent='💾 Save & Update Dashboard';return;}
-      S.snapshots.push(data); S.snapshots.sort((a,b)=>a.month.localeCompare(b.month));
+const statsObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const el = e.target;
+      const text = el.textContent;
+      if (text.includes('38,658')) animateCounter(el, 38658);
+      if (text.includes('4.2')) { /* skip */ }
+      statsObserver.unobserve(el);
     }
-  } else {
-    const ei=S.snapshots.findIndex(s=>s.month===snap.month);
-    if(ei>=0)S.snapshots[ei]={...S.snapshots[ei],...snap};
-    else{S.snapshots.push({id:Date.now(),...snap});S.snapshots.sort((a,b)=>a.month.localeCompare(b.month));}
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat-num').forEach(el => statsObserver.observe(el));
+
+// ── WAITLIST SUBMIT ──
+function submitWaitlist() {
+  const name    = document.getElementById('wl-name').value.trim();
+  const company = document.getElementById('wl-company').value.trim();
+  const email   = document.getElementById('wl-email').value.trim();
+  const phone   = document.getElementById('wl-phone').value.trim();
+  const stage   = document.getElementById('wl-stage').value;
+
+  if (!name || !email || !email.includes('@')) {
+    alert('Please enter your name and a valid email.');
+    return;
   }
-  btn.classList.remove('loading'); btn.textContent='💾 Save & Update Dashboard';
-  closeModal('data'); refreshDashboard(); buildBoardSlides();
-  showToast('✅ Dashboard updated with your real data!');
+
+  // Save to localStorage
+  const leads = JSON.parse(localStorage.getItem('cfo_waitlist') || '[]');
+  leads.push({ name, company, email, phone, stage, ts: new Date().toISOString() });
+  localStorage.setItem('cfo_waitlist', JSON.stringify(leads));
+
+  // Show success
+  document.getElementById('waitlist-form-box').style.display = 'none';
+  document.getElementById('success-msg').classList.add('show');
+
+  console.log('✅ New waitlist signup:', { name, company, email, stage });
 }
 
-// ══════════════════════════════════════
-// SETTINGS
-// ══════════════════════════════════════
-async function saveSettings() {
-  const name=g('set-name').value.trim(),company=g('set-company').value.trim(),stage=g('set-stage').value;
-  localStorage.setItem('cfo_name',name);
-  if(!S.isDemo&&S.company){
-    await sb.from('companies').update({name:company,stage}).eq('id',S.company.id);
-    S.company.name=company; S.company.stage=stage;
-  }
-  setText('sb-uname',name.split(' ')[0]); setText('mh-company',company); setText('topbar-title','Dashboard');
-  showToast('✅ Settings saved!');
-}
-
-function exportData(){const blob=new Blob([JSON.stringify({company:S.company,snapshots:S.snapshots},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='cfo-copilot-data.json';a.click();URL.revokeObjectURL(url);showToast('📥 Exported!');}
-async function clearData(){if(!confirm('Clear all financial data?'))return;if(!S.isDemo)await sb.from('financial_snapshots').delete().eq('company_id',S.company.id);S.snapshots=[];refreshDashboard();showToast('🔄 Data cleared');}
-
-// ══════════════════════════════════════
-// CALCS
-// ══════════════════════════════════════
-function calcScenario(){
-  const L=S.snapshots.length?S.snapshots[S.snapshots.length-1]:null;
-  const bb=L?.burn||42,bm=L?.mrr||28,bc=L?.cash||590;
-  const hire=+g('sl-hire').value,mktg=+g('sl-mktg').value,rev=+g('sl-rev').value,churn=+g('sl-churn').value;
-  setText('s-hire',hire);setText('s-mktg','₹'+mktg+'L/mo');setText('s-rev',rev+'% MoM');setText('s-churn',churn+'% MoM');
-  const nb=bb+hire*2.5+(mktg-5),nr=bm*(1+rev/100),net=Math.max(nb-nr,0.1),rw=(bc/net).toFixed(1);
-  const mos=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const cfp=net<1?'Already CF+':mos[(new Date().getMonth()+Math.ceil(net/(nr*rev/100+0.1)))%12]+' 2026';
-  setText('sc-burn','₹'+Math.round(nb)+'L');setText('sc-rev-val','₹'+Math.round(nr)+'L');setText('sc-runway',rw+' months');setText('sc-cfp',cfp);
-}
-
-function loadPreset(t){const p={base:[3,5,22,3],aggressive:[8,15,40,5],conservative:[0,2,12,1]};const[h,m,r,c]=p[t];g('sl-hire').value=h;g('sl-mktg').value=m;g('sl-rev').value=r;g('sl-churn').value=c;calcScenario();showToast('Scenario "'+t+'" loaded');}
-
-function calcHiring(){
-  const L=S.snapshots.length?S.snapshots[S.snapshots.length-1]:null;
-  const bb=L?.burn||42,bm=L?.mrr||28,bc=L?.cash||590;
-  const eng=+g('hl-eng').value,sal=+g('hl-sal').value,rev=+g('hl-rev').value;
-  setText('h-eng',eng);setText('h-sal',sal);setText('h-rev','+'+rev+'%');
-  const cost=eng*sal,nr=bm*(1+rev/100),nb=bb+cost,net=Math.max(nb-nr,0.1),rw=(bc/net).toFixed(1);
-  const beven=cost>0&&nr>bm?(cost/(nr-bm)).toFixed(1):'—';
-  setText('h-cost','₹'+cost.toFixed(1)+'L/mo');setText('h-runway',rw+' months');setText('h-beven',beven+' months');
-  const v=g('h-verdict'),ins=g('h-insight');
-  if(+rw<8){v.className='tag tr';v.textContent='🚨 Too risky';ins.innerHTML=`Drops runway to <strong style="color:var(--red)">${rw} months</strong>. Raise first.`;}
-  else if(+rw<11){v.className='tag ty';v.textContent='⚠️ Caution';ins.innerHTML=`Runway drops to <strong>${rw} months</strong>. Stagger hires over 2 months.`;}
-  else{v.className='tag tg';v.textContent='✅ Safe to hire';ins.innerHTML=`Hiring <strong>${eng} engineers</strong> → runway <strong>${rw} months</strong>. Safe.`;}
-}
-
-// ══════════════════════════════════════
-// AI CHAT — via Supabase Edge Function
-// ══════════════════════════════════════
-function openChat(){g('chat-overlay').classList.add('open');setTimeout(()=>g('chat-inp').focus(),300);}
-function closeChat(){g('chat-overlay').classList.remove('open');}
-function sendChip(m){g('chat-inp').value=m;sendMsg();}
-
-async function sendMsg() {
-  const inp=g('chat-inp');const msg=inp.value.trim();
-  if(!msg)return;
-
-  const plan=S.sub?.plan||'free',used=S.sub?.ai_messages_used||0,limit=LIMITS[plan]||5;
-  if(used>=limit&&limit!==999999){openModal('upgrade');showToast('⚡ Upgrade to send more AI messages',true);return;}
-
-  const msgsEl=g('chat-msgs');g('chat-chips').style.display='none';
-  const uDiv=document.createElement('div');uDiv.className='cmsg user';uDiv.textContent=msg;msgsEl.appendChild(uDiv);
-  inp.value='';S.chatHist.push({role:'user',content:msg});
-  const tDiv=document.createElement('div');tDiv.className='cmsg ai';
-  tDiv.innerHTML='<div class="typing"><span></span><span></span><span></span></div>';
-  msgsEl.appendChild(tDiv);msgsEl.scrollTop=msgsEl.scrollHeight;
-
-  const L=S.snapshots.length?S.snapshots[S.snapshots.length-1]:null;
-  const runway=L?.burn>0?(L.cash*100/L.burn).toFixed(1):'—';
-  const context=`You are the AI CFO for ${S.company?.name||'this startup'} (${S.company?.stage||'Seed'} · ${S.company?.industry||'B2B SaaS'}).
-${L?`Financials: MRR ₹${L.mrr}L, Burn ₹${L.burn}L, Cash ₹${(L.cash/100).toFixed(1)}Cr, Runway ${runway}mo, Customers ${L.customers||'—'}, NRR ${L.nrr||'—'}%.`:'No financial data yet — encourage them to add data.'}
-Be warm, direct, data-driven. Max 3-4 sentences. Use Indian financial context (lakhs, crores, GST). When greeted warmly, respond warmly.`;
-
-  try {
-    // Call via Supabase Edge Function — API key stays server-side
-    const res=await fetch(AI_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':`Bearer ${SB_KEY}`},
-      body:JSON.stringify({messages:S.chatHist,system:context,user_id:S.isDemo?'demo':S.user?.id})
-    });
-    const data=await res.json();
-
-    if(res.status===429||data.error==='limit_reached'){
-      tDiv.innerHTML=`You've used all <strong>${limit} AI messages</strong> this month. <strong><span style="cursor:pointer;color:var(--accent)" onclick="closeChat();openModal('upgrade')">Upgrade your plan →</span></strong>`;
-      g('limit-banner')?.classList.add('show');
-      return;
-    }
-    if(data.error)throw new Error(data.error);
-
-    const reply=data.reply||'Something went wrong.';
-    S.chatHist.push({role:'assistant',content:reply});
-    if(S.sub&&data.used!==undefined){
-      S.sub.ai_messages_used=data.used;
-      const newLeft=Math.max(0,limit-data.used);
-      setText('chat-usage',limit===999999?'':`${newLeft}/${limit}`);
-      setText('usage-text',limit===999999?'∞ msgs':`${newLeft} msgs left`);
-      if(g('usage-bar'))g('usage-bar').style.width=limit===999999?'5%':`${Math.min(100,(data.used/limit)*100)}%`;
-      if(newLeft<=0)g('limit-banner')?.classList.add('show');
-    }
-    tDiv.innerHTML=reply.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
-
-  } catch(err) {
-    // Smart fallback if Edge Function unavailable
-    if(err.message==='limit_reached')return;
-    const low=msg.toLowerCase();
-    let reply;
-    if(/^(hi|hello|hey|hii|yo|namaste)/.test(low)) reply=`Hey! I'm your AI CFO${S.company?.name?' for '+S.company.name:''}. ${L?`You have <strong>${runway} months runway</strong> right now. `:'Add your financial data to get real insights. '}What's on your mind?`;
-    else if(/runway|survive|cash/.test(low)) reply=L?`Your runway: <strong>${runway} months</strong>. Cash ₹${(L.cash/100).toFixed(1)}Cr, net burn ₹${Math.max(L.burn-L.mrr,0).toFixed(1)}L/mo. ${parseFloat(runway)>12?'Healthy.':'Start fundraising now.'}`:'Add cash and burn data to calculate runway.';
-    else if(/raise|series|funding/.test(low)) reply=L?`Best window: 3+ months of consistent growth. Runway ${runway}mo — ${parseFloat(runway)>12?'build more traction first.':'start conversations now.'}`:'Add financial data for fundraising advice.';
-    else if(/gst|compliance|tax/.test(low)) reply=`<strong>2 overdue filings</strong> — GSTR-3B (23 days) and TDS Q3 (43 days). Penalty ₹18,400. File before any VC meeting.`;
-    else if(/burn|cost|expense/.test(low)) reply=L?`Monthly burn: <strong>₹${L.burn}L</strong>${L.salaries?`. Salaries ₹${L.salaries}L, Cloud ₹${L.cloud}L.`:''}${L.cloud>8?' Cloud costs need attention.':''}`:'Add expense data for burn analysis.';
-    else reply=L?`${S.company?.name||'Your startup'} — <strong>₹${(L.cash/100).toFixed(1)}Cr cash, ${runway}mo runway, ₹${L.mrr}L MRR</strong>. ${parseFloat(runway)>12?'Solid position.':'Focus on extending runway.'} What can I help with?`:`Add financial data using <strong>✏️ Add Data</strong> to unlock real AI insights.`;
-    S.chatHist.push({role:'assistant',content:reply});
-    tDiv.innerHTML=reply;
-  }
-  msgsEl.scrollTop=msgsEl.scrollHeight;
-}
-
-// ══════════════════════════════════════
-// NAV
-// ══════════════════════════════════════
-function navTo(id, el) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  g('page-'+id)?.classList.add('active');
-  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
-  g('snav-'+id)?.classList.add('active');
-  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
-  g('mnav-'+id)?.classList.add('active');
-  setText('topbar-title', PAGE_TITLES[id]||id);
-  window.scrollTo(0,0);
-}
-
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));g('screen-'+id)?.classList.add('active');window.scrollTo(0,0);}
-function showSub(page,sub,el){const pf='sub-'+page+'-';document.querySelectorAll('[id^="'+pf+'"]').forEach(s=>s.classList.remove('active'));el.closest('.stabs').querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));g(pf+sub)?.classList.add('active');el.classList.add('active');}
-
-// ══════════════════════════════════════
-// TOAST
-// ══════════════════════════════════════
-function showToast(msg,isError=false){const t=g('toast');g('toast-text').textContent=msg;t.classList.toggle('error',isError);t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
-
-// ══════════════════════════════════════
-// DEMO DATA
-// ══════════════════════════════════════
-function demoData(){return[{id:1,month:'2025-10',mrr:18,burn:38,cash:620,headcount:9,customers:210,nrr:91,salaries:20,cloud:7,marketing:5},{id:2,month:'2025-11',mrr:20,burn:39,cash:602,headcount:10,customers:234,nrr:92,salaries:21,cloud:7.2,marketing:5},{id:3,month:'2025-12',mrr:22,burn:40,cash:582,headcount:10,customers:255,nrr:92,salaries:22,cloud:7.5,marketing:5.2},{id:4,month:'2026-01',mrr:24,burn:41,cash:566,headcount:11,customers:274,nrr:93,salaries:23,cloud:7.8,marketing:5.3},{id:5,month:'2026-02',mrr:26,burn:41,cash:553,headcount:12,customers:293,nrr:93,salaries:23,cloud:7.9,marketing:5.3},{id:6,month:'2026-03',mrr:28,burn:42,cash:590,headcount:12,customers:312,nrr:94,salaries:24,cloud:8.2,marketing:5.4}];}
-
-// START
-init();
+// View leads in console
+window.viewLeads = () => {
+  const leads = JSON.parse(localStorage.getItem('cfo_waitlist') || '[]');
+  console.table(leads);
+  return leads;
+};
 </script>
 </body>
 </html>
