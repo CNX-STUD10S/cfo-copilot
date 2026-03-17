@@ -1,0 +1,56 @@
+# ══════════════════════════════════════
+# CFO Copilot — .gitignore
+# NEVER commit secrets or sensitive data
+# ══════════════════════════════════════
+
+# Environment variables — NEVER commit these
+.env
+.env.local
+.env.production
+.env.staging
+*.env
+
+# Supabase secrets
+supabase/.env
+supabase/config.toml.local
+
+# API keys and credentials
+secrets.json
+credentials.json
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+
+# Build outputs
+dist/
+build/
+.next/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Logs (may contain sensitive data)
+*.log
+logs/
+
+# Test data with real user info
+test-data/
+fixtures/real-*.json
+
+# Temporary files
+tmp/
+temp/
+*.tmp
