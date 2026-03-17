@@ -462,12 +462,6 @@ The graveyard of funded Indian startups isn't full of bad products — it's full
 
 ---
 
-## 📄 License
-
-MIT License — see [LICENSE](LICENSE) for details.
-
----
-
 ## 🤝 Contributing
 
 This is an early-stage product. If you're an Indian startup founder and want to give feedback, DM [@atharvroy](https://instagram.com) or email hello@cfocopilot.in.
