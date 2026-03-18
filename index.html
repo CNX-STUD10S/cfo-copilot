@@ -255,15 +255,15 @@ footer{border-top:1px solid var(--border);padding:36px 24px;text-align:center;po
     <div class="ttl">₹4.2 Lakh Crore destroyed.<br>All from financial mismanagement.</div>
     <div class="sub" style="margin-bottom:32px">These companies raised hundreds of crores. They still failed because nobody was watching the money.</div>
     <div class="grave-grid">
-      <div class="gc"><div class="gco">TinyOwl</div><div class="gr">Raised ₹252 Cr</div><div class="gw">CAC and LTV never tracked. Burned through capital with no unit economics visibility.</div></div>
-      <div class="gc"><div class="gco">Byju's</div><div class="gr">Raised ₹18.5L Cr</div><div class="gw">Deloitte resigned as auditor. Filings delayed by over a year. Zero financial oversight.</div></div>
-      <div class="gc"><div class="gco">Dunzo</div><div class="gr">Raised ₹500 Cr+</div><div class="gw">No real-time burn tracking. Discovered cash crisis 60 days too late to recover.</div></div>
-      <div class="gc"><div class="gco">BluSmart</div><div class="gr">Raised ₹1,000 Cr+</div><div class="gw">₹168 Cr diverted with zero oversight. No audit trail, no fraud detection.</div></div>
-      <div class="gc"><div class="gco">Stayzilla</div><div class="gr">Raised ₹200 Cr+</div><div class="gw">Consistent losses with no early warning system. Founders had no financial visibility.</div></div>
-      <div class="gc"><div class="gco">Doodhwala</div><div class="gr">Raised ₹20 Cr</div><div class="gw">Missed GST filings triggered MCA action right before their Series A round.</div></div>
+      <div class="gc"><div class="gco">TinyOwl <span style="font-size:9px;color:var(--text3);font-weight:400;font-family:var(--mono)">(Source: Inc42, 2016)</span></div><div class="gr">Raised ₹252 Cr</div><div class="gw">CAC and LTV never tracked. Burned through capital with no unit economics visibility.</div></div>
+      <div class="gc"><div class="gco">Byju's <span style="font-size:9px;color:var(--text3);font-weight:400;font-family:var(--mono)">(Source: MCA filings, public reporting)</span></div><div class="gr">Raised ₹18.5L Cr</div><div class="gw">Deloitte resigned as auditor. Filings delayed by over a year. Zero financial oversight.</div></div>
+      <div class="gc"><div class="gco">Dunzo <span style="font-size:9px;color:var(--text3);font-weight:400;font-family:var(--mono)">(Source: Inc42, public reporting)</span></div><div class="gr">Raised ₹500 Cr+</div><div class="gw">No real-time burn tracking. Discovered cash crisis 60 days too late to recover.</div></div>
+      <div class="gc"><div class="gco">BluSmart <span style="font-size:9px;color:var(--text3);font-weight:400;font-family:var(--mono)">(Source: MCA filings, public reporting)</span></div><div class="gr">Raised ₹1,000 Cr+</div><div class="gw">₹168 Cr diverted with zero oversight. No audit trail, no fraud detection.</div></div>
+      <div class="gc"><div class="gco">Stayzilla <span style="font-size:9px;color:var(--text3);font-weight:400;font-family:var(--mono)">(Source: Inc42, 2017)</span></div><div class="gr">Raised ₹200 Cr+</div><div class="gw">Consistent losses with no early warning system. Founders had no financial visibility.</div></div>
+      <div class="gc"><div class="gco">Doodhwala <span style="font-size:9px;color:var(--text3);font-weight:400;font-family:var(--mono)">(Source: Inc42, 2018)</span></div><div class="gr">Raised ₹20 Cr</div><div class="gw">Missed GST filings triggered MCA action right before their Series A round.</div></div>
     </div>
   </div>
-    <p style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:20px;text-align:center">Sources: MCA filings, Inc42, public reporting. These were not bad founders — they were great founders without financial visibility.</p>
+    <p style="font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:20px;text-align:center">All figures sourced from MCA filings, Inc42, and publicly available reporting. These were not bad founders — they were great founders without financial visibility. Information accurate as of date of publication.</p>
 </section>
 
 <section class="section" style="padding-top:0">
@@ -339,14 +339,8 @@ footer{border-top:1px solid var(--border);padding:36px 24px;text-align:center;po
     <p style="color:var(--text2);font-size:14px;margin-bottom:32px">We personally onboard every early user.</p>
     <div class="wl-card">
       <div id="wl-form">
-        <div class="wl-row">
-          <input class="wi" type="text" id="wl-name" placeholder="Your name">
-          <input class="wi" type="email" id="wl-email" placeholder="you@startup.com">
-        </div>
-        <div class="wl-row">
-          <input class="wi" type="text" id="wl-company" placeholder="Company name">
-          <input class="wi" type="tel" id="wl-phone" placeholder="+91 98765 43210">
-        </div>
+        <input class="wi" type="text" id="wl-name" placeholder="Your name" style="width:100%;margin-bottom:10px">
+        <input class="wi" type="email" id="wl-email" placeholder="you@startup.com" style="width:100%;margin-bottom:10px">
         <select class="ws" id="wl-stage">
           <option value="">Funding stage</option>
           <option>Bootstrapped</option>
@@ -382,6 +376,8 @@ footer{border-top:1px solid var(--border);padding:36px 24px;text-align:center;po
     <a href="app.html">Sign In</a>
     <a href="/cdn-cgi/l/email-protection#89eae7f1efe8e4c9eee4e8e0e5a7eae6e4">Contact</a>
     <a href="blog.html">Blog</a>
+    <a href="vs-tally.html">vs Tally</a>
+    <a href="vs-zoho-books.html">vs Zoho</a>
     <a href="privacy.html">Privacy</a>
     <a href="terms.html">Terms</a>
   </div>
@@ -398,8 +394,6 @@ async function submitWaitlist(){
   const btn=document.querySelector('.wb');
   const name=document.getElementById('wl-name').value.trim();
   const email=document.getElementById('wl-email').value.trim().toLowerCase();
-  const company=document.getElementById('wl-company').value.trim();
-  const phone=document.getElementById('wl-phone').value.trim();
   const stage=document.getElementById('wl-stage').value;
   if(!name){alert('Please enter your name.');return;}
   if(!email||!email.includes('@')){alert('Please enter a valid email.');return;}
@@ -407,7 +401,7 @@ async function submitWaitlist(){
   btn.style.opacity='0.7';
   btn.style.pointerEvents='none';
   try{
-    const{error}=await sb.from('waitlist').insert({name,email,company:company||null,phone:phone||null,stage:stage||null});
+    const{error}=await sb.from('waitlist').insert({name,email,stage:stage||null});
     if(error&&error.code!=='23505')throw error;
   }catch(e){
     const leads=JSON.parse(localStorage.getItem('compyte_waitlist')||'[]');
