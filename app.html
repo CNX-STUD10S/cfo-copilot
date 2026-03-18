@@ -10,7 +10,7 @@
 <meta http-equiv="X-XSS-Protection" content="1; mode=block">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CFO Copilot — App v4.1</title>
+<title>Compyte — App v4.1</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onerror="window.supabaseLoadError=true"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" onerror="console.warn('XLSX not loaded')"></script>
@@ -333,12 +333,12 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
 <div class="app-grid"></div>
 <div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
 
-<div id="loading" style="display:none"><div class="load-ring"><div class="load-icon-inner">₹</div></div><div class="load-txt">Loading CFO Copilot...</div></div>
+<div id="loading" style="display:none"><div class="load-ring"><div class="load-icon-inner">₹</div></div><div class="load-txt">Loading Compyte...</div></div>
 
 <!-- ══ LOGIN ══ -->
 <div class="screen auth-screen active" id="screen-login">
   <div class="auth-card">
-    <div class="a-logo"><div class="a-logo-icon">₹</div><span class="a-logo-name">CFO Copilot</span></div>
+    <div class="a-logo"><div class="a-logo-icon">₹</div><span class="a-logo-name">Compyte</span></div>
     <h1 class="a-title">Welcome 👋</h1>
     <p class="a-sub">Enter your email to get a magic link. No password needed.</p>
     <input class="a-input" type="email" id="login-email" placeholder="you@startup.com" autocomplete="email" onkeydown="if(event.key==='Enter')sendLink()">
@@ -364,7 +364,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
 <!-- ══ ONBOARDING ══ -->
 <div class="screen ob-screen" id="screen-onboard">
   <div class="ob-top">
-    <div class="ob-logo"><div class="ob-logo-icon">₹</div>CFO Copilot</div>
+    <div class="ob-logo"><div class="ob-logo-icon">₹</div>Compyte</div>
     <div class="ob-cnt" id="ob-cnt">Step 1 of 4</div>
   </div>
   <div class="prog-track">
@@ -461,7 +461,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
 <!-- ══ APP ══ -->
 <div class="screen app-screen" id="screen-app">
   <aside class="sidebar">
-    <div class="sb-logo"><div class="sb-logo-icon">₹</div><span class="sb-logo-name">CFO Copilot</span></div>
+    <div class="sb-logo"><div class="sb-logo-icon">₹</div><span class="sb-logo-name">Compyte</span></div>
     <nav class="sb-nav">
       <div class="sb-section">Overview</div>
       <div class="sb-item active" id="snav-dashboard" onclick="navTo('dashboard',this)"><span class="sb-item-icon">📊</span> Dashboard</div>
@@ -498,7 +498,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
     </div>
 
     <div class="mobile-hdr">
-      <div class="mh-logo"><div class="mh-logo-icon">₹</div><span class="mh-logo-name" id="mh-company">CFO Copilot</span></div>
+      <div class="mh-logo"><div class="mh-logo-icon">₹</div><span class="mh-logo-name" id="mh-company">Compyte</span></div>
       <div class="mh-right">
         <button class="mh-btn mh-data-btn" onclick="openModal('import')">📥</button>
         <button class="mh-btn mh-data-btn" onclick="openModal('data')">✏️</button>
@@ -1143,7 +1143,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
               <option value="investor">Investor — View dashboard only</option>
             </select>
             <div style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">PERSONAL MESSAGE (optional)</div>
-            <input class="de-inp" type="text" id="invite-msg" placeholder="Hey, I've added you to our CFO Copilot..." style="margin-bottom:14px;width:100%">
+            <input class="de-inp" type="text" id="invite-msg" placeholder="Hey, I've added you to our Compyte..." style="margin-bottom:14px;width:100%">
             <button class="btn bp btn-full" onclick="sendInvite()">✉️ Send Invite</button>
           </div>
           <div>
@@ -1220,7 +1220,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
             </div>
           </div>
         </div>
-        <div style="text-align:center;padding:12px;font-size:11px;color:var(--text3);font-family:var(--mono)">CFO Copilot v3.0 · Built by Atharv Roy · Age 16 🇮🇳</div>
+        <div style="text-align:center;padding:12px;font-size:11px;color:var(--text3);font-family:var(--mono)">Compyte v3.0 · Built by Atharv Roy · Age 16 🇮🇳</div>
       </div>
 
     </div><!-- /page-wrap -->
@@ -1384,7 +1384,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
 <div id="tour-highlight" class="tour-highlight" style="display:none"></div>
 <div id="tour-tooltip" class="tour-tooltip" style="display:none">
   <div class="tour-step" id="tour-step-label">STEP 1 OF 5</div>
-  <div class="tour-title" id="tour-title">Welcome to CFO Copilot!</div>
+  <div class="tour-title" id="tour-title">Welcome to Compyte!</div>
   <div class="tour-desc" id="tour-desc">Let's take a quick tour of your AI CFO.</div>
   <div class="tour-btns">
     <button class="tour-btn tour-skip" onclick="skipTour()">Skip Tour</button>
@@ -1863,7 +1863,7 @@ function launchApp(showTour=false) {
   const fields = {
     'sb-avatar':name.slice(0,2).toUpperCase(), 'sb-uname':name.split(' ')[0],
     'sb-uplan':(plan.charAt(0).toUpperCase()+plan.slice(1))+' · '+(limit===999999?'Unlimited':limit+' msgs/mo'),
-    'mh-company':S.company?.name||'CFO Copilot',
+    'mh-company':S.company?.name||'Compyte',
     'topbar-title':'Dashboard', 'dash-title':S.company?.name||'Dashboard',
     'set-email':S.user?.email||'Demo', 'set-company':S.company?.name||'', 'set-name':name,
     'plan-name':(plan.charAt(0).toUpperCase()+plan.slice(1))+' Plan',
@@ -2262,7 +2262,7 @@ Company Authorized Signatory: ___________________
 Investor Authorized Signatory: ___________________
 Date: ___________________
 
-Generated by CFO Copilot · cfocopilot.in`;
+Generated by Compyte · cfocopilot.in`;
 
   const blob = new Blob([content], { type:'text/plain' });
   const url  = URL.createObjectURL(blob);
@@ -2427,7 +2427,7 @@ function downloadTemplate(type) {
       ['2026-03',28,42,590,24,8.2,5.4,12,312,94],
     ];
     const ws = XLSX.utils.aoa_to_sheet(data);
-    XLSX.utils.book_append_sheet(wb, ws, 'CFO Copilot Data');
+    XLSX.utils.book_append_sheet(wb, ws, 'Compyte Data');
     XLSX.writeFile(wb, 'cfo-copilot-template.xlsx');
   }
   showToast('📥 Template downloaded!');
@@ -2903,8 +2903,8 @@ function cfRow(label, rows, fn, color, bold=false, indent=false, highlight=false
   </tr>`;
 }
 
-function downloadPL() { buildPL(); const content = g('pl-table')?.innerText||''; const blob=new Blob([`CFO COPILOT — P&L STATEMENT\n${S.company?.name||''}\n${'='.repeat(40)}\n\n`+content],{type:'text/plain'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='PL-Statement.txt'; a.click(); URL.revokeObjectURL(url); showToast('📥 P&L exported!'); }
-function downloadBS() { buildBalanceSheet(); const content = g('bs-table')?.innerText||''; const blob=new Blob([`CFO COPILOT — BALANCE SHEET\n${S.company?.name||''}\n${'='.repeat(40)}\n\n`+content],{type:'text/plain'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='Balance-Sheet.txt'; a.click(); URL.revokeObjectURL(url); showToast('📥 Balance sheet exported!'); }
+function downloadPL() { buildPL(); const content = g('pl-table')?.innerText||''; const blob=new Blob([`Compyte — P&L STATEMENT\n${S.company?.name||''}\n${'='.repeat(40)}\n\n`+content],{type:'text/plain'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='PL-Statement.txt'; a.click(); URL.revokeObjectURL(url); showToast('📥 P&L exported!'); }
+function downloadBS() { buildBalanceSheet(); const content = g('bs-table')?.innerText||''; const blob=new Blob([`Compyte — BALANCE SHEET\n${S.company?.name||''}\n${'='.repeat(40)}\n\n`+content],{type:'text/plain'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='Balance-Sheet.txt'; a.click(); URL.revokeObjectURL(url); showToast('📥 Balance sheet exported!'); }
 function downloadCF() { buildCashFlow(); showToast('📥 Cash flow exported!'); }
 
 // ══════════════════════════════════════
@@ -3674,7 +3674,7 @@ function scheduleNotifications() {
   const now = new Date();
   const overdue = document.querySelectorAll('.tag.tr');
   if (overdue.length > 0 && Notification.permission === 'granted') {
-    new Notification('⚠️ CFO Copilot Alert', {
+    new Notification('⚠️ Compyte Alert', {
       body: `You have ${overdue.length} overdue compliance filing(s). File immediately to avoid penalties.`,
       icon: '/favicon.ico'
     });
@@ -3767,7 +3767,7 @@ function openRazorpay(planName, amount) {
     key: 'rzp_test_YOUR_KEY_HERE', // Replace with your Razorpay key
     amount: amount * 100, // in paise
     currency: 'INR',
-    name: 'CFO Copilot',
+    name: 'Compyte',
     description: planName + ' Plan — Monthly Subscription',
     image: 'https://cnx-stud10s.github.io/cfo-copilot/logo.png',
     handler: function(response) {
