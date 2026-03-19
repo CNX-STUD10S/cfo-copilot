@@ -387,3 +387,54 @@ Maintain `outreach/tracker.json` with fields:
 - id, name, company, stage, platform, connection_sent_date, connection_accepted, dm1_sent, dm1_replied, dm2_sent, converted, notes
 - When I say "update tracker", ask me for the status updates and modify the file
 - When I say "show stats", calculate: total sent, acceptance rate, reply rate, conversion rate
+
+---
+
+## n8n Outreach Automation
+
+I use n8n (self-hosted) to automate Compyte's sales pipeline.
+
+### Stack
+
+- n8n: workflow orchestration (self-hosted or cloud free tier)
+- Apify: LinkedIn profile scraping
+- Claude API: message personalization
+- Google Sheets: lead tracker / lightweight CRM
+- Browserflow or PhantomBuster: sends LinkedIn connection requests + DMs
+
+### ICP search queries for Apify
+
+- "founder seed India SaaS"
+- "co-founder pre-seed Bangalore startup"
+- "CEO raised funding India 2025 2026"
+- "startup founder Hyderabad fintech edtech healthtech"
+
+### When I ask about n8n workflows:
+
+- Help me build/debug n8n workflow JSON
+- Write the Claude API system prompt for the AI personalization node
+- Generate the Google Sheets schema for lead tracking
+- Write the conditional logic for follow-up sequences
+- Debug HTTP request nodes, webhook configs, and cron triggers
+
+### Lead scoring criteria (for AI scoring node):
+
+- Recently funded (last 6 months) = +30 points
+- Seed/Pre-Seed stage = +20 points
+- B2B SaaS or FinTech = +15 points
+- Based in Bangalore/Hyderabad/Mumbai/Delhi = +10 points
+- Team size 5-50 = +10 points
+- Has no CFO/finance head on LinkedIn = +15 points
+- Score > 60 = high priority, send immediately
+- Score 40-60 = medium, batch weekly
+- Score < 40 = skip
+
+### Daily limits (LinkedIn safety):
+
+- Week 1: 5 connection requests/day
+- Week 2: 10/day
+- Week 3: 15/day
+- Week 4+: 20/day max
+- Random delay between actions: 45-120 seconds
+- Always view profile before sending connection request
+- Never send identical messages to anyone
