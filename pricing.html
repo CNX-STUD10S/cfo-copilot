@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing — Compyte AI CFO | From ₹0/month</title>
+<meta name="description" content="Compyte starts free. Paid plans from ₹2,999/month — 10x cheaper than a fractional CFO. No credit card required.">
+<meta property="og:title" content="Compyte Pricing — AI CFO from ₹2,999/month">
+<meta property="og:url" content="https://compyte.in/pricing.html">
+<link rel="canonical" href="https://compyte.in/pricing.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04070D;--bg2:#080D16;--bg3:#0D1420;--border:#152030;--border2:#1E2E42;--accent:#00E5A0;--accent2:#0099FF;--red:#FF4560;--purple:#8B5CF6;--text:#ECF0F8;--text2:#8B9AB0;--text3:#3A4F66;--font:'Syne',sans-serif;--mono:'JetBrains Mono',monospace;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+.grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,229,160,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,160,.025) 1px,transparent 1px);background-size:64px 64px;}
+.orb1{position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(0,229,160,.07) 0%,transparent 70%);top:-200px;right:-150px;pointer-events:none;z-index:0;}
+.orb2{position:fixed;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(0,153,255,.05) 0%,transparent 70%);bottom:-100px;left:-100px;pointer-events:none;z-index:0;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(4,7,13,.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+.nav-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;}
+.nav-logo img{height:32px;width:32px;border-radius:8px;object-fit:cover;}
+.nav-links{display:flex;gap:28px;list-style:none;}
+.nav-links a{color:var(--text2);font-size:14px;font-weight:500;transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:var(--text);}
+.nav-cta{display:flex;gap:10px;}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text2);padding:8px 18px;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;}
+.btn-primary{background:var(--accent);color:#000;padding:8px 18px;border-radius:8px;border:none;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;}
+.container{max-width:1080px;margin:0 auto;padding:100px 24px 80px;position:relative;z-index:2;}
+.lbl{font-size:10px;font-family:var(--mono);letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:12px;}
+.ttl{font-size:clamp(32px,5vw,56px);font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-bottom:16px;}
+
+/* Billing toggle */
+.billing-toggle{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:48px;}
+.toggle-label{font-size:13px;color:var(--text2);}
+.toggle-label.active{color:var(--text);font-weight:600;}
+.toggle{width:44px;height:24px;background:var(--border2);border-radius:100px;cursor:pointer;position:relative;transition:background .2s;}
+.toggle.on{background:var(--accent);}
+.toggle-thumb{width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:left .2s;}
+.toggle.on .toggle-thumb{left:23px;}
+.save-badge{background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.2);color:var(--accent);font-size:10px;font-family:var(--mono);padding:2px 8px;border-radius:100px;letter-spacing:.06em;}
+
+/* Pricing grid */
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:48px;}
+.pc{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:32px;position:relative;}
+.pc.pop{border-color:rgba(0,229,160,.4);background:rgba(0,229,160,.025);}
+.pbadge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--accent);color:#000;font-size:9px;font-weight:700;padding:4px 12px;border-radius:100px;font-family:var(--mono);letter-spacing:.08em;white-space:nowrap;}
+.pname{font-size:18px;font-weight:700;margin-bottom:4px;}
+.ptag{font-size:11px;color:var(--text3);font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;margin-bottom:20px;}
+.pamt{font-size:42px;font-weight:800;letter-spacing:-.03em;line-height:1;}
+.pamt sup{font-size:18px;vertical-align:top;margin-top:8px;}
+.pamt span{font-size:14px;font-weight:400;color:var(--text2);}
+.pper{font-size:11px;color:var(--text3);font-family:var(--mono);margin:6px 0 8px;}
+.roi{font-size:11px;color:var(--accent);font-family:var(--mono);margin-bottom:24px;}
+.pbtn{width:100%;padding:12px;border-radius:10px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;margin-bottom:24px;transition:all .15s;}
+.pbtn.p{background:var(--accent);color:#000;border:none;}
+.pbtn.p:hover{background:#00ffb3;}
+.pbtn.g{background:transparent;border:1px solid var(--border2);color:var(--text2);}
+.pbtn.g:hover{border-color:var(--text2);color:var(--text);}
+.divider{height:1px;background:var(--border);margin-bottom:20px;}
+.pf{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5;}
+.pf-check{color:var(--accent);font-weight:700;flex-shrink:0;}
+.pf-cross{color:var(--text3);flex-shrink:0;}
+
+/* Comparison table */
+.comp-table{width:100%;border-collapse:collapse;margin-bottom:48px;font-size:13px;}
+.comp-table th{padding:14px 16px;text-align:left;font-size:11px;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--text3);border-bottom:2px solid var(--border2);}
+.comp-table th:not(:first-child){text-align:center;}
+.comp-table td{padding:12px 16px;border-bottom:1px solid var(--border);}
+.comp-table td:not(:first-child){text-align:center;}
+.comp-table tr:last-child td{border-bottom:none;}
+.comp-table td:first-child{color:var(--text2);}
+.comp-table .hl{background:rgba(0,229,160,.03);}
+.yes{color:var(--accent);font-weight:700;}
+.no{color:var(--text3);}
+.partial{color:var(--text2);}
+
+/* FAQ */
+.faq-list{max-width:680px;margin:0 auto 48px;}
+.faq-item{border-bottom:1px solid var(--border);padding:20px 0;}
+.faq-q{font-size:15px;font-weight:700;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;}
+.faq-a{font-size:13px;color:var(--text2);line-height:1.75;margin-top:12px;display:none;}
+.faq-a.show{display:block;}
+
+footer{border-top:1px solid var(--border);padding:36px 24px;text-align:center;position:relative;z-index:2;}
+.fl{display:flex;align-items:center;gap:8px;justify-content:center;font-weight:800;font-size:16px;margin-bottom:16px;}
+.fl img{height:26px;width:26px;border-radius:6px;object-fit:cover;}
+.flinks{display:flex;gap:20px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;}
+.flinks a{color:var(--text3);font-size:12px;}
+.flinks a:hover{color:var(--text);}
+.fc2{font-size:11px;color:var(--text3);font-family:var(--mono);}
+@media(max-width:768px){nav{padding:0 16px;}.nav-links{display:none;}.price-grid{grid-template-columns:1fr;}.comp-table{font-size:11px;}}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div><div class="orb1"></div><div class="orb2"></div>
+<nav>
+  <div class="nav-logo"><a href="index.html" style="display:flex;align-items:center;gap:10px;color:inherit"><img src="logo.jpeg" alt="Compyte">Compyte</a></div>
+  <ul class="nav-links">
+    <li><a href="features.html">Features</a></li>
+    <li><a href="pricing.html" class="active">Pricing</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="blog.html">Blog</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-cta">
+    <button class="btn-ghost" onclick="location.href='app.html'">Sign In</button>
+    <button class="btn-primary" onclick="location.href='app.html'">Start Free →</button>
+  </div>
+</nav>
+
+<div class="container">
+  <div style="text-align:center;margin-bottom:32px">
+    <div class="lbl">Pricing</div>
+    <div class="ttl">Start free.<br>Upgrade when you're ready.</div>
+    <p style="font-size:15px;color:var(--text2);margin-bottom:32px">A fractional CFO costs ₹8-15L/year. Compyte starts at ₹0.</p>
+  </div>
+
+  <!-- Billing toggle -->
+  <div class="billing-toggle">
+    <span class="toggle-label active" id="monthly-label">Monthly</span>
+    <div class="toggle" id="billing-toggle" onclick="toggleBilling()"><div class="toggle-thumb"></div></div>
+    <span class="toggle-label" id="annual-label">Annual</span>
+    <span class="save-badge">SAVE 20%</span>
+  </div>
+
+  <div class="price-grid">
+    <div class="pc">
+      <div class="pname">Free</div>
+      <div class="ptag">Try it out</div>
+      <div class="pamt"><sup>₹</sup>0<span>/mo</span></div>
+      <div class="pper">Forever free</div>
+      <div class="roi" style="color:var(--text3)">No credit card required</div>
+      <button class="pbtn g" onclick="location.href='app.html'">Get Started Free →</button>
+      <div class="divider"></div>
+      <div class="pf"><div class="pf-check">✓</div>5 AI CFO messages/month</div>
+      <div class="pf"><div class="pf-check">✓</div>Full dashboard access</div>
+      <div class="pf"><div class="pf-check">✓</div>Compliance calendar</div>
+      <div class="pf"><div class="pf-check">✓</div>Runway tracking</div>
+      <div class="pf"><div class="pf-check">✓</div>1 company</div>
+      <div class="pf"><div class="pf-cross">✗</div><span style="color:var(--text3)">Bank statement import</span></div>
+      <div class="pf"><div class="pf-cross">✗</div><span style="color:var(--text3)">Invoice tracking</span></div>
+    </div>
+
+    <div class="pc pop">
+      <div class="pbadge">MOST POPULAR</div>
+      <div class="pname">Starter</div>
+      <div class="ptag">For growing startups</div>
+      <div class="pamt" id="starter-amt"><sup>₹</sup>2,999<span>/mo</span></div>
+      <div class="pper" id="starter-per">Billed monthly</div>
+      <div class="roi">A human CFO costs ₹15L/year → save ₹12L</div>
+      <button class="pbtn p" onclick="location.href='app.html'">Start Starter →</button>
+      <div class="divider"></div>
+      <div class="pf"><div class="pf-check">✓</div>100 AI messages/month</div>
+      <div class="pf"><div class="pf-check">✓</div>All 15+ features</div>
+      <div class="pf"><div class="pf-check">✓</div>Bank statement import</div>
+      <div class="pf"><div class="pf-check">✓</div>Invoice tracking</div>
+      <div class="pf"><div class="pf-check">✓</div>Team access (3 members)</div>
+      <div class="pf"><div class="pf-check">✓</div>Board deck generator</div>
+      <div class="pf"><div class="pf-check">✓</div>VC Readiness Score</div>
+    </div>
+
+    <div class="pc">
+      <div class="pname">Pro</div>
+      <div class="ptag">For scaling teams</div>
+      <div class="pamt" id="pro-amt"><sup>₹</sup>7,999<span>/mo</span></div>
+      <div class="pper" id="pro-per">Billed monthly</div>
+      <div class="roi">Unlimited AI + 3 companies + CA access</div>
+      <button class="pbtn g" onclick="location.href='app.html'">Start Pro →</button>
+      <div class="divider"></div>
+      <div class="pf"><div class="pf-check">✓</div>Unlimited AI messages</div>
+      <div class="pf"><div class="pf-check">✓</div>3 companies</div>
+      <div class="pf"><div class="pf-check">✓</div>Unlimited team members</div>
+      <div class="pf"><div class="pf-check">✓</div>CA/Auditor access role</div>
+      <div class="pf"><div class="pf-check">✓</div>Priority support</div>
+      <div class="pf"><div class="pf-check">✓</div>Custom integrations</div>
+      <div class="pf"><div class="pf-check">✓</div>Advanced fraud detection</div>
+    </div>
+  </div>
+
+  <!-- Enterprise -->
+  <div style="background:var(--bg2);border:1px solid rgba(255,215,0,.2);border-radius:16px;overflow:hidden;margin-bottom:48px">
+    <div style="background:rgba(255,215,0,.05);border-bottom:1px solid rgba(255,215,0,.15);padding:20px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+      <div>
+        <div style="font-size:10px;font-family:var(--mono);color:#FFD700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">Enterprise</div>
+        <div style="font-size:22px;font-weight:800">₹24,999<span style="font-size:14px;font-weight:400;color:var(--text2)">/month</span></div>
+        <div style="font-size:11px;color:var(--text3);font-family:var(--mono)">For accelerators, CA firms, hedge funds & large teams</div>
+      </div>
+      <button onclick="location.href='contact.html'" style="background:#FFD700;color:#000;padding:13px 28px;border-radius:9px;border:none;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap">Contact Sales →</button>
+    </div>
+    <div style="padding:24px 28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px">
+      <div style="display:flex;gap:8px;font-size:12px;color:var(--text2)"><span style="color:var(--accent);font-weight:700">✓</span>Everything in Pro</div>
+      <div style="display:flex;gap:8px;font-size:12px;color:var(--text2)"><span style="color:var(--accent);font-weight:700">✓</span>Hedge fund analytics</div>
+      <div style="display:flex;gap:8px;font-size:12px;color:var(--text2)"><span style="color:var(--accent);font-weight:700">✓</span>Custom integrations</div>
+      <div style="display:flex;gap:8px;font-size:12px;color:var(--text2)"><span style="color:var(--accent);font-weight:700">✓</span>Dedicated CFO advisor</div>
+      <div style="display:flex;gap:8px;font-size:12px;color:var(--text2)"><span style="color:var(--accent);font-weight:700">✓</span>Unlimited companies</div>
+      <div style="display:flex;gap:8px;font-size:12px;color:var(--text2)"><span style="color:var(--accent);font-weight:700">✓</span>White-label options</div>
+      <div style="display:flex;gap:8px;font-size:12px;color:var(--text2)"><span style="color:var(--accent);font-weight:700">✓</span>SLA-backed uptime guarantee</div>
+      <div style="display:flex;gap:8px;font-size:12px;color:var(--text2)"><span style="color:var(--accent);font-weight:700">✓</span>Dedicated account manager</div>
+      <div style="display:flex;gap:8px;font-size:12px;color:var(--text2)"><span style="color:var(--accent);font-weight:700">✓</span>Custom onboarding & training</div>
+      <div style="display:flex;gap:8px;font-size:12px;color:var(--text2)"><span style="color:var(--accent);font-weight:700">✓</span>Priority 2-hour support</div>
+      <div style="display:flex;gap:8px;font-size:12px;color:var(--text2)"><span style="color:var(--accent);font-weight:700">✓</span>CA partner dashboard access</div>
+      <div style="display:flex;gap:8px;font-size:12px;color:var(--text2)"><span style="color:var(--accent);font-weight:700">✓</span>Investor-grade data room export</div>
+    </div>
+  </div>
+
+  <!-- Feature comparison -->
+  <div style="text-align:center;margin-bottom:24px">
+    <div class="lbl">Compare Plans</div>
+    <div style="font-size:28px;font-weight:800;margin-bottom:32px">Everything side by side.</div>
+  </div>
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>Free</th>
+        <th style="color:var(--accent)">Starter</th>
+        <th>Pro</th>
+        <th style="color:#FFD700">Enterprise</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>AI CFO messages</td><td class="partial">5/month</td><td class="yes hl">100/month</td><td class="yes">Unlimited</td><td class="yes" style="color:#FFD700">✓</td></tr>
+      <tr><td>Runway tracking</td><td class="yes">✓</td><td class="yes hl">✓</td><td class="yes">✓</td><td class="yes" style="color:#FFD700">✓</td></tr>
+      <tr><td>GST compliance calendar</td><td class="yes">✓</td><td class="yes hl">✓</td><td class="yes">✓</td><td class="yes" style="color:#FFD700">✓</td></tr>
+      <tr><td>P&L / Balance Sheet</td><td class="yes">✓</td><td class="yes hl">✓</td><td class="yes">✓</td><td class="yes" style="color:#FFD700">✓</td></tr>
+      <tr><td>Bank statement import</td><td class="no">✗</td><td class="yes hl">✓</td><td class="yes">✓</td><td class="yes" style="color:#FFD700">✓</td></tr>
+      <tr><td>Invoice tracking</td><td class="no">✗</td><td class="yes hl">✓</td><td class="yes">✓</td><td class="yes" style="color:#FFD700">✓</td></tr>
+      <tr><td>Board deck generator</td><td class="no">✗</td><td class="yes hl">✓</td><td class="yes">✓</td><td class="yes" style="color:#FFD700">✓</td></tr>
+      <tr><td>VC Readiness Score</td><td class="no">✗</td><td class="yes hl">✓</td><td class="yes">✓</td><td class="yes" style="color:#FFD700">✓</td></tr>
+      <tr><td>Cap table + dilution</td><td class="no">✗</td><td class="yes hl">✓</td><td class="yes">✓</td><td class="yes" style="color:#FFD700">✓</td></tr>
+      <tr><td>Payroll engine (PF/ESI/TDS)</td><td class="no">✗</td><td class="yes hl">✓</td><td class="yes">✓</td><td class="yes" style="color:#FFD700">✓</td></tr>
+      <tr><td>Team members</td><td class="partial">1</td><td class="yes hl">3</td><td class="yes">Unlimited</td><td class="yes" style="color:#FFD700">✓</td></tr>
+      <tr><td>Companies</td><td class="partial">1</td><td class="yes hl">1</td><td class="yes">3</td><td class="yes" style="color:#FFD700">✓</td></tr>
+      <tr><td>CA/Auditor access</td><td class="no">✗</td><td class="no hl">✗</td><td class="yes">✓</td><td class="yes" style="color:#FFD700">✓</td></tr>
+      <tr><td>Priority support</td><td class="no">✗</td><td class="no hl">✗</td><td class="yes">✓</td><td class="yes" style="color:#FFD700">✓</td></tr>
+    </tbody>
+  </table>
+
+  <!-- FAQ -->
+  <div style="text-align:center;margin-bottom:32px">
+    <div class="lbl">FAQ</div>
+    <div style="font-size:28px;font-weight:800;margin-bottom:32px">Common questions.</div>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Do I need a credit card to start? <span>+</span></div><div class="faq-a">No. The free plan is completely free with no credit card required. You can use Compyte as long as you want on the free tier.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime? <span>+</span></div><div class="faq-a">Yes. Cancel anytime from your settings. No questions asked, no penalties.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is my financial data safe? <span>+</span></div><div class="faq-a">Yes. 256-bit AES encryption. Data stored on AWS Mumbai (ap-south-1). Row-level security — only you can see your company's data. We never sell your data.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is Compyte a replacement for my CA? <span>+</span></div><div class="faq-a">Compyte handles financial visibility, compliance tracking, and AI-powered guidance. It is not a licensed CA or financial advisor. We recommend using Compyte alongside your CA — you'll save them hours every month.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Do you offer refunds? <span>+</span></div><div class="faq-a">Yes. If you're unsatisfied within 7 days of any charge, email cnxfam@gmail.com for a full refund.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can my CA or investor access Compyte? <span>+</span></div><div class="faq-a">Yes. On Starter and Pro plans, you can invite team members with role-based access. CA and Investor roles have read-only access to relevant financial data.</div></div>
+  </div>
+</div>
+
+<footer>
+  <div class="fl"><a href="index.html" style="display:flex;align-items:center;gap:8px;color:inherit"><img src="logo.jpeg" alt="Compyte">Compyte</a></div>
+  <div class="flinks">
+    <a href="features.html">Features</a><a href="pricing.html">Pricing</a><a href="about.html">About</a>
+    <a href="contact.html">Contact</a><a href="blog.html">Blog</a><a href="ca-partners.html">CA Partners</a>
+    <a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="app.html">Sign In</a>
+  </div>
+  <div style="display:flex;gap:16px;justify-content:center;margin-bottom:16px">
+    <a href="https://x.com/CompyteIN" target="_blank" style="color:var(--text3);font-size:12px;font-family:var(--mono)" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">𝕏 @CompyteIN</a>
+    <a href="https://x.com/CompyteHQ" target="_blank" style="color:var(--text3);font-size:12px;font-family:var(--mono)" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">𝕏 @CompyteHQ</a>
+    <a href="https://www.linkedin.com/in/atharv-roy-6690342b6/" target="_blank" style="color:var(--text3);font-size:12px;font-family:var(--mono)" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">in Atharv Roy</a>
+  </div>
+  <div class="fc2">© 2026 Compyte · Built in India 🇮🇳 by Atharv Roy · Age 16</div>
+</footer>
+
+<script>
+let annual = false;
+function toggleBilling() {
+  annual = !annual;
+  const t = document.getElementById('billing-toggle');
+  t.classList.toggle('on', annual);
+  document.getElementById('monthly-label').classList.toggle('active', !annual);
+  document.getElementById('annual-label').classList.toggle('active', annual);
+  document.getElementById('starter-amt').innerHTML = annual ? '<sup>₹</sup>2,399<span>/mo</span>' : '<sup>₹</sup>2,999<span>/mo</span>';
+  document.getElementById('starter-per').textContent = annual ? 'Billed ₹28,788/year (save ₹7,200)' : 'Billed monthly';
+  document.getElementById('pro-amt').innerHTML = annual ? '<sup>₹</sup>6,399<span>/mo</span>' : '<sup>₹</sup>7,999<span>/mo</span>';
+  document.getElementById('pro-per').textContent = annual ? 'Billed ₹76,788/year (save ₹19,200)' : 'Billed monthly';
+}
+function toggleFaq(el) {
+  const a = el.nextElementSibling;
+  const isOpen = a.classList.contains('show');
+  document.querySelectorAll('.faq-a').forEach(x => x.classList.remove('show'));
+  document.querySelectorAll('.faq-q span').forEach(x => x.textContent = '+');
+  if (!isOpen) { a.classList.add('show'); el.querySelector('span').textContent = '−'; }
+}
+</script>
+</body>
+</html>
