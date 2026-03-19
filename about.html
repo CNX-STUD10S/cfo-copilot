@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Compyte | Built by Atharv Roy, Age 16</title>
+<meta name="description" content="Compyte was built by Atharv Roy, a 16-year-old founder from India, to give every Indian startup the financial intelligence they deserve.">
+<meta property="og:title" content="About Compyte — India's AI CFO">
+<meta property="og:url" content="https://compyte.in/about.html">
+<link rel="canonical" href="https://compyte.in/about.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#04070D;--bg2:#080D16;--bg3:#0D1420;--border:#152030;--border2:#1E2E42;--accent:#00E5A0;--accent2:#0099FF;--red:#FF4560;--text:#ECF0F8;--text2:#8B9AB0;--text3:#3A4F66;--font:'Syne',sans-serif;--mono:'JetBrains Mono',monospace;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+.grid-bg{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,229,160,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,160,.025) 1px,transparent 1px);background-size:64px 64px;}
+.orb1{position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(0,229,160,.07) 0%,transparent 70%);top:-200px;right:-150px;pointer-events:none;z-index:0;}
+.orb2{position:fixed;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(0,153,255,.05) 0%,transparent 70%);bottom:-100px;left:-100px;pointer-events:none;z-index:0;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px;background:rgba(4,7,13,.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+.nav-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;}
+.nav-logo img{height:32px;width:32px;border-radius:8px;object-fit:cover;}
+.nav-links{display:flex;gap:28px;list-style:none;}
+.nav-links a{color:var(--text2);font-size:14px;font-weight:500;transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:var(--text);}
+.nav-cta{display:flex;gap:10px;}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--text2);padding:8px 18px;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;}
+.btn-primary{background:var(--accent);color:#000;padding:8px 18px;border-radius:8px;border:none;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;}
+.container{max-width:800px;margin:0 auto;padding:100px 24px 80px;position:relative;z-index:2;}
+.lbl{font-size:10px;font-family:var(--mono);letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:12px;}
+p{font-size:15px;color:var(--text2);line-height:1.85;margin-bottom:20px;}
+p strong{color:var(--text);}
+h2{font-size:24px;font-weight:800;margin:48px 0 16px;}
+.founder-card{background:var(--bg2);border:1px solid rgba(0,229,160,.15);border-radius:20px;padding:40px;margin:48px 0;display:flex;gap:32px;align-items:flex-start;}
+.founder-avatar{width:80px;height:80px;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#000;flex-shrink:0;}
+.founder-name{font-size:20px;font-weight:800;margin-bottom:4px;}
+.founder-title{font-size:12px;font-family:var(--mono);color:var(--accent);margin-bottom:16px;}
+.founder-bio{font-size:13px;color:var(--text2);line-height:1.75;}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:32px 0;}
+.stat-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+.stat-n{font-size:28px;font-weight:800;color:var(--accent);font-family:var(--mono);}
+.stat-l{font-size:11px;color:var(--text3);font-family:var(--mono);margin-top:4px;}
+.mission-box{background:rgba(0,229,160,.03);border:1px solid rgba(0,229,160,.1);border-radius:16px;padding:32px;margin:32px 0;}
+.tech-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:24px 0;}
+.tech-item{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;align-items:center;gap:10px;font-size:12px;font-weight:600;}
+.tech-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);}
+footer{border-top:1px solid var(--border);padding:36px 24px;text-align:center;position:relative;z-index:2;}
+.fl{display:flex;align-items:center;gap:8px;justify-content:center;font-weight:800;font-size:16px;margin-bottom:16px;}
+.fl img{height:26px;width:26px;border-radius:6px;object-fit:cover;}
+.flinks{display:flex;gap:20px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;}
+.flinks a{color:var(--text3);font-size:12px;}
+.flinks a:hover{color:var(--text);}
+.fc2{font-size:11px;color:var(--text3);font-family:var(--mono);}
+@media(max-width:768px){nav{padding:0 16px;}.nav-links{display:none;}.founder-card{flex-direction:column;}.stats-row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div><div class="orb1"></div><div class="orb2"></div>
+<nav>
+  <div class="nav-logo"><a href="index.html" style="display:flex;align-items:center;gap:10px;color:inherit"><img src="logo.jpeg" alt="Compyte">Compyte</a></div>
+  <ul class="nav-links">
+    <li><a href="features.html">Features</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="about.html" class="active">About</a></li>
+    <li><a href="blog.html">Blog</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="nav-cta">
+    <button class="btn-ghost" onclick="location.href='app.html'">Sign In</button>
+    <button class="btn-primary" onclick="location.href='app.html'">Start Free →</button>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="lbl">Our Story</div>
+  <h1 style="font-size:clamp(36px,5vw,64px);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-bottom:32px">Every Indian startup deserves financial intelligence.</h1>
+
+  <p>In 2023, the MCA struck off 38,658 Indian companies. Most of them didn't have bad products. They didn't have bad teams. They ran out of money — or more precisely, they ran out of <strong>visibility</strong>. They didn't know the crisis was coming until it was already a crisis.</p>
+
+  <p>That's the gap Compyte exists to close. <strong>Not another accounting tool. Not another dashboard. An AI CFO — the financial brain every Indian startup needs but most can't afford.</strong></p>
+
+  <div class="mission-box">
+    <div class="lbl">Mission</div>
+    <p style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:0">"Give every Indian startup the financial intelligence of a world-class CFO — at a price every founder can afford."</p>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-n">15+</div><div class="stat-l">Features Built</div></div>
+    <div class="stat-box"><div class="stat-n">₹2,999</div><div class="stat-l">Per Month</div></div>
+    <div class="stat-box"><div class="stat-n">10x</div><div class="stat-l">Cheaper Than a Human CFO</div></div>
+  </div>
+
+  <!-- Founder -->
+  <div class="founder-card">
+    <div class="founder-avatar">A</div>
+    <div>
+      <div class="founder-name">Atharv Roy</div>
+      <div class="founder-title">Founder & Builder · Age 16 · India</div>
+      <div class="founder-bio">
+        I built Compyte because I kept watching great Indian startups fail for the wrong reasons. Not bad products. Not bad teams. No financial visibility.<br><br>
+        I'm 16 years old. I built the entire Compyte platform — backend, AI, security, frontend — because I believe every Indian founder deserves a CFO, not just the ones who can afford ₹15 lakhs a year.<br><br>
+        Compyte is built with real technology: Supabase for the backend, Claude AI for intelligence, and a security architecture that I personally audited. This isn't a hackathon project. It's a production product built to last.
+      </div>
+    </div>
+  </div>
+
+  <h2>How We Built It</h2>
+  <p>Compyte is built on a stack chosen for reliability and India-first performance. Every design decision was made with the Indian startup founder in mind — rupees, lakhs, crores, GST, TDS, PF. Not a global tool adapted for India. <strong>Built for India from the ground up.</strong></p>
+
+  <div class="tech-grid">
+    <div class="tech-item"><div class="tech-dot"></div>Supabase Backend</div>
+    <div class="tech-item"><div class="tech-dot"></div>Claude AI (Anthropic)</div>
+    <div class="tech-item"><div class="tech-dot"></div>256-bit AES Encryption</div>
+    <div class="tech-item"><div class="tech-dot"></div>Row-Level Security</div>
+    <div class="tech-item"><div class="tech-dot"></div>AWS Mumbai (ap-south-1)</div>
+    <div class="tech-item"><div class="tech-dot"></div>DPDP Act Compliant</div>
+    <div class="tech-item"><div class="tech-dot"></div>JWT Authentication</div>
+    <div class="tech-item"><div class="tech-dot"></div>Rate Limited APIs</div>
+  </div>
+
+  <h2>Why "Compyte"?</h2>
+  <p><strong>Compute + Finance.</strong> The name reflects what we do — computational intelligence applied to the financial problems that keep Indian founders up at night. It's also a nod to the fact that the future of finance is computation — not spreadsheets, not CAs on retainer, but AI that watches your money 24/7.</p>
+
+  <h2>What We Believe</h2>
+  <p>We believe the <strong>38% of Indian startups that fail from cash flow mismanagement</strong> don't have to fail. We believe financial intelligence shouldn't be gated behind a ₹15 lakh hiring budget. We believe a 16-year-old in India can build something that changes how founders run their companies.</p>
+  <p>We're just getting started.</p>
+
+  <div style="background:var(--bg2);border:1px solid rgba(0,229,160,.2);border-radius:16px;padding:32px;text-align:center;margin-top:48px">
+    <div style="font-size:24px;font-weight:800;margin-bottom:8px">Try Compyte free today.</div>
+    <p style="margin-bottom:24px">No credit card. No setup. Just sign up and start.</p>
+    <button onclick="location.href='app.html'" style="background:var(--accent);color:#000;padding:13px 28px;border-radius:10px;border:none;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer">Start Free →</button>
+  </div>
+</div>
+
+<footer>
+  <div class="fl"><a href="index.html" style="display:flex;align-items:center;gap:8px;color:inherit"><img src="logo.jpeg" alt="Compyte">Compyte</a></div>
+  <div class="flinks">
+    <a href="features.html">Features</a><a href="pricing.html">Pricing</a><a href="about.html">About</a>
+    <a href="contact.html">Contact</a><a href="blog.html">Blog</a><a href="ca-partners.html">CA Partners</a>
+    <a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="app.html">Sign In</a>
+  </div>
+  <div style="display:flex;gap:16px;justify-content:center;margin-bottom:16px">
+    <a href="https://x.com/CompyteIN" target="_blank" style="color:var(--text3);font-size:12px;font-family:var(--mono)" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">𝕏 @CompyteIN</a>
+    <a href="https://x.com/CompyteHQ" target="_blank" style="color:var(--text3);font-size:12px;font-family:var(--mono)" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">𝕏 @CompyteHQ</a>
+    <a href="https://www.linkedin.com/in/atharv-roy-6690342b6/" target="_blank" style="color:var(--text3);font-size:12px;font-family:var(--mono)" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">in Atharv Roy</a>
+  </div>
+  <div class="fc2">© 2026 Compyte · Built in India 🇮🇳 by Atharv Roy · Age 16</div>
+</footer>
+</body>
+</html>
