@@ -346,3 +346,44 @@ When implementing new features, prefer extending existing page sections over cre
 - **Do use `₹ Lakhs` for all monetary units** — not rupees (₹), not crores
 - **Do call `logAudit()`** after any financial data mutation
 - **Do test demo mode** after any change to the dashboard or financial calculations
+
+---
+
+## Outreach Automation Workflow
+
+When I give you a CSV or list of founder prospects, here's how to process them:
+
+### Input format
+
+I'll provide: Name, Company, Stage, Amount Raised, Industry, LinkedIn URL, any notes.
+
+### What to generate
+
+For each prospect, output:
+
+1. A personalized LinkedIn connection request (under 300 chars, mention their company + raise)
+1. A follow-up DM if they accept (under 60 words, pitch Compyte, link to compyte.in)
+1. A second follow-up if no reply after 3 days (different angle — compliance pain or runway visibility)
+
+### Personalization rules
+
+- Always mention their company name and something specific (industry, stage, raise amount)
+- Reference a real pain point for their stage:
+  - Pre-Seed/Bootstrapped → "tracking expenses in spreadsheets"
+  - Seed → "investor wants monthly MRR updates and you're doing it manually"
+  - Series A → "GST compliance is a mess and your CA charges ₹15L/year"
+- Never sound like a bot. Sound like a 16yo founder who built something cool and wants feedback.
+- Vary the messages — don't use identical templates for everyone
+
+### Output format
+
+Generate as a markdown table or JSON I can paste into my tracker:
+| Name | Company | Connection Note | DM 1 | DM 2 |
+
+### Tracker management
+
+Maintain `outreach/tracker.json` with fields:
+
+- id, name, company, stage, platform, connection_sent_date, connection_accepted, dm1_sent, dm1_replied, dm2_sent, converted, notes
+- When I say "update tracker", ask me for the status updates and modify the file
+- When I say "show stats", calculate: total sent, acceptance rate, reply rate, conversion rate
