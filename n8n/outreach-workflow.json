@@ -1,0 +1,361 @@
+{
+  "name": "Compyte — Daily LinkedIn Outreach",
+  "nodes": [
+    {
+      "id": "sch-001",
+      "name": "9am IST Daily",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [200, 300],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "30 3 * * 1-5"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gsh-001",
+      "name": "Sheets — Read Existing Leads",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [440, 300],
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1",
+          "name": "Google Sheets (Compyte)"
+        }
+      }
+    },
+    {
+      "id": "cod-001",
+      "name": "Code — Store Existing URLs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Runs first: cache all known LinkedIn URLs to deduplicate Apify results\nconst rows = $input.all();\nconst existingUrls = rows\n  .map(r => {\n    const url = r.json.linkedin_url || r.json.LinkedIn_URL || '';\n    return url.toLowerCase().replace(/\\?.*$/, '').trim();\n  })\n  .filter(url => url.includes('linkedin.com'));\n\n$getWorkflowStaticData('global').existingUrls = existingUrls;\n\nreturn [{ json: { stored_count: existingUrls.length } }];"
+      }
+    },
+    {
+      "id": "api-001",
+      "name": "Apify — Scrape LinkedIn Founders",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [920, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.apify.com/v2/acts/curious_coder~linkedin-search-export/run-sync-get-dataset-items?token={{ $env.APIFY_TOKEN }}&timeout=300&maxItems=10",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"searchUrl\": \"https://www.linkedin.com/search/results/people/?keywords=founder%20seed%20India%20SaaS&origin=GLOBAL_SEARCH_HEADER\",\n  \"maxResults\": 10,\n  \"proxy\": {\n    \"useApifyProxy\": true,\n    \"apifyProxyGroups\": [\"RESIDENTIAL\"]\n  }\n}",
+        "options": {
+          "timeout": 360000,
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "cod-002",
+      "name": "Code — ICP Score + Dedupe",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1160, 300],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// ICP scoring criteria from CLAUDE.md\nconst existingUrls = new Set($getWorkflowStaticData('global').existingUrls || []);\n\n// Apify sync endpoint returns an array — unwrap if needed\nconst rawInput = $input.all();\nlet profiles;\nif (rawInput.length === 1 && Array.isArray(rawInput[0].json)) {\n  profiles = rawInput[0].json.map(p => ({ json: p }));\n} else {\n  profiles = rawInput;\n}\n\nconst scored = profiles.map(item => {\n  const d = item.json;\n\n  // Normalise fields (Apify actor output varies by actor version)\n  const name = [d.name, d.fullName, `${d.firstName || ''} ${d.lastName || ''}`]\n    .map(v => (v || '').trim()).find(v => v.length > 1) || 'Unknown';\n  const company = (d.company || d.currentCompany || d.companyName || 'Unknown').trim();\n  const rawUrl = d.url || d.profileUrl || d.linkedinUrl || d.linkedInUrl || '';\n  const linkedin_url = rawUrl.toLowerCase().replace(/\\?.*$/, '').trim();\n  const industry = (d.industry || d.companyIndustry || '').toLowerCase();\n  const location = (d.location || d.city || d.geoLocation || '').toLowerCase();\n  const stage = (d.fundingStage || d.stage || d.fundingRound || '').toLowerCase();\n  const headline = (d.headline || d.title || d.occupation || '').toLowerCase();\n  const employeeCount = parseInt(d.employeeCount || d.teamSize || d.companySize || 0, 10);\n\n  // Skip if no URL or already in sheet\n  if (!linkedin_url || existingUrls.has(linkedin_url)) return null;\n\n  // ── ICP Scoring (from CLAUDE.md) ─────────────────────────\n  let score = 0;\n\n  // +30  Recently funded (last 6 months)\n  const fundedStr = d.fundedDate || d.lastFundingDate || d.fundingDate || '';\n  if (fundedStr) {\n    const funded = new Date(fundedStr);\n    if (!isNaN(funded.getTime())) {\n      const monthsAgo = (Date.now() - funded.getTime()) / (1000 * 60 * 60 * 24 * 30);\n      if (monthsAgo <= 6) score += 30;\n    }\n  }\n\n  // +20  Seed / Pre-Seed stage\n  if (['seed', 'pre-seed', 'pre seed', 'bootstrapped', 'angel']\n    .some(s => stage.includes(s) || headline.includes(s))) score += 20;\n\n  // +15  B2B SaaS or FinTech\n  if (['saas', 'fintech', 'b2b', 'edtech', 'healthtech', 'software', 'financial technology']\n    .some(k => industry.includes(k))) score += 15;\n\n  // +10  Indian metro city\n  if (['bangalore', 'bengaluru', 'hyderabad', 'mumbai', 'delhi', 'gurugram',\n       'gurgaon', 'noida', 'pune', 'chennai'].some(c => location.includes(c))) score += 10;\n\n  // +10  Team size 5–50\n  if (employeeCount >= 5 && employeeCount <= 50) score += 10;\n\n  // +15  No CFO / finance head on LinkedIn\n  if (!headline.includes('cfo') && !headline.includes('chief financial') &&\n      !headline.includes('finance head')) score += 15;\n\n  return {\n    json: {\n      name,\n      company,\n      linkedin_url,\n      industry,\n      location,\n      stage: stage || 'seed',\n      amount_raised: d.fundingAmount || d.totalFunding || d.lastFundingAmount || '',\n      icp_score: score,\n      priority: score >= 60 ? 'high' : score >= 40 ? 'medium' : 'low',\n      scraped_date: new Date().toISOString().split('T')[0]\n    }\n  };\n}).filter(Boolean);\n\n// Return sentinel if nothing passed — Filter node will drop it cleanly\nif (scored.length === 0) {\n  return [{ json: { icp_score: 0, _sentinel: true } }];\n}\nreturn scored;"
+      }
+    },
+    {
+      "id": "flt-001",
+      "name": "Filter — Score ≥ 40",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [1400, 300],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "score-gte-40",
+              "leftValue": "={{ $json.icp_score }}",
+              "rightValue": 40,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "not-sentinel",
+              "leftValue": "={{ $json._sentinel }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true
+      }
+    },
+    {
+      "id": "spl-001",
+      "name": "Loop Over Leads",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [1640, 300],
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      }
+    },
+    {
+      "id": "cod-003",
+      "name": "Code — Build Claude Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1880, 300],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const lead = $json;\n\nconst systemPrompt = `You are an outreach assistant for Compyte (compyte.in) — an AI CFO platform built for Indian startups.\n\nGenerate 3 personalised LinkedIn outreach messages. Return ONLY valid JSON with exactly these 3 keys: connection_request, dm1, dm2.\n\nRules:\n• connection_request — max 300 chars. Mention company name + stage or raise amount. Sound like a 23yo founder who built something cool, NOT a sales rep. Never start with \"Hi I'm from Compyte\".\n• dm1 — max 60 words. Pitch Compyte as their financial OS. Use ONE stage-specific pain point:\n  - Pre-Seed/Bootstrapped → \"tracking burn in spreadsheets\"\n  - Seed → \"manually pulling MRR numbers for investor updates\"\n  - Series A → \"paying a CA ₹15L/year for GST compliance\"\n  End message with: compyte.in\n• dm2 — max 60 words. 3-day follow-up, completely different angle. Focus on compliance (GSTR-3B, TDS deadlines) OR runway visibility. Zero repetition from dm1.\n\nNever sound templated. Vary sentence structure. Be human.`;\n\nconst userMessage = `Lead:\nName: ${lead.name}\nCompany: ${lead.company}\nStage: ${lead.stage || 'Seed'}\nIndustry: ${lead.industry || 'SaaS'}\nLocation: ${lead.location || 'India'}\nAmount Raised: ${lead.amount_raised || 'Not disclosed'}\nICP Score: ${lead.icp_score}/100 (${lead.priority} priority)`;\n\nreturn {\n  json: {\n    ...lead,\n    _claude_body: JSON.stringify({\n      model: 'claude-haiku-4-5-20251001',\n      max_tokens: 800,\n      system: systemPrompt,\n      messages: [{ role: 'user', content: userMessage }]\n    })\n  }\n};"
+      }
+    },
+    {
+      "id": "api-002",
+      "name": "HTTP — Claude API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2120, 300],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $env.ANTHROPIC_API_KEY }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "string",
+        "body": "={{ $json._claude_body }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "neverError": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "cod-004",
+      "name": "Code — Parse Claude Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2360, 300],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const claudeResp = $json;\n// Retrieve original lead data from the node that still has it\nconst lead = $('Code — Build Claude Request').item.json;\n\n// Extract text from Anthropic response format\nconst rawText = claudeResp.content?.[0]?.text || '';\n\n// Parse JSON block from Claude's response\nlet msgs = { connection_request: '', dm1: '', dm2: '' };\ntry {\n  const match = rawText.match(/\\{[\\s\\S]*\\}/);\n  if (match) msgs = JSON.parse(match[0]);\n} catch (_) {\n  // Graceful fallback — use raw text split into thirds\n  msgs.connection_request = rawText.slice(0, 299);\n  msgs.dm1 = rawText.slice(299, 599);\n  msgs.dm2 = rawText.slice(599, 899);\n}\n\nreturn {\n  json: {\n    // Lead fields\n    name: lead.name,\n    company: lead.company,\n    stage: lead.stage,\n    industry: lead.industry,\n    location: lead.location,\n    linkedin_url: lead.linkedin_url,\n    amount_raised: lead.amount_raised,\n    icp_score: lead.icp_score,\n    priority: lead.priority,\n    scraped_date: lead.scraped_date,\n    // Generated messages\n    connection_request: (msgs.connection_request || '').slice(0, 299),\n    dm1: msgs.dm1 || '',\n    dm2: msgs.dm2 || '',\n    // Tracker fields (initial state — matches tracker.json schema)\n    status: 'new',\n    platform: 'linkedin',\n    connection_sent_date: '',\n    connection_accepted: false,\n    dm1_sent_date: '',\n    dm1_replied: false,\n    dm2_sent_date: '',\n    converted: false,\n    notes: `ICP: ${lead.priority} (${lead.icp_score}pts)`\n  }\n};"
+      }
+    },
+    {
+      "id": "gsh-002",
+      "name": "Sheets — Append Lead",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.4,
+      "position": [2600, 300],
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "YOUR_GOOGLE_SHEET_ID",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Leads",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "name":                  "={{ $json.name }}",
+            "company":               "={{ $json.company }}",
+            "stage":                 "={{ $json.stage }}",
+            "industry":              "={{ $json.industry }}",
+            "location":              "={{ $json.location }}",
+            "linkedin_url":          "={{ $json.linkedin_url }}",
+            "amount_raised":         "={{ $json.amount_raised }}",
+            "icp_score":             "={{ $json.icp_score }}",
+            "priority":              "={{ $json.priority }}",
+            "connection_request":    "={{ $json.connection_request }}",
+            "dm1":                   "={{ $json.dm1 }}",
+            "dm2":                   "={{ $json.dm2 }}",
+            "status":                "={{ $json.status }}",
+            "platform":              "={{ $json.platform }}",
+            "scraped_date":          "={{ $json.scraped_date }}",
+            "connection_sent_date":  "={{ $json.connection_sent_date }}",
+            "connection_accepted":   "={{ $json.connection_accepted }}",
+            "dm1_sent_date":         "={{ $json.dm1_sent_date }}",
+            "dm1_replied":           "={{ $json.dm1_replied }}",
+            "dm2_sent_date":         "={{ $json.dm2_sent_date }}",
+            "converted":             "={{ $json.converted }}",
+            "notes":                 "={{ $json.notes }}"
+          },
+          "matchingColumns": [],
+          "schema": []
+        },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "1",
+          "name": "Google Sheets (Compyte)"
+        }
+      }
+    },
+    {
+      "id": "cod-005",
+      "name": "Code — Calc Random Delay",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2840, 300],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// LinkedIn safety: random delay 45–120 seconds between actions\nconst waitSeconds = Math.floor(Math.random() * 76) + 45;\nreturn { json: { ...($input.item.json), _wait_seconds: waitSeconds } };"
+      }
+    },
+    {
+      "id": "wai-001",
+      "name": "Wait — Random Delay",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [3080, 300],
+      "parameters": {
+        "resume": "timeInterval",
+        "amount": "={{ $json._wait_seconds }}",
+        "unit": "seconds"
+      }
+    },
+    {
+      "id": "nop-001",
+      "name": "All Leads Processed",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [1640, 500],
+      "parameters": {}
+    }
+  ],
+  "connections": {
+    "9am IST Daily": {
+      "main": [
+        [{ "node": "Sheets — Read Existing Leads", "type": "main", "index": 0 }]
+      ]
+    },
+    "Sheets — Read Existing Leads": {
+      "main": [
+        [{ "node": "Code — Store Existing URLs", "type": "main", "index": 0 }]
+      ]
+    },
+    "Code — Store Existing URLs": {
+      "main": [
+        [{ "node": "Apify — Scrape LinkedIn Founders", "type": "main", "index": 0 }]
+      ]
+    },
+    "Apify — Scrape LinkedIn Founders": {
+      "main": [
+        [{ "node": "Code — ICP Score + Dedupe", "type": "main", "index": 0 }]
+      ]
+    },
+    "Code — ICP Score + Dedupe": {
+      "main": [
+        [{ "node": "Filter — Score ≥ 40", "type": "main", "index": 0 }]
+      ]
+    },
+    "Filter — Score ≥ 40": {
+      "main": [
+        [{ "node": "Loop Over Leads", "type": "main", "index": 0 }]
+      ]
+    },
+    "Loop Over Leads": {
+      "main": [
+        [{ "node": "Code — Build Claude Request", "type": "main", "index": 0 }],
+        [{ "node": "All Leads Processed",        "type": "main", "index": 0 }]
+      ]
+    },
+    "Code — Build Claude Request": {
+      "main": [
+        [{ "node": "HTTP — Claude API", "type": "main", "index": 0 }]
+      ]
+    },
+    "HTTP — Claude API": {
+      "main": [
+        [{ "node": "Code — Parse Claude Response", "type": "main", "index": 0 }]
+      ]
+    },
+    "Code — Parse Claude Response": {
+      "main": [
+        [{ "node": "Sheets — Append Lead", "type": "main", "index": 0 }]
+      ]
+    },
+    "Sheets — Append Lead": {
+      "main": [
+        [{ "node": "Code — Calc Random Delay", "type": "main", "index": 0 }]
+      ]
+    },
+    "Code — Calc Random Delay": {
+      "main": [
+        [{ "node": "Wait — Random Delay", "type": "main", "index": 0 }]
+      ]
+    },
+    "Wait — Random Delay": {
+      "main": [
+        [{ "node": "Loop Over Leads", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "tags": ["outreach", "linkedin", "compyte"],
+  "triggerCount": 0,
+  "updatedAt": "2026-03-19T03:30:00.000Z",
+  "versionId": "compyte-outreach-v1"
+}
