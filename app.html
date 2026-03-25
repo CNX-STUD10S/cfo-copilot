@@ -10,7 +10,7 @@
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="X-XSS-Protection" content="1; mode=block">
 <meta name="referrer" content="no-referrer">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Compyte — App v4.1</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onerror="window.supabaseLoadError=true"></script>
@@ -45,7 +45,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 @keyframes loadfade{0%,100%{opacity:.4}50%{opacity:1}}
 .screen{display:none;min-height:100vh;position:relative;z-index:1;}
 .screen.active{display:flex;}
-.auth-screen{flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;min-height:100vh;}
+.auth-screen{flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;min-height:100vh;background:var(--bg);min-height:100vh;}
 .auth-card{width:100%;max-width:420px;background:rgba(8,13,22,.95);border:1px solid var(--border2);border-radius:24px;padding:38px 32px;position:relative;overflow:hidden;box-shadow:0 32px 100px rgba(0,0,0,.7),0 0 0 1px rgba(0,229,160,.04);}
 .auth-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),transparent);}
 .auth-card::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse 300px 200px at 50% 0%,rgba(0,229,160,.04),transparent);pointer-events:none;}
@@ -411,7 +411,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
       <div class="ob-h">Tell us about your startup 🏢</div>
       <div class="ob-p">Your AI CFO learns your context from day one.</div>
       <div class="fl">Company Name</div>
-      <input class="fi" type="text" id="ob-company" placeholder="e.g. ZeroPeak Labs" style="margin-bottom:10px">
+      <input class="fi" type="text" id="ob-company" placeholder="e.g. FounderCo India" style="margin-bottom:10px">
       <div class="fl">Your Name</div>
       <input class="fi" type="text" id="ob-name" placeholder="e.g. Atharv Roy" style="margin-bottom:14px">
       <div class="fl">Your Role</div>
@@ -1428,7 +1428,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
 const SB_URL  = 'https://qxztwdiccfmryeoqeeue.supabase.co';
 const SB_KEY  = 'sb_publishable_hl1wyWw3dLi87BMgoU3tcw_YgWk-So_';
 const AI_URL  = `${SB_URL}/functions/v1/ai-chat`;
-const REDIRECT = 'https://cnx-stud10s.github.io/cfo-copilot/app.html';
+const REDIRECT = window.location.hostname === 'compyte.in' ? 'https://compyte.in/app.html' : 'https://cnx-stud10s.github.io/cfo-copilot/app.html';
 const LIMITS   = { free:5, starter:100, pro:999999, enterprise:999999 };
 const PAGE_TITLES = { dashboard:'Dashboard', fundraise:'Fundraising', compliance:'Compliance', ops:'Operations', settings:'Settings' };
 
@@ -1660,6 +1660,11 @@ async function init() {
     }
     // If no session, login is already showing (default in HTML)
 
+    // Auto-focus email if coming from signup CTA
+    if (window.location.search.includes('signup=true') || window.location.search.includes('ref=')) {
+      setTimeout(() => { g('login-email')?.focus(); }, 300);
+    }
+
     sb.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
         secLog('AUTH_SIGNIN', 'User signed in', 'INFO');
@@ -1769,7 +1774,7 @@ async function sendLink(resend=false) {
 }
 
 function demoLogin() {
-  S = { user:{id:'demo',email:'demo-user@example.com'}, company:{id:'demo',name:'ZeroPeak Labs',stage:'Seed',industry:'B2B SaaS',founded:'2024-01'}, snapshots:demoData(), sub:{plan:'starter',ai_messages_used:0}, isDemo:true, chatMsgs:[], isSending:false };
+  S = { user:{id:'demo',email:'demo-user@example.com'}, company:{id:'demo',name:'FounderCo India',stage:'Seed',industry:'B2B SaaS',founded:'2024-01'}, snapshots:demoData(), sub:{plan:'starter',ai_messages_used:0}, isDemo:true, chatMsgs:[], isSending:false };
   // Demo invoices
   invoices = [
     { id:1, client:'Acme Technologies', num:'INV-001', amount:85000, due:'2026-03-31', status:'paid', desc:'SaaS subscription Q1' },
@@ -1779,12 +1784,12 @@ function demoLogin() {
   ];
   // Demo team
   teamMembers = [
-    { id:1, email:'ca@zeropeak.in', role:'ca', status:'active', invited:new Date().toISOString() },
+    { id:1, email:'ca@foundercoindia.in', role:'ca', status:'active', invited:new Date().toISOString() },
     { id:2, email:'investor@fund.vc', role:'investor', status:'invited', invited:new Date().toISOString() },
   ];
   g('loading').style.display='none';
   launchApp();
-  showToast('🚀 Demo mode — data not saved to DB');
+  // Demo banner hidden per product spec
 }
 
 async function signOut() {
@@ -3837,7 +3842,22 @@ Object.assign(PAGE_TITLES, _extraTitles);
 
 // START — login is visible by default, init runs silently in background
 if (typeof supabase !== 'undefined' && !window.supabaseLoadError) {
-  init();
+  init().catch(err => {
+    console.error('Init error:', err);
+    // Fallback — always show login screen so user is never stuck
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const loginScreen = document.getElementById('screen-login');
+    if (loginScreen) loginScreen.classList.add('active');
+    const loading = document.getElementById('loading');
+    if (loading) loading.style.display = 'none';
+  });
+} else {
+  // Supabase failed to load — still show login screen
+  setTimeout(() => {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const loginScreen = document.getElementById('screen-login');
+    if (loginScreen) loginScreen.classList.add('active');
+  }, 500);
 }
 </script>
 
