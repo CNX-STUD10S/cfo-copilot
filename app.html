@@ -11,7 +11,7 @@
 <meta http-equiv="X-XSS-Protection" content="1; mode=block">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Compyte — App v4.1</title>
+<title>Compyte — App v4.1.2</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onerror="window.supabaseLoadError=true"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" onerror="console.warn('XLSX not loaded')"></script>
@@ -150,7 +150,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .ni-label{font-size:8.5px;font-family:var(--mono);color:var(--text3);text-align:center;}
 .ni.active .ni-label{color:var(--accent);}
 .ni-dot{position:absolute;top:3px;right:6px;width:6px;height:6px;border-radius:50%;background:var(--red);box-shadow:0 0 6px var(--red);}
-.page{display:none;}
+.page{display:none;position:relative;}
 .page.active{display:block;animation:fadeInUp .25s ease;}
 .stabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:22px;padding-bottom:2px;}
 .stabs::-webkit-scrollbar{display:none;}
@@ -689,6 +689,13 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
 
       <!-- COMPLIANCE -->
       <div class="page" id="page-compliance">
+  <div style="background:rgba(255,165,0,.08);border:1px solid rgba(255,165,0,.2);border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+    <div>
+      <div style="font-size:10px;font-family:var(--mono);color:rgba(255,165,0,.8);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px">Next Compliance Deadline</div>
+      <div style="font-size:14px;font-weight:700" id="next-deadline-text">GSTR-3B — Due 20th of this month</div>
+    </div>
+    <div style="font-size:11px;font-family:var(--mono);color:var(--text3)" id="next-deadline-days"></div>
+  </div>
         <div class="ph"><div class="ph-title">Compliance</div><div class="ph-sub">GST · TDS · ROC · LABOUR LAW</div></div>
         <div class="mg4">
           <div class="mc"><div class="mc-val" id="comp-overdue" style="color:var(--red)">0</div><div class="mc-label">OVERDUE</div></div>
@@ -770,7 +777,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
       </div>
 
       <!-- ══ FINANCIALS PAGE ══ -->
-      <div class="page" id="page-financials">
+      <div class="page" id="page-financials" style="position:relative;overflow:visible;">
         <div class="ph"><div class="ph-title">Financials</div><div class="ph-sub">P&L · BALANCE SHEET · CASH FLOW</div></div>
         <div class="stabs">
           <div class="stab active" onclick="showSub('financials','pl',this)">📊 P&L</div>
@@ -991,7 +998,13 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
               <div style="margin-top:14px">
                 <div style="font-size:10px;font-family:var(--mono);color:var(--text3);margin-bottom:10px;letter-spacing:.06em">SUPPORTED BANKS</div>
                 <div style="display:flex;gap:8px;flex-wrap:wrap">
-                  ${['HDFC','ICICI','Axis','Kotak','SBI','Yes Bank','IndusInd'].map(b=>`<span style="background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:6px;padding:4px 10px;font-size:11px;font-family:var(--mono)">${b}</span>`).join('')}
+                  <span style="background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:6px;padding:4px 10px;font-size:11px;font-family:var(--mono)">HDFC</span>
+                  <span style="background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:6px;padding:4px 10px;font-size:11px;font-family:var(--mono)">ICICI</span>
+                  <span style="background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:6px;padding:4px 10px;font-size:11px;font-family:var(--mono)">Axis</span>
+                  <span style="background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:6px;padding:4px 10px;font-size:11px;font-family:var(--mono)">Kotak</span>
+                  <span style="background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:6px;padding:4px 10px;font-size:11px;font-family:var(--mono)">SBI</span>
+                  <span style="background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:6px;padding:4px 10px;font-size:11px;font-family:var(--mono)">Yes Bank</span>
+                  <span style="background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:6px;padding:4px 10px;font-size:11px;font-family:var(--mono)">IndusInd</span>
                 </div>
               </div>
             </div>
@@ -1926,7 +1939,7 @@ function launchApp(showTour=false) {
     renderPipelineSummary();
     renderTeam();
     if (localStorage.getItem('cfo_notifs')==='true' && g('notif-btn')) {
-      if(g('notif-status-text')) g('notif-status-text').textContent = '✅ Notifications enabled!';
+      if(g('notif-status-text')) g('notif-status-text').textContent = '✅ Enabled! You will receive alerts on this device.';
       if(g('notif-btn')) { g('notif-btn').textContent = 'Enabled ✓'; g('notif-btn').disabled = true; }
     }
   }, 100);
@@ -2167,7 +2180,20 @@ function refreshDashboard() {
   if(el){if(rc>18)el.innerHTML=`You have <strong>${runway} months runway</strong>. Revenue ₹${L.mrr}L, Burn ₹${L.burn}L. Net burn ₹${Math.abs(netBurn)}L/mo.`;else if(rc>9)el.innerHTML=`<strong>${runway} months runway</strong> — start fundraising conversations now. Don't wait.`;else if(rc>0)el.innerHTML=`<strong style="color:var(--red)">⚠️ Only ${runway} months left!</strong> Cut burn or raise immediately.`;}
 
   // FR Score
-  const sc={rg:Math.min(100,Math.max(0,(parseFloat(mrrGrow)||0)*2+50)),be:L.burn>0?Math.min(100,Math.round((L.mrr/L.burn)*100)):50,ret:L.nrr?Math.min(100,L.nrr):70,comp:60,cash:L.cash>0?Math.min(100,Math.round((L.cash*100/L.burn||100)/24*100)):50};
+  // Compliance score based on actual data (not hardcoded 60)
+  const complianceScore = S.company?.founded ? (()=>{
+    const founded = new Date(S.company.founded);
+    const monthsOld = Math.floor((Date.now()-founded)/2592000000);
+    // Newer companies have higher compliance score by default
+    return monthsOld < 6 ? 90 : monthsOld < 12 ? 75 : 60;
+  })() : 70;
+  const sc={
+    rg: S.snapshots.length>=2 ? Math.min(100,Math.max(0,(parseFloat(mrrGrow)||0)*2+50)) : 50,
+    be: L.burn>0 ? Math.min(100,Math.round((L.mrr/L.burn)*100)) : 50,
+    ret: L.nrr ? Math.min(100,L.nrr) : (S.snapshots.length>0 ? 70 : 50),
+    comp: complianceScore,
+    cash: L.cash>0 && L.burn>0 ? Math.min(100,Math.round((L.cash*100/L.burn)/24*100)) : 50
+  };
   const total=Math.round((sc.rg+sc.be+sc.ret+sc.comp+sc.cash)/5);
   setText('score-num',total);
   g('score-ring')?.setAttribute('stroke-dashoffset',251-(251*total/100));
@@ -2206,14 +2232,53 @@ function buildBoardSlides() {
   }
 }
 
-function pickSlide(i,el){document.querySelectorAll('#slide-thumbs>div').forEach((s,j)=>{s.style.background=j===i?'rgba(0,229,160,.08)':'var(--bg3)';s.style.borderColor=j===i?'rgba(0,229,160,.3)':'var(--border)';});const titles=['Company Overview','KPIs','Financial Overview','Product Roadmap','Risk Register','The Ask'];setText('sp-title',(S.company?.name||'Your Company')+' — '+titles[i]);}
+function pickSlide(i,el){
+  document.querySelectorAll('#slide-thumbs>div').forEach((s,j)=>{
+    s.style.background=j===i?'rgba(0,229,160,.08)':'var(--bg3)';
+    s.style.borderColor=j===i?'rgba(0,229,160,.3)':'var(--border)';
+  });
+  const titles=['Company Overview','KPIs','Financial Overview','Product Roadmap','Risk Register','The Ask'];
+  const L=S.snapshots.length?ns(S.snapshots[S.snapshots.length-1]):null;
+  const runway=L&&L.burn>0?((L.cash*100/L.burn)||0).toFixed(1):'—';
+  setText('sp-title',(S.company?.name||'Your Company')+' — '+titles[i]);
+  setText('sp-sub',['Stage: '+(S.company?.stage||'Seed')+' · Industry: '+(S.company?.industry||'SaaS'),
+    'Revenue · Retention · Growth metrics',
+    'P&L · Cash Flow · Balance Sheet',
+    'What shipped · What\'s next · Timeline',
+    'Key risks and mitigation strategies',
+    'Funding ask and use of funds'][i]);
+  if(!L){g('sp-metrics').innerHTML='<div style="color:var(--text3);font-size:12px">Add financial data to populate slides</div>';return;}
+  const slideContent=[
+    // Slide 0: Company Overview
+    [['Founded',S.company?.founded||'—','var(--text)'],['Stage',S.company?.stage||'—','var(--accent)'],['Industry',S.company?.industry||'—','var(--accent2)']],
+    // Slide 1: KPIs
+    [['₹'+L.mrr+'L','MRR','var(--accent)'],['₹'+L.burn+'L','Burn/mo','var(--red)'],[runway+'mo','Runway','var(--accent4)']],
+    // Slide 2: Financial Overview
+    [['₹'+(L.cash/100).toFixed(1)+'Cr','Cash','var(--accent)'],['₹'+L.mrr+'L','MRR','var(--accent2)'],[L.nrr?L.nrr+'%':'—','NRR','var(--accent)']],
+    // Slide 3: Roadmap
+    [['✅','Last Month','var(--accent)'],['🚀','This Month','var(--accent2)'],['🔮','Next Quarter','var(--text2)']],
+    // Slide 4: Risk Register
+    [['🔴','Cash Runway','var(--red)'],['🟡','Compliance','var(--accent4)'],['🟢','Product','var(--accent)']],
+    // Slide 5: The Ask
+    [['₹'+((S.sub?.plan==='pro')?'2Cr':'1Cr'),'Raising','var(--accent)'],['18mo','Runway Post-Raise','var(--accent2)'],['200','Target Customers','var(--text)']]
+  ];
+  const cols=slideContent[i]||slideContent[1];
+  g('sp-metrics').innerHTML=cols.map(([v,l,c])=>`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center"><div style="font-size:18px;font-weight:800;color:${c}">${v}</div><div style="font-size:10px;color:var(--text3);margin-top:3px">${l}</div></div>`).join('');
+}
 
 function genUpdate() {
   const L=S.snapshots.length?ns(S.snapshots[S.snapshots.length-1]):null;
   if(!L){g('inv-update').textContent='Add financial data to auto-generate investor update.';return;}
+  const btn=g('inv-update')?.closest('.card')?.querySelector('button');
+  if(btn){btn.textContent='⏳ Generating...';btn.disabled=true;}
+  setTimeout(()=>{
+  if(btn){btn.textContent='✦ Regenerate';btn.disabled=false;}
   const runway=L.burn>0?(parseFloat((L.cash*100/L.burn))||0).toFixed(1):'—';
   const month=new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'});
+  const tones=['excited','confident','focused'];
+  const tone=tones[Math.floor(Math.random()*tones.length)];
   g('inv-update').innerHTML=`<strong>Subject: ${esc(S.company?.name||'Company')} — ${esc(month)} Investor Update</strong>\n\nHi [Investor Name],\n\nHere's our ${month} update.\n\n<strong>📈 Highlights</strong>\n• MRR: ₹${L.mrr}L${L.nrr?' | NRR: '+L.nrr+'%':''}\n• Burn: ₹${L.burn}L/mo | Runway: ${runway} months${L.customers?'\n• Customers: '+L.customers:''}\n\n<strong>🔥 This Month's Focus</strong>\n[Add your key wins here]\n\n<strong>⚠️ Challenges</strong>\n[Add your blockers here]\n\n<strong>🙏 Ask</strong>\n[What do you need from investors?]\n\nBest,\n${localStorage.getItem('cfo_name')||'Founder'}\n${S.company?.name||'Company'}`;
+  },400);
 }
 
 function copyUpdate(){navigator.clipboard.writeText(g('inv-update').innerText).then(()=>showToast('📋 Copied!')).catch(()=>showToast('⚠️ Select and copy manually',true));}
@@ -2556,7 +2621,61 @@ async function saveSettings(){
   setText('sb-uname',name.split(' ')[0]);setText('mh-company',company);
   showToast('✅ Settings saved!');
 }
-function exportData(){const blob=new Blob([JSON.stringify({company:S.company,snapshots:S.snapshots},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='compyte-data.json';a.click();URL.revokeObjectURL(url);showToast('📥 Exported!');}
+function exportData(){
+  const L=S.snapshots.length?S.snapshots[S.snapshots.length-1]:null;
+  const co=S.company||{};
+  const runway=L&&L.burn>0?((L.cash*100/L.burn)||0).toFixed(1):'—';
+  const fmt=v=>v>=100?'₹'+(v/100).toFixed(2)+'Cr':v>=1?'₹'+v.toFixed(1)+'L':'₹'+(v*100).toFixed(0)+'K';
+  const date=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>Compyte Financial Report — ${co.name||'Company'}</title>
+  <style>
+    body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;color:#111;padding:0 24px}
+    h1{font-size:28px;margin-bottom:4px}
+    .sub{color:#666;font-size:13px;margin-bottom:32px}
+    .section{margin-bottom:28px}
+    h2{font-size:16px;border-bottom:2px solid #00E5A0;padding-bottom:6px;margin-bottom:16px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .stat{background:#f8f8f8;border-radius:8px;padding:16px;text-align:center}
+    .stat-n{font-size:24px;font-weight:800;color:#000}
+    .stat-l{font-size:11px;color:#666;margin-top:4px}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th{background:#f0f0f0;padding:10px;text-align:left;font-size:11px;text-transform:uppercase}
+    td{padding:10px;border-bottom:1px solid #eee}
+    .footer{margin-top:48px;padding-top:16px;border-top:1px solid #eee;font-size:11px;color:#999;text-align:center}
+    @media print{body{margin:0}}
+  </style></head><body>
+  <h1>Financial Report — ${co.name||'Your Company'}</h1>
+  <div class="sub">Generated by Compyte · ${date} · Confidential</div>
+  ${L?`
+  <div class="section">
+    <h2>Key Metrics</h2>
+    <div class="grid">
+      <div class="stat"><div class="stat-n">₹${L.mrr}L</div><div class="stat-l">Monthly Revenue (MRR)</div></div>
+      <div class="stat"><div class="stat-n">₹${L.burn}L</div><div class="stat-l">Monthly Burn Rate</div></div>
+      <div class="stat"><div class="stat-n">${runway} mo</div><div class="stat-l">Runway Remaining</div></div>
+      <div class="stat"><div class="stat-n">₹${(L.cash/100).toFixed(1)}Cr</div><div class="stat-l">Cash in Bank</div></div>
+      <div class="stat"><div class="stat-n">${L.nrr||'—'}%</div><div class="stat-l">Net Revenue Retention</div></div>
+      <div class="stat"><div class="stat-n">${L.headcount||'—'}</div><div class="stat-l">Team Size</div></div>
+    </div>
+  </div>
+  <div class="section">
+    <h2>Monthly Snapshot History</h2>
+    <table>
+      <tr><th>Month</th><th>MRR (₹L)</th><th>Burn (₹L)</th><th>Cash (₹Cr)</th><th>Customers</th><th>NRR %</th></tr>
+      ${S.snapshots.slice(-6).map(s=>`<tr><td>${s.month}</td><td>₹${s.mrr}L</td><td>₹${s.burn}L</td><td>₹${(s.cash/100).toFixed(1)}Cr</td><td>${s.customers||'—'}</td><td>${s.nrr||'—'}%</td></tr>`).join('')}
+    </table>
+  </div>`:'<p>No financial data added yet.</p>'}
+  <div class="footer">Compyte · compyte.in · This report is for informational purposes only and does not constitute financial advice.</div>
+  </body></html>`;
+
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const w=window.open(url,'_blank');
+  if(w){setTimeout(()=>{w.print();},500);}
+  showToast('📥 Opening PDF export...');
+}
 async function clearData(){
   if(!confirm('Clear all financial data?'))return;
   try { assertOwnership('clearData'); } catch(e) { showToast('❌ '+e.message,true); return; }
@@ -3684,9 +3803,10 @@ async function enableNotifications() {
     showToast('❌ Browser does not support notifications', true);
     return;
   }
+  // Desktop Chrome/Firefox requires user gesture - this IS a user gesture (button click)
   const permission = await Notification.requestPermission();
   if (permission === 'granted') {
-    g('notif-status-text').textContent = '✅ Notifications enabled!';
+    g('notif-status-text').textContent = '✅ Enabled! You will receive alerts on this device.';
     g('notif-btn').textContent = 'Enabled ✓';
     g('notif-btn').style.background = 'var(--bg3)';
     g('notif-btn').style.color = 'var(--accent)';
@@ -3859,6 +3979,28 @@ if (typeof supabase !== 'undefined' && !window.supabaseLoadError) {
     if (loginScreen) loginScreen.classList.add('active');
   }, 500);
 }
+
+// Calculate next compliance deadline
+function updateNextDeadline() {
+  const now = new Date();
+  const day = now.getDate();
+  const month = now.getMonth();
+  const year = now.getFullYear();
+  let nextDeadline, deadlineName;
+  if (day < 20) {
+    nextDeadline = new Date(year, month, 20);
+    deadlineName = 'GSTR-3B — Due 20th';
+  } else {
+    nextDeadline = new Date(year, month+1, 20);
+    deadlineName = 'GSTR-3B — Due 20th next month';
+  }
+  const daysLeft = Math.ceil((nextDeadline - now) / 86400000);
+  const el = g('next-deadline-text');
+  const el2 = g('next-deadline-days');
+  if (el) el.textContent = deadlineName;
+  if (el2) el2.textContent = daysLeft <= 5 ? '⚠️ ' + daysLeft + ' days left' : daysLeft + ' days away';
+}
+try { updateNextDeadline(); } catch(e) {}
 </script>
 
 <!-- ADD INVOICE MODAL -->
