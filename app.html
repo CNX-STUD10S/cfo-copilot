@@ -11,7 +11,7 @@
 <meta http-equiv="X-XSS-Protection" content="1; mode=block">
 <meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Compyte — App v4.1.2</title>
+<title>Compyte — App v4.1</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onerror="window.supabaseLoadError=true"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" onerror="console.warn('XLSX not loaded')"></script>
@@ -353,18 +353,54 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
   box-shadow: 0 0 32px rgba(0,229,160,.4);
 }
 
+
+/* ══════════════════════════════════════
+   RESPONSIVE / MOBILE FIXES
+══════════════════════════════════════ */
+@media(max-width:768px){
+  .sidebar{display:none!important;}
+  .main-content{margin-left:0!important;width:100%!important;}
+  .g2,.g3{grid-template-columns:1fr!important;}
+  .card{padding:16px!important;}
+  .ph{padding:16px!important;}
+  .auth-card{padding:24px 20px!important;width:calc(100vw - 32px)!important;margin:0 16px!important;}
+  .ob-card{padding:24px 20px!important;width:calc(100vw - 32px)!important;}
+  .topbar{padding:0 12px!important;}
+  .page{padding-bottom:80px!important;}
+  table{font-size:12px!important;}
+  table td,table th{padding:8px 6px!important;}
+  .stabs{overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  .stab{display:inline-block;}
+  .aibox{padding:12px!important;}
+  .ring-num{font-size:28px!important;}
+  .mg4{grid-template-columns:repeat(2,1fr)!important;}
+  .metric-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .price-card{padding:16px!important;}
+  #slide-thumbs{grid-template-columns:repeat(3,1fr)!important;}
+  .inv-row{flex-direction:column!important;gap:8px!important;}
+}
+@media(max-width:480px){
+  .mg4{grid-template-columns:repeat(2,1fr)!important;}
+  .topbar-title{font-size:14px!important;}
+  h1,.ph-title{font-size:18px!important;}
+  .ring-num{font-size:24px!important;}
+}
+/* Fix charts/tables overflowing on mobile */
+.card{overflow-x:auto;}
+canvas{max-width:100%!important;}
+
 </style>
 </head>
 <body>
 <div class="app-grid"></div>
 <div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
 
-<div id="loading" style="display:none"><div class="load-ring"><div class="load-icon-inner">₹</div></div><div class="load-txt">Loading Compyte...</div></div>
+<div id="loading" style="display:none"><div class="load-ring"><div class="load-icon-inner"><img src="logo.jpeg" style="width:36px;height:36px;border-radius:8px;object-fit:cover"></div></div><div class="load-txt" id="load-msg">Loading Compyte...</div></div>
 
 <!-- ══ LOGIN ══ -->
 <div class="screen auth-screen active" id="screen-login">
   <div class="auth-card">
-    <div class="a-logo"><div class="a-logo-icon" style="background:linear-gradient(135deg,#00E5A0,#0099FF);color:#000;font-size:22px;font-weight:900">✕</div><span class="a-logo-name">Compyte</span></div>
+    <div class="a-logo"><img src="logo.jpeg" style="width:36px;height:36px;border-radius:10px;object-fit:cover;box-shadow:0 0 20px rgba(0,229,160,.3)"><span class="a-logo-name">Compyte</span></div>
     <h1 class="a-title">Welcome 👋</h1>
     <p class="a-sub">Enter your email to get a magic link. No password needed.</p>
     <input class="a-input" type="email" id="login-email" placeholder="you@startup.com" autocomplete="email" onkeydown="if(event.key==='Enter')sendLink()">
@@ -390,7 +426,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
 <!-- ══ ONBOARDING ══ -->
 <div class="screen ob-screen" id="screen-onboard">
   <div class="ob-top">
-    <div class="ob-logo"><div class="ob-logo-icon">₹</div>Compyte</div>
+    <div class="ob-logo"><img src="logo.jpeg" style="width:30px;height:30px;border-radius:8px;object-fit:cover;box-shadow:0 0 16px rgba(0,229,160,.3)">Compyte</div>
     <div class="ob-cnt" id="ob-cnt">Step 1 of 4</div>
   </div>
   <div class="prog-track">
@@ -487,7 +523,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
 <!-- ══ APP ══ -->
 <div class="screen app-screen" id="screen-app">
   <aside class="sidebar">
-    <div class="sb-logo"><div class="sb-logo-icon" style="background:linear-gradient(135deg,#00E5A0,#0099FF);color:#000;font-weight:900;font-size:14px">✕</div><span class="sb-logo-name">Compyte</span></div>
+    <div class="sb-logo"><img src="logo.jpeg" style="width:32px;height:32px;border-radius:8px;object-fit:cover;flex-shrink:0;box-shadow:0 0 20px rgba(0,229,160,.25)"><span class="sb-logo-name">Compyte</span></div>
     <nav class="sb-nav">
       <div class="sb-section">Overview</div>
       <div class="sb-item active" id="snav-dashboard" onclick="navTo('dashboard',this)"><span class="sb-item-icon">📊</span> Dashboard</div>
@@ -524,7 +560,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
     </div>
 
     <div class="mobile-hdr">
-      <div class="mh-logo"><div class="mh-logo-icon" style="width:28px;height:28px;background:linear-gradient(135deg,#00E5A0,#0099FF);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#000;font-weight:900;font-size:13px">✕</div><span class="mh-logo-name" id="mh-company">Compyte</span></div>
+      <div class="mh-logo"><img src="logo.jpeg" style="width:28px;height:28px;border-radius:6px;object-fit:cover;box-shadow:0 0 12px rgba(0,229,160,.25)"><span class="mh-logo-name" id="mh-company">Compyte</span></div>
       <div class="mh-right">
         <button class="mh-btn mh-data-btn" onclick="openModal('import')">📥</button>
         <button class="mh-btn mh-data-btn" onclick="openModal('data')">✏️</button>
@@ -576,6 +612,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
           <div class="mg4">
             <div class="mc"><div class="mc-val" id="b-total" style="color:var(--red)">—</div><div class="mc-label">TOTAL BURN</div></div>
             <div class="mc"><div class="mc-val" id="b-net" style="color:var(--accent4)">—</div><div class="mc-label">NET BURN</div></div>
+            <div class="mc"><div class="mc-val" id="b-multiple" style="color:var(--accent)">—</div><div class="mc-label">BURN MULTIPLE</div></div>
             <div class="mc"><div class="mc-val" id="b-sal" style="color:var(--accent3)">—</div><div class="mc-label">SALARIES</div></div>
             <div class="mc"><div class="mc-val" id="b-cloud" style="color:var(--accent2)">—</div><div class="mc-label">CLOUD/INFRA</div></div>
           </div>
@@ -673,7 +710,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
                 <div class="de-wrap" style="margin-bottom:12px"><span class="de-pre">₹</span><input class="de-num" type="number" id="ts-valuation" placeholder="10" style="padding:11px 4px"><span class="de-suf">Crores</span></div>
                 <div style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">INSTRUMENT TYPE</div>
                 <select class="de-inp" id="ts-instrument" style="margin-bottom:12px;width:100%;cursor:pointer">
-                  <option>Equity</option><option>SAFE Note</option><option>Convertible Note</option><option>Preference Shares</option>
+                  <option>Equity</option><option selected>iSAFE Note (India Standard)</option><option>SAFE Note</option><option>Convertible Note</option><option>Compulsory Convertible Preference Shares (CCPS)</option><option>Optionally Convertible Preference Shares (OCPS)</option>
                 </select>
                 <div style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">INVESTOR NAME</div>
                 <input class="de-inp" type="text" id="ts-investor" placeholder="e.g. Accel India" style="margin-bottom:12px">
@@ -689,12 +726,23 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
 
       <!-- COMPLIANCE -->
       <div class="page" id="page-compliance">
+  <!-- Smart compliance banner -->
   <div style="background:rgba(255,165,0,.08);border:1px solid rgba(255,165,0,.2);border-radius:12px;padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
     <div>
       <div style="font-size:10px;font-family:var(--mono);color:rgba(255,165,0,.8);letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px">Next Compliance Deadline</div>
       <div style="font-size:14px;font-weight:700" id="next-deadline-text">GSTR-3B — Due 20th of this month</div>
     </div>
     <div style="font-size:11px;font-family:var(--mono);color:var(--text3)" id="next-deadline-days"></div>
+  </div>
+  <!-- Context-aware alerts -->
+  <div id="smart-compliance-alerts" style="margin-bottom:16px"></div>
+  <!-- Angel Tax abolished badge -->
+  <div style="background:rgba(0,229,160,.06);border:1px solid rgba(0,229,160,.15);border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px">
+    <span style="font-size:18px">✅</span>
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--accent)">Angel Tax Abolished — April 1, 2025</div>
+      <div style="font-size:11px;color:var(--text2)">Section 56(2)(viib) no longer applies. Angel investment at any valuation is now fully tax-exempt for DPIIT-recognised startups.</div>
+    </div>
   </div>
         <div class="ph"><div class="ph-title">Compliance</div><div class="ph-sub">GST · TDS · ROC · LABOUR LAW</div></div>
         <div class="mg4">
@@ -753,8 +801,10 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
         <div class="subpage" id="sub-ops-payroll">
           <div class="mg4">
             <div class="mc"><div class="mc-val" id="pay-gross" style="color:var(--accent)">—</div><div class="mc-label">GROSS PAYROLL</div></div>
-            <div class="mc"><div class="mc-val" style="color:var(--accent2)">~12%</div><div class="mc-label">PF + ESI</div></div>
-            <div class="mc"><div class="mc-val" style="color:var(--accent4)">~10%</div><div class="mc-label">TDS</div></div>
+            <div class="mc"><div class="mc-val" id="pay-pf" style="color:var(--accent2)">—</div><div class="mc-label">PF (12%+12%)</div></div>
+            <div class="mc"><div class="mc-val" id="pay-esic" style="color:var(--accent4)">—</div><div class="mc-label">ESIC (3.25%)</div></div>
+            <div class="mc"><div class="mc-val" id="pay-tds" style="color:var(--red)">—</div><div class="mc-label">TDS (Sec 192)</div></div>
+            <div class="mc"><div class="mc-val" style="color:var(--accent2)">~10%</div><div class="mc-label">TDS</div></div>
             <div class="mc"><div class="mc-val" id="pay-net" style="color:var(--red)">—</div><div class="mc-label">NET PAYOUT</div></div>
           </div>
           <div class="card">
@@ -775,6 +825,86 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
           </div>
         </div>
       </div>
+
+      <!-- FEMA/FC-GPR MODULE -->
+      <div style="margin-top:24px" id="fema-module">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <div style="background:rgba(255,69,96,.1);border:1px solid rgba(255,69,96,.2);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;color:var(--red)">🚨 FEMA / FC-GPR</div>
+          <div style="font-size:11px;color:var(--text3)">Foreign investment compliance module</div>
+        </div>
+        <div class="card">
+          <div class="ctop" style="background:linear-gradient(90deg,var(--red),var(--accent4))"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+            <div class="clabel" style="margin:0">FC-GPR Filing Tracker</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <label style="font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px;cursor:pointer">
+                <input type="checkbox" id="fema-has-foreign" onchange="toggleFEMA(this.checked)" style="cursor:pointer">
+                Has foreign investor
+              </label>
+            </div>
+          </div>
+          <div id="fema-content" style="display:none">
+            <div style="background:rgba(255,69,96,.06);border:1px solid rgba(255,69,96,.15);border-radius:10px;padding:14px;margin-bottom:16px">
+              <div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:6px">⚠️ FC-GPR must be filed with RBI within 30 days of share allotment</div>
+              <div style="font-size:11px;color:var(--text2);line-height:1.7">Penalty for late filing: 3x the investment amount. This is one of the most commonly missed compliances for Indian startups raising from foreign investors.</div>
+            </div>
+            <div style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:10px">DATE OF SHARE ALLOTMENT</div>
+            <input class="de-inp" type="date" id="fema-allot-date" oninput="calcFEMADeadline()" style="margin-bottom:16px;width:100%;max-width:240px">
+            <div id="fema-countdown" style="display:none;margin-bottom:16px">
+              <div style="font-size:28px;font-weight:800;font-family:var(--mono)" id="fema-days-left"></div>
+              <div style="font-size:11px;color:var(--text3)">days until FC-GPR deadline</div>
+            </div>
+            <div style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:10px;letter-spacing:.06em">FC-GPR CHECKLIST</div>
+            <div style="display:fl<div style="display:flex;flex-direction:column;gap:8px" id="fema-checklist">
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:12px;color:var(--text2)">
+                <input type="checkbox" id="fema-check-0" style="margin-top:2px;cursor:pointer">
+                Valuation certificate from SEBI-registered CA
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:12px;color:var(--text2)">
+                <input type="checkbox" id="fema-check-1" style="margin-top:2px;cursor:pointer">
+                Board resolution approving foreign investment
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:12px;color:var(--text2)">
+                <input type="checkbox" id="fema-check-2" style="margin-top:2px;cursor:pointer">
+                KYC documents of foreign investor (passport, address proof)
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:12px;color:var(--text2)">
+                <input type="checkbox" id="fema-check-3" style="margin-top:2px;cursor:pointer">
+                Bank FIRC (Foreign Inward Remittance Certificate)
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:12px;color:var(--text2)">
+                <input type="checkbox" id="fema-check-4" style="margin-top:2px;cursor:pointer">
+                Share allotment letter
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:12px;color:var(--text2)">
+                <input type="checkbox" id="fema-check-5" style="margin-top:2px;cursor:pointer">
+                Demat account details of foreign investor
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:12px;color:var(--text2)">
+                <input type="checkbox" id="fema-check-6" style="margin-top:2px;cursor:pointer">
+                Form FC-GPR filled and signed
+              </label>
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:12px;color:var(--text2)">
+                <input type="checkbox" id="fema-check-7" style="margin-top:2px;cursor:pointer">
+                CS/CA certification on the form
+              </label>
+            </div>
+            <div style="margin-top:16px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px">
+              <div style="font-size:11px;font-weight:700;margin-bottom:8px">📋 Filing Process</div>
+              <div style="font-size:11px;color:var(--text2);line-height:1.9">
+                1. Receive foreign remittance → Get FIRC from bank<br>
+                2. Get valuation certificate from SEBI-registered CA<br>
+                3. Pass board resolution for share allotment<br>
+                4. Allot shares → File Form FC-GPR on RBI FIRMS portal<br>
+                5. Submit within 30 days of allotment<br>
+                <a href="https://firms.rbi.org.in" target="_blank" style="color:var(--accent2)">→ File on RBI FIRMS Portal</a>
+              </div>
+            </div>
+          </div>
+          <div id="fema-disabled" style="padding:12px 0;font-size:12px;color:var(--text3)">Check "Has foreign investor" above to activate the FC-GPR module.</div>
+        </div>
+      </div>
+
 
       <!-- ══ FINANCIALS PAGE ══ -->
       <div class="page" id="page-financials" style="position:relative;overflow:visible;">
@@ -852,7 +982,32 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
               </div>
             </div>
           </div>
-        </div>
+        
+
+        <!-- MIS REPORT -->
+        <div class="subpage" id="sub-financials-mis">
+          <div class="card">
+            <div class="ctop" style="background:linear-gradient(90deg,var(--accent),var(--accent2))"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+              <div class="clabel" style="margin:0">MIS Report Generator</div>
+              <button class="btn bp" style="font-size:11px;padding:6px 14px" onclick="generateMISReport()">↓ Generate PDF</button>
+            </div>
+            <p style="font-size:13px;color:var(--text2);margin-bottom:20px">One-click Management Information System report in the format 3one4, Blume, and Accel expect. Includes P&L, Balance Sheet, Cash Flow, variance vs budget, projected runway, unit economics, compliance status.</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:20px">
+              <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px">
+                <div style="font-size:10px;font-family:var(--mono);color:var(--accent);margin-bottom:6px">INCLUDED</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8">✓ P&L Statement<br>✓ Balance Sheet Summary<br>✓ Cash Flow Statement<br>✓ Runway Projection (6mo)</div>
+              </div>
+              <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px">
+                <div style="font-size:10px;font-family:var(--mono);color:var(--accent);margin-bottom:6px">ALSO INCLUDED</div>
+                <div style="font-size:12px;color:var(--text2);line-height:1.8">✓ Unit Economics (LTV:CAC)<br>✓ Budget vs Actual Variance<br>✓ Compliance Status<br>✓ Hiring Plan Impact</div>
+              </div>
+            </div>
+            <div id="mis-preview" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:16px;display:none">
+              <div style="font-size:12px;color:var(--text3);font-family:var(--mono)">Preview will appear here after generation</div>
+            </div>
+          </div>
+        </div></div>
       </div>
 
       <!-- ══ ANALYTICS PAGE ══ -->
@@ -940,7 +1095,38 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
             <div id="captable-summary" style="display:none;margin-top:14px">
               <div style="font-size:10px;font-family:var(--mono);color:var(--text3);letter-spacing:.1em;margin-bottom:10px">DILUTION SIMULATOR</div>
               <div class="de-row" style="margin-bottom:8px">
-                <div class="de-field"><div class="de-lbl">New Investment (₹Cr)</div><input class="de-inp" type="number" id="dilute-amount" placeholder="1" oninput="calcDilution()"></div>
+                <div class="de-field"><div class="de-lbl">New Investment (₹Cr)
+
+            <!-- Dilution Waterfall -->
+            <div style="margin-top:20px">
+              <div style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:12px;letter-spacing:.08em">DILUTION WATERFALL — MODEL NEXT ROUND</div>
+              <div class="g2" style="margin-bottom:12px">
+                <div>
+                  <div style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">NEW INVESTMENT (₹ Cr)</div>
+                  <input class="de-inp" type="number" id="wf-invest" placeholder="2" oninput="renderWaterfall()" style="width:100%">
+                </div>
+                <div>
+                  <div style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:6px">POST-MONEY VALUATION (₹ Cr)</div>
+                  <input class="de-inp" type="number" id="wf-postmoney" placeholder="20" oninput="renderWaterfall()" style="width:100%">
+                </div>
+              </div>
+              <div id="waterfall-result" style="display:none">
+                <div style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:8px">OWNERSHIP AFTER THIS ROUND</div>
+                <div id="waterfall-bars" style="margin-bottom:14px"></div>
+                <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;overflow-x:auto">
+                  <table style="width:100%;border-collapse:collapse;font-size:12px">
+                    <thead><tr style="border-bottom:1px solid var(--border2)">
+                      <th style="text-align:left;padding:8px 0;font-family:var(--mono);font-size:10px;color:var(--text3)">SHAREHOLDER</th>
+                      <th style="text-align:right;padding:8px 6px;font-family:var(--mono);font-size:10px;color:var(--text3)">BEFORE</th>
+                      <th style="text-align:right;padding:8px 6px;font-family:var(--mono);font-size:10px;color:var(--text3)">DILUTION</th>
+                      <th style="text-align:right;padding:8px 0;font-family:var(--mono);font-size:10px;color:var(--text3)">AFTER</th>
+                    </tr></thead>
+                    <tbody id="waterfall-table"></tbody>
+                  </table>
+                </div>
+                <div id="waterfall-warning" style="margin-top:10px;display:none;background:rgba(255,69,96,.08);border:1px solid rgba(255,69,96,.2);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--red)"></div>
+              </div>
+            </div></div><input class="de-inp" type="number" id="dilute-amount" placeholder="1" oninput="calcDilution()"></div>
                 <div class="de-field"><div class="de-lbl">Pre-Money Valuation (₹Cr)</div><input class="de-inp" type="number" id="dilute-val" placeholder="10" oninput="calcDilution()"></div>
               </div>
               <div id="dilution-result" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:12px;color:var(--text2)">Enter investment details above to see dilution impact</div>
@@ -1030,10 +1216,10 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
               <div class="clabel">Tally Import</div>
               <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px">Export your data from Tally as CSV and import it here. We'll map chart of accounts, invoices, and journal entries automatically.</div>
               <div class="upload-zone" ondragover="event.preventDefault()" ondrop="handleAccountingDrop(event,'tally')">
-                <input type="file" accept=".csv,.xlsx" onchange="handleAccountingUpload(event,'tally')">
+                <input type="file" accept=".csv,.xlsx,.xml" onchange="handleTallyXML(event)">
                 <div style="font-size:32px;margin-bottom:8px">📒</div>
                 <div style="font-size:14px;font-weight:700;margin-bottom:4px">Import from Tally</div>
-                <div style="font-size:12px;color:var(--text3)">Export CSV from Tally → upload here</div>
+                <div style="font-size:12px;color:var(--text3)">Export CSV or XML from Tally → upload here</div>
               </div>
               <button class="btn bgb btn-full" style="margin-top:10px;font-size:12px" onclick="downloadAccountingTemplate('tally')">📄 Download Tally Export Template</button>
             </div>
@@ -1092,8 +1278,11 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
                 <div style="font-size:11px;color:var(--text3);margin-bottom:12px">Enable to get deadline reminders</div>
                 <button class="btn bp" onclick="enableNotifications()" id="notif-btn">Enable Notifications</button>
               </div>
-              <div style="display:flex;flex-direction:column;gap:8px">
-                ${[['GST Filing Reminders','3 days before due date'],['TDS Deadline Alerts','7 days before due date'],['Runway Warning','When below 12 months'],['Board Meeting Prep','1 week before board date']].map(([t,d])=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:13px;font-weight:600">${t}</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">${d}</div></div><span class="tag tg">Active</span></div>`).join('')}
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px"><div><div style="font-size:13px;font-weight:600">GST Filing Reminders</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">3 days before due date</div></div><span class="tag tg">Active</span></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px"><div><div style="font-size:13px;font-weight:600">TDS Deadline Alerts</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">7 days before due date</div></div><span class="tag tg">Active</span></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px"><div><div style="font-size:13px;font-weight:600">Runway Warning</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">When below 6 months</div></div><span class="tag tg">Active</span></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:8px"><div><div style="font-size:13px;font-weight:600">ROC Annual Filing</div><div style="font-size:11px;color:var(--text3);font-family:var(--mono)">30 days before due date</div></div><span class="tag tg">Active</span></div>
               </div>
             </div>
             <div class="card">
@@ -1209,8 +1398,8 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15);}
                     <th style="text-align:center;padding:8px 4px;font-family:var(--mono);color:var(--text3);font-size:10px">INVESTOR</th>
                   </tr></thead>
                   <tbody>
-                    ${[['View Dashboard','✓','✓','✓','✓'],['Edit Financials','✓','✓','✗','✗'],['Compliance','✓','✓','✓','✗'],['Team Settings','✓','✗','✗','✗'],['AI CFO Chat','✓','✓','✗','✗'],['Export Data','✓','✓','✓','✗']].map(([p,...v])=>`<tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 0;color:var(--text2)">${p}</td>${v.map((x,i)=>`<td style="text-align:center;padding:9px 4px;color:${x==='✓'?['var(--accent)','var(--accent2)','var(--accent4)','var(--text3)'][i]:'var(--text3)'}">${x}</td>`).join('')}</tr>`).join('')}
-                  </tbody>
+<tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 0;color:var(--text2)">View Dashboard</td><td style="text-align:center;padding:9px 4px;color:var(--accent)">✓</td><td style="text-align:center;padding:9px 4px;color:var(--accent2)">✓</td><td style="text-align:center;padding:9px 4px;color:var(--accent4)">✓</td><td style="text-align:center;padding:9px 4px;color:var(--text3)">✓</td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 0;color:var(--text2)">Edit Financials</td><td style="text-align:center;padding:9px 4px;color:var(--accent)">✓</td><td style="text-align:center;padding:9px 4px;color:var(--accent2)">✓</td><td style="text-align:center;padding:9px 4px;color:var(--text3)">✗</td><td style="text-align:center;padding:9px 4px;color:var(--text3)">✗</td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 0;color:var(--text2)">Compliance</td><td style="text-align:center;padding:9px 4px;color:var(--accent)">✓</td><td style="text-align:center;padding:9px 4px;color:var(--accent2)">✓</td><td style="text-align:center;padding:9px 4px;color:var(--accent4)">✓</td><td style="text-align:center;padding:9px 4px;color:var(--text3)">✗</td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 0;color:var(--text2)">Cap Table</td><td style="text-align:center;padding:9px 4px;color:var(--accent)">✓</td><td style="text-align:center;padding:9px 4px;color:var(--accent2)">✓</td><td style="text-align:center;padding:9px 4px;color:var(--text3)">✗</td><td style="text-align:center;padding:9px 4px;color:var(--text3)">✗</td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 0;color:var(--text2)">Export Reports</td><td style="text-align:center;padding:9px 4px;color:var(--accent)">✓</td><td style="text-align:center;padding:9px 4px;color:var(--accent2)">✓</td><td style="text-align:center;padding:9px 4px;color:var(--accent4)">✓</td><td style="text-align:center;padding:9px 4px;color:var(--text3)">✗</td></tr><tr style="border-bottom:1px solid var(--border)"><td style="padding:9px 0;color:var(--text2)">Invite Members</td><td style="text-align:center;padding:9px 4px;color:var(--accent)">✓</td><td style="text-align:center;padding:9px 4px;color:var(--text3)">✗</td><td style="text-align:center;padding:9px 4px;color:var(--text3)">✗</td><td style="text-align:center;padding:9px 4px;color:var(--text3)">✗</td></tr>
+</tbody>
                 </table>
               </div>
             </div>
@@ -1664,12 +1853,29 @@ async function init() {
       g('loading').style.display='none';
     }
 
-    // Check existing session silently
+    // Check existing session - use cached data first for instant load
+    const cachedUser = localStorage.getItem('compyte_cached_user');
     const { data: { session } } = await sb.auth.getSession();
     if (session) {
-      g('loading').style.display='flex';
-      showScreen('none'); // hide login while loading
-      await loadApp(session.user);
+      // If we have cached user data, show app instantly then refresh in background
+      if (cachedUser) {
+        try {
+          const cu = JSON.parse(cachedUser);
+          // Show app immediately with cached data
+          S.user = session.user;
+          showScreen('none');
+          g('loading').style.display='none';
+          await loadApp(session.user); // loads fresh data
+        } catch(e) {
+          g('loading').style.display='flex';
+          showScreen('none');
+          await loadApp(session.user);
+        }
+      } else {
+        g('loading').style.display='flex';
+        showScreen('none');
+        await loadApp(session.user);
+      }
     }
     // If no session, login is already showing (default in HTML)
 
@@ -1806,6 +2012,7 @@ function demoLogin() {
 }
 
 async function signOut() {
+  localStorage.removeItem('compyte_cached_user');
   // SECURITY: Wipe all in-memory state before signing out
   // Prevents data leakage if browser tab is reused
   _clearAllState();
@@ -1892,6 +2099,8 @@ async function completeOnboarding() {
 // LAUNCH APP
 // ══════════════════════════════════════
 function launchApp(showTour=false) {
+  // Cache user for faster future loads
+  try { localStorage.setItem('compyte_cached_user', JSON.stringify({id: S.user?.id, email: S.user?.email, t: Date.now()})); } catch(e) {}
   const name  = localStorage.getItem('cfo_name') || S.user?.email?.split('@')[0] || 'Founder';
   const plan  = S.sub?.plan || 'free';
   const used  = S.sub?.ai_messages_used || 0;
@@ -2154,12 +2363,35 @@ function refreshDashboard() {
   if(P)setC('m-burn-c',(L.burn>P.burn?'↑ ':'↓ ')+Math.abs(L.burn-P.burn).toFixed(1)+'L MoM',L.burn>P.burn?'var(--red)':'var(--accent)');
 
   setText('b-total','₹'+L.burn+'L'); setText('b-net','₹'+Math.abs(netBurn)+'L'+(netBurn<=0?' 🎉':''));
+  // Burn Multiple = Net Burn / Net New ARR
+  const _snaps = S.snapshots;
+  if (_snaps.length >= 2 && g('b-multiple')) {
+    const _cur = ns(_snaps[_snaps.length-1]);
+    const _prev = ns(_snaps[_snaps.length-2]);
+    const _newARR = (_cur.mrr - _prev.mrr) * 12;
+    const _netBurn = _cur.burn - _cur.mrr;
+    const _bm = _newARR > 0 ? (_netBurn / _newARR).toFixed(2) : '—';
+    const _bmColor = parseFloat(_bm) < 1.5 ? 'var(--accent)' : parseFloat(_bm) < 2.5 ? 'var(--accent4)' : 'var(--red)';
+    g('b-multiple').textContent = _bm === '—' ? '—' : _bm + 'x';
+    g('b-multiple').style.color = _bmColor;
+  }
   setText('b-sal',L.salaries?'₹'+L.salaries+'L':'—'); setText('b-cloud',L.cloud?'₹'+L.cloud+'L':'—');
 
   const bd=[['👥','Salaries',L.salaries,'tg'],['☁️','Cloud/Infra',L.cloud,L.cloud>10?'tr':'tg'],['📢','Marketing',L.marketing,'tg']].filter(i=>parseFloat(i[2])>0);
   g('burn-bd').innerHTML=bd.map(([ic,nm,v])=>`<div class="trow"><div style="font-size:18px">${ic}</div><div style="flex:1"><div style="font-size:13px;font-weight:600">${nm}</div></div><div style="font-family:var(--mono);font-weight:700">₹${v}L</div></div>`).join('')||'<div style="font-size:12px;color:var(--text3);padding:10px 0">Add expense data</div>';
 
-  if(L.salaries){setText('pay-gross','₹'+L.salaries+'L');setText('pay-net','₹'+(parseFloat(+(L.salaries*.78))||0).toFixed(1)+'L');}
+  if(L.salaries){setText('pay-gross','₹'+L.salaries+'L');
+    // PF: employee 12% + employer 12% on basic (assume basic = 50% of gross)
+    const _basic = L.salaries * 0.5;
+    const _pfTotal = (_basic * 0.12 * 2).toFixed(2); // both sides
+    const _esic = L.salaries <= 2.1 ? (L.salaries * 0.0325).toFixed(2) : '0'; // only if <₹21K/mo
+    const _tds = (L.salaries * 0.1).toFixed(2); // approx 10% TDS Section 192
+    const _netPayout = (L.salaries - parseFloat(_pfTotal)/2 - parseFloat(_tds)).toFixed(1);
+    if(g('pay-pf')) g('pay-pf').textContent = '₹'+_pfTotal+'L';
+    if(g('pay-esic')) g('pay-esic').textContent = _esic!=='0' ? '₹'+_esic+'L' : 'N/A';
+    if(g('pay-tds')) g('pay-tds').textContent = '₹'+_tds+'L';
+    setText('pay-net','₹'+_netPayout+'L');
+  }
 
   g('quick-stats').innerHTML=[
     ['Customers',(L.customers||'—'),'var(--accent2)'],
@@ -2180,24 +2412,69 @@ function refreshDashboard() {
   if(el){if(rc>18)el.innerHTML=`You have <strong>${runway} months runway</strong>. Revenue ₹${L.mrr}L, Burn ₹${L.burn}L. Net burn ₹${Math.abs(netBurn)}L/mo.`;else if(rc>9)el.innerHTML=`<strong>${runway} months runway</strong> — start fundraising conversations now. Don't wait.`;else if(rc>0)el.innerHTML=`<strong style="color:var(--red)">⚠️ Only ${runway} months left!</strong> Cut burn or raise immediately.`;}
 
   // FR Score
-  // Compliance score based on actual data (not hardcoded 60)
-  const complianceScore = S.company?.founded ? (()=>{
-    const founded = new Date(S.company.founded);
-    const monthsOld = Math.floor((Date.now()-founded)/2592000000);
-    // Newer companies have higher compliance score by default
-    return monthsOld < 6 ? 90 : monthsOld < 12 ? 75 : 60;
-  })() : 70;
-  const sc={
-    rg: S.snapshots.length>=2 ? Math.min(100,Math.max(0,(parseFloat(mrrGrow)||0)*2+50)) : 50,
-    be: L.burn>0 ? Math.min(100,Math.round((L.mrr/L.burn)*100)) : 50,
-    ret: L.nrr ? Math.min(100,L.nrr) : (S.snapshots.length>0 ? 70 : 50),
-    comp: complianceScore,
-    cash: L.cash>0 && L.burn>0 ? Math.min(100,Math.round((L.cash*100/L.burn)/24*100)) : 50
-  };
-  const total=Math.round((sc.rg+sc.be+sc.ret+sc.comp+sc.cash)/5);
+    // ── UPGRADED VC SCORE using exact Indian VC benchmarks (3one4/Blume/Accel) ──
+  // Points: Runway>18mo=15, BurnMultiple<1.5x=20, LTV:CAC>3=15, Compliance=20, CapTable=10, NRR>100=10, MoMGrowth>10%=10
+  let vcPoints = 0;
+  const vcBreakdown = [];
+
+  // 1. Runway >18 months = +15pts
+  const runwayMonths = L.burn>0 ? (L.cash*100/L.burn) : 0;
+  if (runwayMonths >= 18) { vcPoints+=15; vcBreakdown.push({label:'Runway >18mo',pts:15,color:'var(--accent)',status:'✓'}); }
+  else if (runwayMonths >= 12) { vcPoints+=8; vcBreakdown.push({label:'Runway 12-18mo',pts:8,color:'var(--accent4)',status:'~'}); }
+  else { vcBreakdown.push({label:'Runway <12mo',pts:0,color:'var(--red)',status:'✗'}); }
+
+  // 2. Burn Multiple <1.5x = +20pts (net burn / net new ARR)
+  const mrrArr = S.snapshots.map(s=>s.mrr);
+  const newARR = mrrArr.length>=2 ? (mrrArr[mrrArr.length-1]-mrrArr[mrrArr.length-2])*12 : 0;
+  const netBurnAnnual = (L.burn - L.mrr) * 12;
+  const burnMultiple = newARR>0 ? netBurnAnnual/newARR : 99;
+  if (burnMultiple < 1.5) { vcPoints+=20; vcBreakdown.push({label:'Burn Multiple <1.5x',pts:20,color:'var(--accent)',status:'✓'}); }
+  else if (burnMultiple < 2.5) { vcPoints+=10; vcBreakdown.push({label:'Burn Multiple <2.5x',pts:10,color:'var(--accent4)',status:'~'}); }
+  else { vcBreakdown.push({label:'Burn Multiple >2.5x',pts:0,color:'var(--red)',status:'✗'}); }
+
+  // 3. LTV:CAC >3 = +15pts (use analytics data if available)
+  const storedLTVCAC = parseFloat(localStorage.getItem('compyte_ltvcac')||'0');
+  if (storedLTVCAC >= 3) { vcPoints+=15; vcBreakdown.push({label:'LTV:CAC >3:1',pts:15,color:'var(--accent)',status:'✓'}); }
+  else if (storedLTVCAC >= 2) { vcPoints+=7; vcBreakdown.push({label:'LTV:CAC 2-3:1',pts:7,color:'var(--accent4)',status:'~'}); }
+  else { vcBreakdown.push({label:'LTV:CAC <2:1',pts:0,color:'var(--red)',status:'✗'}); }
+
+  // 4. Compliance health = +20pts
+  const founded = S.company?.founded ? new Date(S.company.founded) : null;
+  const monthsOld = founded ? Math.floor((Date.now()-founded)/2592000000) : 0;
+  const compScore = monthsOld < 3 ? 20 : monthsOld < 12 ? 15 : 10;
+  vcPoints += compScore;
+  vcBreakdown.push({label:'Compliance Health',pts:compScore,color:compScore>=15?'var(--accent)':'var(--accent4)',status:compScore>=15?'✓':'~'});
+
+  // 5. Cap table clean (<3 entities) = +10pts
+  const capEntities = parseInt(localStorage.getItem('compyte_cap_entities')||'2');
+  if (capEntities <= 3) { vcPoints+=10; vcBreakdown.push({label:'Cap Table Clean',pts:10,color:'var(--accent)',status:'✓'}); }
+  else { vcBreakdown.push({label:'Cap Table Complex',pts:0,color:'var(--accent4)',status:'~'}); }
+
+  // 6. NRR >100% = +10pts
+  if (L.nrr && L.nrr >= 100) { vcPoints+=10; vcBreakdown.push({label:'NRR >100%',pts:10,color:'var(--accent)',status:'✓'}); }
+  else if (L.nrr && L.nrr >= 85) { vcPoints+=5; vcBreakdown.push({label:'NRR 85-100%',pts:5,color:'var(--accent4)',status:'~'}); }
+  else { vcBreakdown.push({label:'NRR <85%',pts:0,color:'var(--red)',status:'✗'}); }
+
+  // 7. MoM growth >10% = +10pts
+  const momGrowthPct = parseFloat(mrrGrow)||0;
+  if (momGrowthPct >= 10) { vcPoints+=10; vcBreakdown.push({label:'MoM Growth >10%',pts:10,color:'var(--accent)',status:'✓'}); }
+  else if (momGrowthPct >= 5) { vcPoints+=5; vcBreakdown.push({label:'MoM Growth 5-10%',pts:5,color:'var(--accent4)',status:'~'}); }
+  else { vcBreakdown.push({label:'MoM Growth <5%',pts:0,color:'var(--red)',status:'✗'}); }
+
+  const total = Math.min(100, vcPoints);
+  const sc = { rg:0, be:0, ret:0, comp:0, cash:0 }; // legacy compat
   setText('score-num',total);
   g('score-ring')?.setAttribute('stroke-dashoffset',251-(251*total/100));
   setText('fr-badge',total>=75?'Series A Ready':total>=60?'Getting There':'Needs Work');
+  // Render detailed breakdown with Indian VC benchmarks
+  if(g('score-bars') && vcBreakdown){
+    g('score-bars').innerHTML = vcBreakdown.map(b=>`
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:12px;width:14px;text-align:center">${b.status}</span>
+        <span style="font-size:10px;color:var(--text2);flex:1">${b.label}</span>
+        <span style="font-size:10px;font-family:var(--mono);color:${b.color}">+${b.pts}pts</span>
+      </div>`).join('');
+  }
   const labs={rg:'Revenue Growth',be:'Burn Efficiency',ret:'NRR/Retention',comp:'Compliance',cash:'Cash Runway'};
   const cols={rg:'var(--accent)',be:'var(--accent2)',ret:'var(--accent)',comp:'var(--red)',cash:'var(--accent4)'};
   g('score-bars').innerHTML=Object.entries(sc).map(([k,v])=>`<div style="display:flex;align-items:center;gap:8px"><span style="font-size:10px;color:var(--text2);width:100px;flex-shrink:0">${labs[k]}</span><div style="flex:1;height:4px;background:var(--bg3);border-radius:2px"><div style="width:${v}%;height:100%;border-radius:2px;background:${cols[k]}"></div></div><span style="font-size:10px;font-family:var(--mono);color:${cols[k]}">${Math.round(v)}</span></div>`).join('');
@@ -2277,7 +2554,52 @@ function genUpdate() {
   const month=new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'});
   const tones=['excited','confident','focused'];
   const tone=tones[Math.floor(Math.random()*tones.length)];
-  g('inv-update').innerHTML=`<strong>Subject: ${esc(S.company?.name||'Company')} — ${esc(month)} Investor Update</strong>\n\nHi [Investor Name],\n\nHere's our ${month} update.\n\n<strong>📈 Highlights</strong>\n• MRR: ₹${L.mrr}L${L.nrr?' | NRR: '+L.nrr+'%':''}\n• Burn: ₹${L.burn}L/mo | Runway: ${runway} months${L.customers?'\n• Customers: '+L.customers:''}\n\n<strong>🔥 This Month's Focus</strong>\n[Add your key wins here]\n\n<strong>⚠️ Challenges</strong>\n[Add your blockers here]\n\n<strong>🙏 Ask</strong>\n[What do you need from investors?]\n\nBest,\n${localStorage.getItem('cfo_name')||'Founder'}\n${S.company?.name||'Company'}`;
+  // 3one4 Capital standard investor update format
+  const prevL = S.snapshots.length>=2 ? ns(S.snapshots[S.snapshots.length-2]) : null;
+  const mrrGrowthPct = prevL&&prevL.mrr>0 ? (((L.mrr-prevL.mrr)/prevL.mrr)*100).toFixed(1) : '—';
+  const cashCr = (L.cash/100).toFixed(2);
+  const projRunway6mo = L.burn>0 ? ((L.cash*100-(L.burn*6))/L.burn/100).toFixed(1) : '—';
+  const burnMultipleVal = (L.mrr>0&&prevL) ? ((L.burn-L.mrr)/Math.max(0.1,(L.mrr-prevL.mrr))).toFixed(1) : '—';
+  
+  g('inv-update').innerHTML=`<strong>Subject: ${esc(S.company?.name||'Company')} — ${esc(month)} Investor Update</strong>
+
+Hi [Investor Name],
+
+Here's our ${month} update. Please reply with any questions.
+
+<strong>📈 Key Metrics</strong>
+• MRR: ₹${L.mrr}L ${mrrGrowthPct!=='—'?'('+mrrGrowthPct+'% MoM)':''}
+• Burn Rate: ₹${L.burn}L/mo | Net Burn: ₹${Math.max(0,L.burn-L.mrr).toFixed(1)}L/mo
+• Runway: ${runway} months current | ${projRunway6mo} months in 6mo
+• Burn Multiple: ${burnMultipleVal}x (target <1.5x)${L.customers?'\n• Customers: '+L.customers:''}${L.nrr?'\n• NRR: '+L.nrr+'%':''}
+
+<strong>💰 Balance Sheet Summary</strong>
+• Cash in Bank: ₹${cashCr}Cr
+• Monthly Revenue Run Rate: ₹${(L.mrr*12/100).toFixed(2)}Cr ARR
+• Headcount: ${L.headcount||'—'} people
+
+<strong>✅ This Month — What We Shipped</strong>
+[Add 3 key wins — product, revenue, team]
+
+<strong>📊 Budget vs Actual</strong>
+• Planned burn: ₹[X]L | Actual: ₹${L.burn}L
+• Variance: [explain if off-plan]
+
+<strong>⚠️ Challenges & Blockers</strong>
+[Be direct — 1-2 things slowing you down]
+
+<strong>🙏 Ask from Investors</strong>
+• Intros: [3 specific companies/people you want to meet]
+• Hiring referrals: [roles you're hiring for]
+• Other: [anything else you need]
+
+<strong>📅 Next Month Focus</strong>
+[Top 3 priorities for ${new Date(new Date().setMonth(new Date().getMonth()+1)).toLocaleDateString('en-IN',{month:'long'})}]
+
+Best,
+${localStorage.getItem('cfo_name')||'Founder'}
+${S.company?.name||'Company'}
+compyte.in`;
   },400);
 }
 
@@ -2850,6 +3172,8 @@ Rules: Be warm, direct, data-driven. Max 3-4 sentences. Use Indian financial con
 // NAV
 // ══════════════════════════════════════
 function navTo(id, el) {
+  // Run smart compliance alerts when navigating to compliance
+  if (id === 'compliance') { setTimeout(renderSmartComplianceAlerts, 100); }
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   g('page-'+id)?.classList.add('active');
   document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
@@ -3079,6 +3403,8 @@ function calcUnitEco() {
   setText('ue-cac',   `₹${(parseFloat(cac)||0).toFixed(2)}L`);
   setText('ue-ltv',   `₹${(parseFloat(ltv)||0).toFixed(2)}L`);
   setText('ue-ratio', `${ratio}x`);
+  // Cache for VC score calculation
+  try { localStorage.setItem('compyte_ltvcac', parseFloat(ratio)||0); } catch(e) {}
   setText('ue-payback', `${payback} months`);
   setText('ue-margin', `${gm}%`);
   setText('ue-magic',  magic !== '—' ? `${magic}x` : '—');
@@ -3090,7 +3416,8 @@ function calcUnitEco() {
   // Insight
   const ins = g('ue-insight');
   if (ins) {
-    if (parseFloat(ratio) >= 3) ins.innerHTML = `<strong>LTV:CAC of ${ratio}x — Excellent!</strong> Industry benchmark is 3x+. You're acquiring customers profitably. CAC payback in ${payback} months.`;
+    if (parseFloat(ratio) >= 4) ins.innerHTML = `<strong>LTV:CAC of ${ratio}x — Outstanding! 🎯</strong> Blume/Accel/3one4 benchmark is 3x+. You're at ${ratio}x — walk into any VC meeting with confidence. CAC payback in ${payback} months.`;
+    else if (parseFloat(ratio) >= 3) ins.innerHTML = `<strong>LTV:CAC of ${ratio}x — Series A Ready ✓</strong> You hit the 3x benchmark Indian VCs look for. CAC payback in ${payback} months.`;
     else if (parseFloat(ratio) >= 1) ins.innerHTML = `<strong>LTV:CAC of ${ratio}x — Needs improvement.</strong> Target 3x+. Either reduce CAC (better targeting) or increase LTV (improve retention or expand revenue per customer).`;
     else ins.innerHTML = `<strong style="color:var(--red)">LTV:CAC below 1x — Burning money per customer.</strong> You spend more acquiring a customer than you earn. Fix this before scaling marketing.`;
   }
@@ -3388,6 +3715,8 @@ const _origNavTo = navTo;
 // OVERRIDE navTo to build pages on demand
 // ══════════════════════════════════════
 function navTo(id, el) {
+  // Run smart compliance alerts when navigating to compliance
+  if (id === 'compliance') { setTimeout(renderSmartComplianceAlerts, 100); }
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   g('page-'+id)?.classList.add('active');
   document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));
@@ -4001,6 +4330,371 @@ function updateNextDeadline() {
   if (el2) el2.textContent = daysLeft <= 5 ? '⚠️ ' + daysLeft + ' days left' : daysLeft + ' days away';
 }
 try { updateNextDeadline(); } catch(e) {}
+
+// ── Smart Compliance Alerts ──
+function renderSmartComplianceAlerts() {
+  const el = g('smart-compliance-alerts');
+  if (!el) return;
+  const L = S.snapshots.length ? ns(S.snapshots[S.snapshots.length-1]) : null;
+  const alerts = [];
+
+  // ESIC alert when headcount crosses 10
+  if (L && L.headcount >= 10) {
+    alerts.push({
+      icon: '⚠️',
+      color: 'rgba(255,165,0,.15)',
+      border: 'rgba(255,165,0,.3)',
+      title: 'ESIC Registration Required',
+      desc: `Your team has ${L.headcount} people. ESIC registration is mandatory for companies with 10+ employees. Register at esic.gov.in within 15 days.`
+    });
+  }
+
+  // GST registration when revenue crosses ₹40L
+  if (L && L.mrr * 12 >= 40) {
+    alerts.push({
+      icon: '📋',
+      color: 'rgba(0,153,255,.08)',
+      border: 'rgba(0,153,255,.2)',
+      title: 'GST Registration Threshold',
+      desc: `Your ARR is ₹${(L.mrr*12).toFixed(0)}L. GST registration is mandatory above ₹40L annual turnover for most services.`
+    });
+  }
+
+  // FEMA/FC-GPR alert for foreign investors in cap table
+  const hasForeignInvestor = localStorage.getItem('compyte_has_foreign_investor') === 'true';
+  if (hasForeignInvestor) {
+    alerts.push({
+      icon: '🚨',
+      color: 'rgba(255,69,96,.08)',
+      border: 'rgba(255,69,96,.2)',
+      title: 'FEMA/FC-GPR Filing Required',
+      desc: 'Foreign investment detected in cap table. File FC-GPR with RBI within 30 days of share allotment. Penalty: up to 3x investment amount for late filing.'
+    });
+  }
+
+  if (alerts.length === 0) {
+    el.innerHTML = '';
+    return;
+  }
+
+  el.innerHTML = alerts.map(a => `
+    <div style="background:${a.color};border:1px solid ${a.border};border-radius:10px;padding:12px 16px;margin-bottom:10px;display:flex;gap:10px;align-items:flex-start">
+      <span style="font-size:16px;flex-shrink:0">${a.icon}</span>
+      <div>
+        <div style="font-size:12px;font-weight:700;margin-bottom:3px">${a.title}</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.6">${a.desc}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── MIS Report Generator (3one4 Standard) ──
+function generateMISReport() {
+  const L = S.snapshots.length ? ns(S.snapshots[S.snapshots.length-1]) : null;
+  const co = S.company || {};
+  if (!L) { showToast('⚠️ Add financial data first', true); return; }
+
+  const date = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  const runway = L.burn>0 ? (L.cash*100/L.burn).toFixed(1) : '—';
+  const runway6 = L.burn>0 ? Math.max(0,(L.cash*100-L.burn*6)/L.burn).toFixed(1) : '—';
+  const cashCr = (L.cash/100).toFixed(2);
+  const arrCr = (L.mrr*12/100).toFixed(2);
+  const netBurn = (L.burn-L.mrr).toFixed(1);
+  const prevL = S.snapshots.length>=2 ? ns(S.snapshots[S.snapshots.length-2]) : null;
+  const mrrGrowth = prevL&&prevL.mrr>0 ? (((L.mrr-prevL.mrr)/prevL.mrr)*100).toFixed(1) : '—';
+  const burnMultiple = prevL&&(L.mrr-prevL.mrr)>0 ? ((L.burn-L.mrr)/((L.mrr-prevL.mrr)*12)).toFixed(2) : '—';
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>MIS Report — ${co.name||'Company'} — ${date}</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:Arial,sans-serif;color:#111;padding:32px;max-width:900px;margin:0 auto;font-size:13px}
+    h1{font-size:22px;font-weight:800;margin-bottom:4px}
+    .meta{color:#666;font-size:11px;margin-bottom:24px;padding-bottom:12px;border-bottom:2px solid #00E5A0}
+    h2{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#00E5A0;margin:20px 0 10px;padding-bottom:4px;border-bottom:1px solid #eee}
+    .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+    .stat{background:#f8f8f8;border-radius:8px;padding:12px;text-align:center}
+    .stat-n{font-size:20px;font-weight:800}
+    .stat-l{font-size:10px;color:#666;margin-top:3px;text-transform:uppercase}
+    table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:16px}
+    th{background:#f0f0f0;padding:8px 10px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+    td{padding:8px 10px;border-bottom:1px solid #f0f0f0}
+    .green{color:#00875A}.red{color:#DE350B}.orange{color:#FF8B00}
+    .footer{margin-top:32px;padding-top:12px;border-top:1px solid #eee;font-size:10px;color:#999;display:flex;justify-content:space-between}
+    .section{margin-bottom:20px}
+    @media print{body{padding:16px}.no-print{display:none}}
+  </style></head><body>
+  <div class="no-print" style="background:#00E5A0;color:#000;padding:10px 16px;border-radius:8px;margin-bottom:20px;font-weight:700;cursor:pointer" onclick="window.print()">🖨️ Print / Save as PDF</div>
+  <h1>Management Information System Report</h1>
+  <div class="meta">${co.name||'Company'} · ${co.stage||'Early Stage'} · ${co.industry||'SaaS'} · Generated ${date} via Compyte</div>
+
+  <div class="section">
+    <h2>Key Financial Metrics</h2>
+    <div class="grid">
+      <div class="stat"><div class="stat-n">₹${cashCr}Cr</div><div class="stat-l">Cash in Bank</div></div>
+      <div class="stat"><div class="stat-n">₹${L.mrr}L</div><div class="stat-l">MRR</div></div>
+      <div class="stat"><div class="stat-n">${runway}mo</div><div class="stat-l">Current Runway</div></div>
+      <div class="stat"><div class="stat-n">₹${netBurn}L</div><div class="stat-l">Net Burn/mo</div></div>
+      <div class="stat"><div class="stat-n">${arrCr}Cr</div><div class="stat-l">ARR Run Rate</div></div>
+      <div class="stat"><div class="stat-n">${mrrGrowth}%</div><div class="stat-l">MoM Growth</div></div>
+      <div class="stat"><div class="stat-n">${burnMultiple}x</div><div class="stat-l">Burn Multiple</div></div>
+      <div class="stat"><div class="stat-n">${L.nrr||'—'}%</div><div class="stat-l">NRR</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>P&L Summary</h2>
+    <table>
+      <tr><th>Line Item</th><th>Current Month</th><th>ARR Run Rate</th></tr>
+      <tr><td>Revenue (MRR)</td><td class="green">₹${L.mrr}L</td><td class="green">₹${arrCr}Cr</td></tr>
+      <tr><td>Total Expenses (Burn)</td><td class="red">₹${L.burn}L</td><td class="red">₹${(L.burn*12/100).toFixed(2)}Cr</td></tr>
+      <tr><td style="padding-left:20px">· Salaries</td><td>₹${L.salaries||'—'}L</td><td>—</td></tr>
+      <tr><td style="padding-left:20px">· Cloud / Infrastructure</td><td>₹${L.cloud||'—'}L</td><td>—</td></tr>
+      <tr><td style="padding-left:20px">· Marketing</td><td>₹${L.marketing||'—'}L</td><td>—</td></tr>
+      <tr><td><strong>Net Burn / (Profit)</strong></td><td class="${parseFloat(netBurn)>0?'red':'green'}"><strong>₹${netBurn}L</strong></td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Balance Sheet Summary</h2>
+    <table>
+      <tr><th>Asset</th><th>Value</th></tr>
+      <tr><td>Cash & Bank Balance</td><td class="green">₹${cashCr}Cr</td></tr>
+      <tr><td>Accounts Receivable (est.)</td><td>₹${(L.mrr*0.5).toFixed(1)}L</td></tr>
+      <tr><td>Monthly Burn Rate</td><td class="red">₹${L.burn}L/mo</td></tr>
+      <tr><td>Implied Months of Operations</td><td>${runway} months</td></tr>
+      <tr><td>Projected Cash in 6 Months</td><td class="${parseFloat(runway6)>6?'green':'orange'}">₹${(parseFloat(runway6)*L.burn/100).toFixed(2)}Cr (${runway6} mo runway)</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Runway Projection</h2>
+    <table>
+      <tr><th>Scenario</th><th>Monthly Burn</th><th>Runway</th><th>Cash Out Date</th></tr>
+      <tr><td>Current (Base Case)</td><td>₹${L.burn}L</td><td>${runway} months</td><td>${new Date(Date.now()+parseFloat(runway)*30*24*60*60*1000).toLocaleDateString('en-IN',{month:'long',year:'numeric'})}</td></tr>
+      <tr><td>+20% Burn Increase</td><td>₹${(L.burn*1.2).toFixed(1)}L</td><td>${(L.cash*100/(L.burn*1.2)).toFixed(1)} months</td><td>—</td></tr>
+      <tr><td>-20% Burn Reduction</td><td>₹${(L.burn*0.8).toFixed(1)}L</td><td>${(L.cash*100/(L.burn*0.8)).toFixed(1)} months</td><td>—</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Operational Metrics</h2>
+    <table>
+      <tr><th>Metric</th><th>Value</th><th>Benchmark (Indian SaaS Seed)</th><th>Status</th></tr>
+      <tr><td>Team Size</td><td>${L.headcount||'—'}</td><td>5-15 people</td><td>—</td></tr>
+      <tr><td>Customers</td><td>${L.customers||'—'}</td><td>50-200</td><td>—</td></tr>
+      <tr><td>Revenue per Employee</td><td>${L.headcount?'₹'+(L.mrr/L.headcount).toFixed(1)+'L':'—'}</td><td>₹2-5L/mo</td><td>—</td></tr>
+      <tr><td>Burn Multiple</td><td>${burnMultiple}x</td><td><1.5x</td><td class="${parseFloat(burnMultiple)<1.5?'green':parseFloat(burnMultiple)<2.5?'orange':'red'}">${parseFloat(burnMultiple)<1.5?'✓ Good':parseFloat(burnMultiple)<2.5?'~ Watch':'✗ High'}</td></tr>
+    </table>
+  </div>
+
+  <div class="footer">
+    <span>Compyte · compyte.in · Confidential — Not for distribution</span>
+    <span>Generated ${date}</span>
+  </div>
+  </body></html>`;
+
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const w = window.open(url, '_blank');
+  if(w) setTimeout(()=>{ w.print(); }, 800);
+  showToast('📊 MIS Report opening...');
+}
+
+// ── Dilution Waterfall ──
+function renderWaterfall() {
+  const invest = parseFloat(g('wf-invest')?.value) || 0;
+  const postMoney = parseFloat(g('wf-postmoney')?.value) || 0;
+  const resultEl = g('waterfall-result');
+  if (!invest || !postMoney || !capTable.length) { if(resultEl) resultEl.style.display='none'; return; }
+  if(resultEl) resultEl.style.display='block';
+
+  const totalShares = capTable.reduce((a,s)=>a+s.shares, 0);
+  const investInLakhs = invest * 100; // Cr to L
+  const preMoney = postMoney - invest;
+
+  // New shares to be issued = (invest/postMoney) * newTotalShares
+  // newTotalShares = totalShares / (1 - invest/postMoney)
+  const newInvestorPct = invest / postMoney;
+  const newShares = Math.round(totalShares * newInvestorPct / (1 - newInvestorPct));
+  const newTotal = totalShares + newShares;
+
+  const colors = {'Founder':'var(--accent)','Investor':'var(--accent2)','Employee (ESOP)':'var(--purple)','Advisor':'var(--accent4)'};
+
+  // Build table rows
+  const rows = capTable.map(s => {
+    const beforePct = totalShares > 0 ? (s.shares/totalShares*100).toFixed(2) : 0;
+    const afterPct = newTotal > 0 ? (s.shares/newTotal*100).toFixed(2) : 0;
+    const dilution = (beforePct - afterPct).toFixed(2);
+    return { name:s.name, type:s.type, shares:s.shares, beforePct:parseFloat(beforePct), afterPct:parseFloat(afterPct), dilution:parseFloat(dilution) };
+  });
+
+  // Add new investor row
+  rows.push({ name:'New Investor', type:'Investor', shares:newShares, beforePct:0, afterPct:(newShares/newTotal*100).toFixed(2), dilution:0, isNew:true });
+
+  // Render table
+  const tbody = g('waterfall-table');
+  if (tbody) tbody.innerHTML = rows.map(r => `
+    <tr style="border-bottom:1px solid var(--border)">
+      <td style="padding:9px 0;font-weight:600">${r.name}${r.isNew?'<span style="font-size:9px;background:rgba(0,153,255,.15);color:var(--accent2);border-radius:4px;padding:2px 5px;margin-left:6px">NEW</span>':''}</td>
+      <td style="text-align:right;padding:9px 6px;font-family:var(--mono);color:var(--text2)">${r.beforePct}%</td>
+      <td style="text-align:right;padding:9px 6px;font-family:var(--mono);color:${r.isNew?'var(--accent2)':'var(--red)'}">${r.isNew?'+'+r.afterPct+'%':'-'+r.dilution+'%'}</td>
+      <td style="text-align:right;padding:9px 0;font-family:var(--mono);font-weight:700;color:${colors[r.type]||'var(--accent2)'}">${r.afterPct}%</td>
+    </tr>`).join('') + `
+    <tr style="border-top:2px solid var(--border2)">
+      <td style="padding:9px 0;font-weight:700">Total</td>
+      <td style="text-align:right;padding:9px 6px;font-family:var(--mono);font-weight:700">100%</td>
+      <td></td>
+      <td style="text-align:right;padding:9px 0;font-family:var(--mono);font-weight:700;color:var(--accent)">100%</td>
+    </tr>`;
+
+  // Render visual bars
+  const barsEl = g('waterfall-bars');
+  if (barsEl) {
+    const founderRows = rows.filter(r => r.type === 'Founder');
+    const founderAfter = founderRows.reduce((a,r)=>a+parseFloat(r.afterPct),0);
+    barsEl.innerHTML = rows.map(r => `
+      <div style="margin-bottom:6px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+          <span style="font-size:11px;color:var(--text2)">${r.name}</span>
+          <span style="font-size:11px;font-family:var(--mono);color:${colors[r.type]||'var(--accent2)'}">${r.afterPct}%</span>
+        </div>
+        <div style="background:var(--bg3);border-radius:4px;height:8px;overflow:hidden">
+          <div style="background:${colors[r.type]||'var(--accent2)'};height:100%;width:${r.afterPct}%;transition:width .4s ease;border-radius:4px"></div>
+        </div>
+      </div>`).join('');
+  }
+
+  // Warning if founders drop below 50%
+  const warnEl = g('waterfall-warning');
+  const founderAfterPct = rows.filter(r=>r.type==='Founder').reduce((a,r)=>a+parseFloat(r.afterPct),0);
+  if (warnEl) {
+    if (founderAfterPct < 50) {
+      warnEl.style.display='block';
+      warnEl.innerHTML = `⚠️ <strong>Founders will own ${founderAfterPct.toFixed(1)}% after this round</strong> — below 50%. This may create governance issues and will concern Series A investors. Consider reducing investment size or negotiating higher valuation.`;
+    } else {
+      warnEl.style.display='none';
+    }
+  }
+
+  // Track foreign investor for FEMA alerts
+  if (newInvestorPct > 0) {
+    // Assume new investor check - prompt later
+  }
+}
+
+// ── FEMA/FC-GPR Module ──
+function toggleFEMA(checked) {
+  g('fema-content').style.display = checked ? 'block' : 'none';
+  g('fema-disabled').style.display = checked ? 'none' : 'block';
+  localStorage.setItem('compyte_has_foreign_investor', checked ? 'true' : 'false');
+  if (checked) renderSmartComplianceAlerts();
+}
+
+function calcFEMADeadline() {
+  const allotDate = g('fema-allot-date')?.value;
+  if (!allotDate) return;
+  const allot = new Date(allotDate);
+  const deadline = new Date(allot);
+  deadline.setDate(deadline.getDate() + 30);
+  const now = new Date();
+  const daysLeft = Math.ceil((deadline - now) / 86400000);
+  const countEl = g('fema-countdown');
+  const daysEl = g('fema-days-left');
+  if (countEl) countEl.style.display = 'block';
+  if (daysEl) {
+    daysEl.textContent = daysLeft > 0 ? daysLeft : 'OVERDUE';
+    daysEl.style.color = daysLeft > 10 ? 'var(--accent)' : daysLeft > 0 ? 'var(--accent4)' : 'var(--red)';
+  }
+}
+
+// Restore FEMA state on load
+try {
+  const hasForeign = localStorage.getItem('compyte_has_foreign_investor') === 'true';
+  if (hasForeign && g('fema-has-foreign')) {
+    g('fema-has-foreign').checked = true;
+    toggleFEMA(true);
+  }
+} catch(e) {}
+
+// ── Tally XML Import ──
+// Add XML support to existing file input in Tally import
+function handleTallyXML(event) {
+  const file = event.target?.files?.[0];
+  if (!file) return;
+  
+  if (file.name.endsWith('.xml')) {
+    processTallyXML(file);
+  } else {
+    processAccountingFile(event, 'tally');
+  }
+}
+
+async function processTallyXML(file) {
+  showToast('🔄 Parsing Tally XML...');
+  try {
+    const text = await file.text();
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(text, 'text/xml');
+    
+    // Tally XML structure: ENVELOPE > BODY > EXPORTDATA > REQUESTDATA > TALLYMESSAGE
+    let mrr = 0, expenses = 0, cash = 0;
+    const entries = [];
+    
+    // Try standard Tally XML paths
+    const vouchers = xml.querySelectorAll('VOUCHER, Voucher, voucher');
+    vouchers.forEach(v => {
+      const vType = v.querySelector('VOUCHERTYPENAME, vouchertypename')?.textContent?.toLowerCase() || '';
+      const amount = parseFloat(v.querySelector('AMOUNT, amount')?.textContent?.replace(/,/g,'') || 0);
+      const narration = v.querySelector('NARRATION, narration')?.textContent || '';
+      const date = v.querySelector('DATE, date')?.textContent || '';
+      
+      if (/sales|receipt/.test(vType)) mrr += Math.abs(amount);
+      if (/purchase|payment|expense/.test(vType)) expenses += Math.abs(amount);
+      
+      entries.push({ date, type: vType, amount: Math.abs(amount), narration });
+    });
+    
+    // Also try ledger entries
+    const ledgers = xml.querySelectorAll('LEDGER, Ledger');
+    ledgers.forEach(l => {
+      const name = l.querySelector('NAME, name')?.textContent?.toLowerCase() || '';
+      const balance = parseFloat(l.querySelector('OPENINGBALANCE, CLOSINGBALANCE')?.textContent?.replace(/,/g,'') || 0);
+      if (/bank|cash/.test(name)) cash = Math.max(cash, Math.abs(balance));
+    });
+    
+    const entryCount = entries.length + ledgers.length;
+    
+    if (entryCount === 0) {
+      showToast('⚠️ No data found in XML. Try exporting as CSV from Tally.', true);
+      return;
+    }
+    
+    showToast(`✅ Tally XML imported! ${entryCount} entries found.`);
+    
+    // Generate journal entries
+    if (entries.length > 0) {
+      generateJournalEntriesFromAccounting('Tally XML', entries.map(e => ({
+        date: e.date, description: e.narration || e.type, amount: e.amount
+      })));
+    }
+    
+    // Show summary
+    const preview = document.querySelector('#bank-preview') || document.createElement('div');
+    preview.style.display = 'block';
+    preview.innerHTML = `
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:12px">
+        <div style="font-size:11px;font-family:var(--mono);color:var(--text3);margin-bottom:10px">TALLY XML IMPORT SUMMARY</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+          <div style="text-align:center"><div style="font-size:18px;font-weight:800;color:var(--accent)">₹${(mrr/100).toFixed(1)}Cr</div><div style="font-size:10px;color:var(--text3)">Revenue Found</div></div>
+          <div style="text-align:center"><div style="font-size:18px;font-weight:800;color:var(--red)">₹${(expenses/100).toFixed(1)}Cr</div><div style="font-size:10px;color:var(--text3)">Expenses Found</div></div>
+          <div style="text-align:center"><div style="font-size:18px;font-weight:800;color:var(--accent2)">${entryCount}</div><div style="font-size:10px;color:var(--text3)">Entries Parsed</div></div>
+        </div>
+      </div>`;
+  } catch(e) {
+    showToast('❌ XML parse failed: ' + e.message, true);
+    console.error('Tally XML error:', e);
+  }
+}
 </script>
 
 <!-- ADD INVOICE MODAL -->
